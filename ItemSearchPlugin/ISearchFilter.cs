@@ -15,6 +15,12 @@ namespace ItemSearchPlugin {
 		public string NameLocalizationKey { get; }
 
 		/// <summary>
+		/// Whether or not the filter should be displayed.
+		/// </summary>
+		public bool ShowFilter { get; }
+		
+
+		/// <summary>
 		///	True if the filter should be used when building item list
 		/// </summary>
 		public bool IsSet { get; }

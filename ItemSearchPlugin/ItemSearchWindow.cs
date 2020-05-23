@@ -108,10 +108,12 @@ namespace ItemSearchPlugin {
             ImGui.PopItemWidth();
 
             foreach(ISearchFilter filter in searchFilters) {
-                ImGui.NextColumn();
-                ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
-                ImGui.NextColumn();
-                filter.DrawEditor();
+                if (filter.ShowFilter) {
+                    ImGui.NextColumn();
+                    ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+                    ImGui.NextColumn();
+                    filter.DrawEditor();
+                }
             }
 
             ImGui.Columns(1);
@@ -121,9 +123,9 @@ namespace ItemSearchPlugin {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
             if (this.luminaItems != null) {
-                if (!string.IsNullOrEmpty(this.searchText) || searchFilters.Where(x => x.IsSet).Any())
+                if (!string.IsNullOrEmpty(this.searchText) || searchFilters.Where(x => x.ShowFilter && x.IsSet).Any())
                 {
-                    if (this.lastSearchText != this.searchText || searchFilters.Where(x => x.HasChanged).Any())
+                    if (this.lastSearchText != this.searchText || searchFilters.Where(x => x.ShowFilter && x.HasChanged).Any())
                     {
                         this.lastSearchText = this.searchText;
 
@@ -143,7 +145,7 @@ namespace ItemSearchPlugin {
                         }
 
                         foreach(ISearchFilter filter in searchFilters) {
-                            if (filter.IsSet) {
+                            if (filter.ShowFilter && filter.IsSet) {
                                 asyncEnum = asyncEnum.Where(x => filter.CheckFilter(x));
                             }
                         }

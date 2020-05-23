@@ -13,6 +13,8 @@ namespace ItemSearchPlugin.Filters {
 
 		public bool IsSet => selectedCategory != 0;
 
+		public bool ShowFilter => true;
+
 		public bool HasChanged {
 			get {
 				if (lastCategory != selectedCategory){
