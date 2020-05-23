@@ -38,6 +38,10 @@ namespace ItemSearch {
 			PluginInterface.UiBuilder.OnBuildUi += this.BuildUI;
 			SetupCommands();
 
+			#if DEBUG
+			OnItemSearchCommand("","");
+			#endif
+
 		}
 
 		public void SetupCommands() {
