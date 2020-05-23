@@ -96,19 +96,24 @@ namespace ItemSearch {
 
             ImGui.Separator();
             
+            ImGui.Columns(2);
+            ImGui.SetColumnWidth(0, 80);
             ImGui.Text(Loc.Localize("DalamudItemSearchVerb", "Search: "));
-            ImGui.SameLine();
+            ImGui.NextColumn();
+            ImGui.PushItemWidth(-1);
             ImGui.InputText("##searchbox", ref this.searchText, 32);
-
+            ImGui.PopItemWidth();
             var kinds = new List<string> {Loc.Localize("DalamudItemSelectAll", "All")};
             kinds.AddRange(this.data.GetExcelSheet<ItemUICategory>().GetRows().Where(x => !string.IsNullOrEmpty(x.Name)).Select(x => x.Name.Replace("\u0002\u001F\u0001\u0003", "-")));
-
+            ImGui.NextColumn();
             ImGui.Text(Loc.Localize("DalamudItemSelectCategory", "Category: "));
-            ImGui.SameLine();
+            ImGui.NextColumn();
+            ImGui.PushItemWidth(-1);
             ImGui.Combo("##kindbox", ref this.currentKind, kinds.ToArray(),
                         kinds.Count);
+            ImGui.PopItemWidth();
 
-
+            ImGui.Columns(1);
             var windowSize = ImGui.GetWindowSize();
             ImGui.BeginChild("scrolling", new Vector2(0, windowSize.Y - ImGui.GetCursorPosY() - 40), true, ImGuiWindowFlags.HorizontalScrollbar);
 
