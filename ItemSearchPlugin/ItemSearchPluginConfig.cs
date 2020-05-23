@@ -16,12 +16,15 @@ namespace ItemSearch {
 
 		public bool CloseOnChoose { get; set; }
 
+		public bool ShowItemID { get; set; }
+
 		public ItemSearchPluginConfig() {
 			LoadDefaults();
 		}
 
 		public void LoadDefaults() {
 			CloseOnChoose = false;
+			ShowItemID = false;
 		}
 
 		public void Init(DalamudPluginInterface pluginInterface) {
@@ -42,6 +45,12 @@ namespace ItemSearch {
 
 			if (ImGui.Checkbox("Close window after linking item", ref closeOnChoose)){
 				CloseOnChoose = closeOnChoose;
+				Save();
+			}
+
+			bool showItemId = ShowItemID;
+			if (ImGui.Checkbox("Show Item IDs", ref showItemId)){
+				ShowItemID = showItemId;
 				Save();
 			}
 

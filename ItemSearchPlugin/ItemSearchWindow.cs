@@ -77,6 +77,12 @@ namespace ItemSearch {
                 if (selectedItem != null ){
                     ImGui.SameLine();
                     ImGui.Text(selectedItem.Name);
+
+                    if (pluginConfig.ShowItemID){
+                        ImGui.SameLine();
+                        ImGui.Text($"(ID: {selectedItem.RowId})");
+                    }
+
                 }
             } else {
                 ImGui.Text(" ");
