@@ -20,9 +20,6 @@ namespace ItemSearchPlugin {
         private readonly DataManager data;
         private readonly UiBuilder builder;
 
-        private string lastSearchText = string.Empty;
-        private string searchText = string.Empty;
-
         private Item selectedItem;
         private int selectedItemIndex = -1;
         private TextureWrap selectedItemTex;
@@ -43,12 +40,12 @@ namespace ItemSearchPlugin {
             this.data = data;
             this.builder = builder;
             this.pluginConfig = pluginConfig;
-            this.searchText = searchText;
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
 
             searchFilters = new List<ISearchFilter>();
+            searchFilters.Add(new ItemNameSearchFilter(searchText));
             searchFilters.Add(new ItemUICategorySearchFilter(data));
             searchFilters.Add(new LevelEquipSearchFilter(pluginConfig));
 
@@ -102,18 +99,13 @@ namespace ItemSearchPlugin {
             
             ImGui.Columns(2);
             ImGui.SetColumnWidth(0, 80);
-            ImGui.Text(Loc.Localize("DalamudItemSearchVerb", "Search: "));
-            ImGui.NextColumn();
-            ImGui.PushItemWidth(-1);
-            ImGui.InputText("##searchbox", ref this.searchText, 32);
-            ImGui.PopItemWidth();
 
             foreach(ISearchFilter filter in searchFilters) {
                 if (filter.ShowFilter) {
-                    ImGui.NextColumn();
                     ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
                     ImGui.NextColumn();
                     filter.DrawEditor();
+                    ImGui.NextColumn();
                 }
             }
 
@@ -124,26 +116,16 @@ namespace ItemSearchPlugin {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
             if (this.luminaItems != null) {
-                if (!string.IsNullOrEmpty(this.searchText) || searchFilters.Where(x => x.ShowFilter && x.IsSet).Any())
+                if (searchFilters.Where(x => x.ShowFilter && x.IsSet).Any())
                 {
-                    if (this.lastSearchText != this.searchText || searchFilters.Where(x => x.ShowFilter && x.HasChanged).Any())
+                    if (searchFilters.Where(x => x.ShowFilter && x.HasChanged).Any())
                     {
-                        this.lastSearchText = this.searchText;
 
                         this.searchCancelTokenSource?.Cancel();
 
                         this.searchCancelTokenSource = new CancellationTokenSource();
 
                         var asyncEnum = this.luminaItems.ToAsyncEnumerable();
-
-                        if (!string.IsNullOrEmpty(this.searchText))
-                        {
-                            Log.Debug("Searching for " + this.searchText);
-                            asyncEnum = asyncEnum.Where(
-                                x => (x.Name.ToLower().Contains(this.searchText.ToLower()) ||
-                                      int.TryParse(this.searchText, out var parsedId) &&
-                                      parsedId == x.RowId) && x.Icon < 65000);
-                        }
 
                         foreach(ISearchFilter filter in searchFilters) {
                             if (filter.ShowFilter && filter.IsSet) {
