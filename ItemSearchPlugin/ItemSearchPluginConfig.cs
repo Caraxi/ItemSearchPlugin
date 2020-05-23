@@ -4,7 +4,7 @@ using ImGuiNET;
 using Newtonsoft.Json;
 using System;
 
-namespace ItemSearch {
+namespace ItemSearchPlugin {
 	public class ItemSearchPluginConfig : IPluginConfiguration {
 
 		[NonSerialized]

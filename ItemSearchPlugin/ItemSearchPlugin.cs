@@ -4,7 +4,7 @@ using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 
 
-namespace ItemSearch {
+namespace ItemSearchPlugin {
 	public class ItemSearchPlugin : IDalamudPlugin {
 
 		public string Name => "Item Search";

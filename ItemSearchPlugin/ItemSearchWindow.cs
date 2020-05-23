@@ -10,11 +10,11 @@ using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
 using ImGuiNET;
 using ImGuiScene;
-using Lumina.Excel.GeneratedSheets;
+using ItemSearchPlugin.Filters;
 using Serilog;
 using Item = Dalamud.Data.TransientSheet.Item;
 
-namespace ItemSearch {
+namespace ItemSearchPlugin {
     class ItemSearchWindow : IDisposable
     {
         private readonly DataManager data;
@@ -22,9 +22,6 @@ namespace ItemSearch {
 
         private string lastSearchText = string.Empty;
         private string searchText = string.Empty;
-
-        private int lastKind = 0;
-        private int currentKind = 0;
 
         private Item selectedItem;
         private int selectedItemIndex = -1;
@@ -39,6 +36,9 @@ namespace ItemSearch {
         public event EventHandler<Item> OnItemChosen;
         public event EventHandler<bool> OnConfigButton;
 
+        public List<ISearchFilter> searchFilters;
+
+
         public ItemSearchWindow(DataManager data, UiBuilder builder, ItemSearchPluginConfig pluginConfig, string searchText = "") {
             this.data = data;
             this.builder = builder;
@@ -47,6 +47,9 @@ namespace ItemSearch {
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
+
+            searchFilters = new List<ISearchFilter>();
+            searchFilters.Add(new ItemUICategorySearchFilter(data));
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
         }
@@ -103,15 +106,13 @@ namespace ItemSearch {
             ImGui.PushItemWidth(-1);
             ImGui.InputText("##searchbox", ref this.searchText, 32);
             ImGui.PopItemWidth();
-            var kinds = new List<string> {Loc.Localize("DalamudItemSelectAll", "All")};
-            kinds.AddRange(this.data.GetExcelSheet<ItemUICategory>().GetRows().Where(x => !string.IsNullOrEmpty(x.Name)).Select(x => x.Name.Replace("\u0002\u001F\u0001\u0003", "-")));
-            ImGui.NextColumn();
-            ImGui.Text(Loc.Localize("DalamudItemSelectCategory", "Category: "));
-            ImGui.NextColumn();
-            ImGui.PushItemWidth(-1);
-            ImGui.Combo("##kindbox", ref this.currentKind, kinds.ToArray(),
-                        kinds.Count);
-            ImGui.PopItemWidth();
+
+            foreach(ISearchFilter filter in searchFilters) {
+                ImGui.NextColumn();
+                ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+                ImGui.NextColumn();
+                filter.DrawEditor();
+            }
 
             ImGui.Columns(1);
             var windowSize = ImGui.GetWindowSize();
@@ -120,12 +121,11 @@ namespace ItemSearch {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
             if (this.luminaItems != null) {
-                if (!string.IsNullOrEmpty(this.searchText) || this.currentKind != 0)
+                if (!string.IsNullOrEmpty(this.searchText) || searchFilters.Where(x => x.IsSet).Any())
                 {
-                    if (this.lastSearchText != this.searchText || this.lastKind != this.currentKind)
+                    if (this.lastSearchText != this.searchText || searchFilters.Where(x => x.HasChanged).Any())
                     {
                         this.lastSearchText = this.searchText;
-                        this.lastKind = this.currentKind;
 
                         this.searchCancelTokenSource?.Cancel();
 
@@ -142,10 +142,10 @@ namespace ItemSearch {
                                       parsedId == x.RowId) && x.Icon < 65000);
                         }
 
-                        if (this.currentKind != 0)
-                        {
-                            Log.Debug("Searching for C" + this.currentKind);
-                            asyncEnum = asyncEnum.Where(x => x.ItemUICategory == this.currentKind);
+                        foreach(ISearchFilter filter in searchFilters) {
+                            if (filter.IsSet) {
+                                asyncEnum = asyncEnum.Where(x => filter.CheckFilter(x));
+                            }
                         }
 
                         this.selectedItemIndex = -1;
@@ -255,7 +255,11 @@ namespace ItemSearch {
         }
 
         public void Dispose() {
-            
+
+            foreach(ISearchFilter f in searchFilters){
+                f?.Dispose();
+            }
+
             this.selectedItemTex?.Dispose();
         }
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using CheapLoc;
 using Serilog;
 
-namespace ItemSearch
+namespace ItemSearchPlugin
 { 
 
     /**
