@@ -50,27 +50,24 @@ namespace ItemSearch {
 				replacedOriginalCommand = true;
 			}
 
-			PluginInterface.CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo((command, args) => {
-				
-				itemSearchWindow = new ItemSearchWindow(PluginInterface.Data, PluginInterface.UiBuilder, PluginConfig, args);
-
-				itemSearchWindow.OnItemChosen += (sender, item) => {
-					PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry{
-						MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
-					});
-				};
-
-				itemSearchWindow.OnConfigButton += (s,c) => {
-					drawConfigWindow = !drawConfigWindow;
-				};
-
-				drawItemSearchWindow = true;
-
-			}) {
+			PluginInterface.CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo(OnItemSearchCommand) {
 				HelpMessage = Loc.Localize("ItemSearchCommandHelp", "Open a window you can use to link any specific item to chat."),
 				ShowInHelp = true
 			});
 
+		}
+
+		public void OnItemSearchCommand(string command, string args) {			
+			itemSearchWindow = new ItemSearchWindow(PluginInterface.Data, PluginInterface.UiBuilder, PluginConfig, args);
+			itemSearchWindow.OnItemChosen += (sender, item) => {
+				PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry{
+					MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
+				});
+			};
+			itemSearchWindow.OnConfigButton += (s,c) => {
+				drawConfigWindow = !drawConfigWindow;
+			};
+			drawItemSearchWindow = true;
 		}
 
 		public void RemoveCommands() {
