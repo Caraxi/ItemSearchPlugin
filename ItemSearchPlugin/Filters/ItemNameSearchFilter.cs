@@ -14,7 +14,7 @@ namespace ItemSearchPlugin.Filters {
 
 		public ItemNameSearchFilter(string startingValue = "") {
 			searchText = startingValue;
-			lastSearchText = startingValue;
+			lastSearchText = string.Empty;
 		}
 
 
