@@ -26,6 +26,7 @@ namespace ItemSearch {
         private int lastKind = 0;
         private int currentKind = 0;
 
+        private Item selectedItem;
         private int selectedItemIndex = -1;
         private TextureWrap selectedItemTex;
 
@@ -65,8 +66,6 @@ namespace ItemSearch {
             ImGui.AlignTextToFramePadding();
 
             ImGui.Text(Loc.Localize("DalamudItemSelect", "Please select an item."));
-            ImGui.SameLine();
-            
             
             if (this.selectedItemTex != null) {
                 ImGui.Text(" ");
@@ -74,9 +73,15 @@ namespace ItemSearch {
                 ImGui.SetCursorPosY(200f);
                 ImGui.SameLine();
                 ImGui.Image(this.selectedItemTex.ImGuiHandle, new Vector2(40, 40));
+
+                if (selectedItem != null ){
+                    ImGui.SameLine();
+                    ImGui.Text(selectedItem.Name);
+                }
             } else {
                 ImGui.Text(" ");
             }
+
 
             ImGui.Separator();
             
@@ -140,6 +145,7 @@ namespace ItemSearch {
                         {
                             if (ImGui.Selectable(this.searchTask.Result[i].Name, this.selectedItemIndex == i, ImGuiSelectableFlags.AllowDoubleClick))
                             {
+                                this.selectedItem = this.searchTask.Result[i];
                                 this.selectedItemIndex = i;
 
                                 try
