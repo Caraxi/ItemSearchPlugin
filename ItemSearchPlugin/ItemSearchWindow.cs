@@ -56,11 +56,16 @@ namespace ItemSearch {
 
             var isOpen = true;
             
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(250, 300));
+
             if (!ImGui.Begin(Loc.Localize("DalamudItemSelectHeader", "Select an item"), ref isOpen, ImGuiWindowFlags.NoCollapse))
             {
+                ImGui.PopStyleVar();
                 ImGui.End();
                 return false;
             }
+
+            ImGui.PopStyleVar();
 
             // Main window
             ImGui.AlignTextToFramePadding();
