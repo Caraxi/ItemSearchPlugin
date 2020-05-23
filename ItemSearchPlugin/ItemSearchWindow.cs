@@ -242,8 +242,10 @@ namespace ItemSearch {
                 ImGui.SameLine();
                 ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
             }
-            ImGui.SameLine();
-            if (ImGui.Button(Loc.Localize("ItemSearchConfigButton", "Open Config"))) {
+
+            string configText = Loc.Localize("ItemSearchConfigButton", "Config");
+            ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
+            if (ImGui.Button(configText)) {
                 OnConfigButton.Invoke(this, true);
             }
 
