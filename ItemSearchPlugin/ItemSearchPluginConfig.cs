@@ -18,6 +18,8 @@ namespace ItemSearchPlugin {
 
 		public bool ShowItemID { get; set; }
 
+		public bool ExtraFilters { get; set; }
+
 		public ItemSearchPluginConfig() {
 			LoadDefaults();
 		}
@@ -25,6 +27,7 @@ namespace ItemSearchPlugin {
 		public void LoadDefaults() {
 			CloseOnChoose = false;
 			ShowItemID = false;
+			ExtraFilters = false;
 		}
 
 		public void Init(DalamudPluginInterface pluginInterface) {
@@ -51,6 +54,12 @@ namespace ItemSearchPlugin {
 			bool showItemId = ShowItemID;
 			if (ImGui.Checkbox("Show Item IDs", ref showItemId)){
 				ShowItemID = showItemId;
+				Save();
+			}
+
+			bool extraFilters = ExtraFilters;
+			if (ImGui.Checkbox("Enable Extra Filters", ref extraFilters)){
+				ExtraFilters = extraFilters;
 				Save();
 			}
 
