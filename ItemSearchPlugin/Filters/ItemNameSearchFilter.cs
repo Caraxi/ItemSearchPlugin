@@ -1,10 +1,5 @@
 ﻿using Dalamud.Data.TransientSheet;
 using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ItemSearchPlugin.Filters {
 	class ItemNameSearchFilter : ISearchFilter {
