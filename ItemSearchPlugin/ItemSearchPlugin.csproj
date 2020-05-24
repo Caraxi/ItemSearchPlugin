@@ -78,6 +78,6 @@
         </EmbeddedResource>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="F:\repo\InstallDalamudDevPlugin\InstallDalamudDevPlugin\bin\Debug\InstallDalamudDevPlugin.exe --build-dir $(TargetDir) &quot;$(TargetFileName)&quot;" />
+      <Exec Command="if $(ConfigurationName) == Debug (F:\repo\InstallDalamudDevPlugin\InstallDalamudDevPlugin\bin\Debug\InstallDalamudDevPlugin.exe --build-dir $(TargetDir) &quot;$(TargetFileName)&quot;)" />
     </Target>
 </Project>
