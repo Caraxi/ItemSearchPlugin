@@ -30,7 +30,7 @@ namespace ItemSearchPlugin.Filters {
 
 		public bool ShowFilter => config.ExtraFilters;
 
-		public bool IsSet => minLevel != 1 || maxLevel != 80;
+		public bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
 
 		public bool HasChanged {
 			get {
