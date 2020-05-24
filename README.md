@@ -4,6 +4,9 @@ Dalamud Plugin for searching for items
 Built using the ItemSearchWindow feature of Dalamud, but implemented as a plugin to allow modification easier without rebuilding Dalamud.
 
 ## Features
+
+Search for items and create in game links for them even if you don't own the item.
+
 ### Regex Search
 Search for items that match a given pattern.
 
