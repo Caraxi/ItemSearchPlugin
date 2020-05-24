@@ -2,3 +2,14 @@
 Dalamud Plugin for searching for items
 
 Built using the ItemSearchWindow feature of Dalamud, but implemented as a plugin to allow modification easier without rebuilding Dalamud.
+
+## Features
+### Regex Search
+Search for items that match a given pattern.
+
+Enter a [regex](http://regexstorm.net/reference) pattern to find items that match.
+
+![Regex Search Preview](https://raw.githubusercontent.com/Caraxi/ItemSearchPlugin/master/preview/regex-search.png)
+
+### Item Level and Equip Level filtering
+Limit the displayed items to items within a range in equip level and item level
