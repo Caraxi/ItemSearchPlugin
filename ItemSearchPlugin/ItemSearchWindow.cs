@@ -99,7 +99,9 @@ namespace ItemSearchPlugin {
             ImGui.Separator();
             
             ImGui.Columns(2);
-            ImGui.SetColumnWidth(0, 80);
+            float filterNameWidth = searchFilters.Where(f => f.ShowFilter).Select(f => ImGui.CalcTextSize(Loc.Localize(f.NameLocalizationKey, $"{f.Name}: ")).X).Max();
+
+            ImGui.SetColumnWidth(0, filterNameWidth + ImGui.GetStyle().ItemSpacing.X * 2);
 
             foreach(ISearchFilter filter in searchFilters) {
                 if (filter.ShowFilter) {
