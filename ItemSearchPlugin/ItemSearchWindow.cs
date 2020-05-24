@@ -48,6 +48,7 @@ namespace ItemSearchPlugin {
             searchFilters.Add(new ItemNameSearchFilter(searchText));
             searchFilters.Add(new ItemUICategorySearchFilter(data));
             searchFilters.Add(new LevelEquipSearchFilter(pluginConfig));
+            searchFilters.Add(new LevelItemSearchFilter(pluginConfig));
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
         }
