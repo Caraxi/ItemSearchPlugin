@@ -1,11 +1,12 @@
 ﻿using Dalamud.Data.TransientSheet;
 using ImGuiNET;
+using System;
 
 namespace ItemSearchPlugin.Filters {
 	class LevelItemSearchFilter : ISearchFilter {
 
 		private static readonly int MIN_LEVEL = 1;
-		private static readonly int MAX_LEVEL = 505;
+		private static int MAX_LEVEL = 505;
 
 
 		private int minLevel;
@@ -19,6 +20,8 @@ namespace ItemSearchPlugin.Filters {
 		public LevelItemSearchFilter(ItemSearchPluginConfig config) {
 			minLevel = last_minLevel = MIN_LEVEL;
 			maxLevel = last_maxLevel = MAX_LEVEL;
+
+			MAX_LEVEL = Math.Max(MAX_LEVEL, config.MaxItemLevel);
 
 			this.config = config;
 		}
@@ -44,6 +47,14 @@ namespace ItemSearchPlugin.Filters {
 		}
 
 		public bool CheckFilter(Item item) {
+			if (item.LevelItem > MAX_LEVEL) {
+				if (maxLevel == MAX_LEVEL) {
+					maxLevel = MAX_LEVEL = item.LevelItem;
+				} else {
+					MAX_LEVEL = item.LevelItem;
+				}
+				
+			}
 			return item.LevelItem >= minLevel && item.LevelItem <= maxLevel;
 		}
 

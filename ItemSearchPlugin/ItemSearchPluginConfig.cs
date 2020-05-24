@@ -19,6 +19,8 @@ namespace ItemSearchPlugin {
 
 		public bool ExtraFilters { get; set; }
 
+		public int MaxItemLevel { get; set; }
+
 		public ItemSearchPluginConfig() {
 			LoadDefaults();
 		}
@@ -27,6 +29,7 @@ namespace ItemSearchPlugin {
 			CloseOnChoose = false;
 			ShowItemID = false;
 			ExtraFilters = false;
+			MaxItemLevel = 505;
 		}
 
 		public void Init(DalamudPluginInterface pluginInterface) {
