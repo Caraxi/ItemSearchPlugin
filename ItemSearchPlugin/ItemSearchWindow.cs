@@ -49,6 +49,7 @@ namespace ItemSearchPlugin {
             searchFilters.Add(new ItemUICategorySearchFilter(data));
             searchFilters.Add(new LevelEquipSearchFilter(pluginConfig));
             searchFilters.Add(new LevelItemSearchFilter(pluginConfig));
+            searchFilters.Add(new EquipAsSearchFilter(pluginConfig, data));
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
         }
@@ -108,6 +109,7 @@ namespace ItemSearchPlugin {
                     ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
                     ImGui.NextColumn();
                     filter.DrawEditor();
+                    while(ImGui.GetColumnIndex() != 0)
                     ImGui.NextColumn();
                 }
             }
