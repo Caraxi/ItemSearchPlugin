@@ -23,6 +23,7 @@ namespace ItemSearchPlugin {
         };
 
 		public void Dispose() {
+			PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
 			RemoveCommands();
 		}
 
@@ -79,7 +80,7 @@ namespace ItemSearchPlugin {
 		}
 
 		public void RemoveCommands() {
-			PluginInterface.CommandManager.RemoveHandler("/xlitems");
+			PluginInterface.CommandManager.RemoveHandler("/xlitem");
 
 			// Put the original xlitem back
 			if (replacedOriginalCommand) {
