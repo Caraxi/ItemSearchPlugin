@@ -116,7 +116,7 @@ namespace ItemSearchPlugin {
 
             ImGui.Columns(1);
             var windowSize = ImGui.GetWindowSize();
-            ImGui.BeginChild("scrolling", new Vector2(0, windowSize.Y - ImGui.GetCursorPosY() - 40), true, ImGuiWindowFlags.HorizontalScrollbar);
+            ImGui.BeginChild("scrolling", new Vector2(0, Math.Max(100, windowSize.Y - ImGui.GetCursorPosY() - 40)), true, ImGuiWindowFlags.HorizontalScrollbar);
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
