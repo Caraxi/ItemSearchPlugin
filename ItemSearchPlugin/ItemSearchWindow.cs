@@ -59,7 +59,7 @@ namespace ItemSearchPlugin {
 
             var isOpen = true;
             
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(250, 300));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
 
             if (!ImGui.Begin(Loc.Localize("DalamudItemSelectHeader", "Select an item"), ref isOpen, ImGuiWindowFlags.NoCollapse))
             {
@@ -217,6 +217,15 @@ namespace ItemSearchPlugin {
                 }
             }
 
+            if (pluginConfig.SelectedDataSite != null) {
+                ImGui.SameLine();
+                if (ImGui.Button($"View on {pluginConfig.SelectedDataSite.Name}")) {
+                    if (this.selectedItemIndex >= 0) {
+                        pluginConfig.SelectedDataSite.OpenItem(this.searchTask.Result[this.selectedItemIndex]);
+                    }
+                }
+            }
+            
             ImGui.PopStyleVar();
 
             if (!pluginConfig.CloseOnChoose) {

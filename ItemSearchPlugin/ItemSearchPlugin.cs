@@ -2,7 +2,7 @@
 using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
-
+using ItemSearchPlugin.DataSites;
 
 namespace ItemSearchPlugin {
 	public class ItemSearchPlugin : IDalamudPlugin {
@@ -17,6 +17,10 @@ namespace ItemSearchPlugin {
 		private Localization localization;
 		private bool replacedOriginalCommand = false;
 		internal bool drawConfigWindow = false;
+
+		public static DataSite[] DataSites { get; } = new DataSite[] {
+            new GarlandToolsDataSite(), new TeamcraftDataSite(), new GamerEscapeDatasite(),
+        };
 
 		public void Dispose() {
 			RemoveCommands();
