@@ -25,7 +25,7 @@ namespace ItemSearchPlugin.Filters {
 			}
 		}
 
-		private List<string> uiCategories;
+		private List<ItemUICategory> uiCategories;
 		private string[] uiCategoriesArray;
 
 		private int selectedCategory = 0;
@@ -33,15 +33,14 @@ namespace ItemSearchPlugin.Filters {
 
 		public ItemUICategorySearchFilter(DataManager data) {
 
-			uiCategories = new List<string> { Loc.Localize("DalamudItemSelectAll", "All") };
-
-			uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().GetRows().Where(x => !string.IsNullOrEmpty(x.Name)).Select(x => x.Name.Replace("\u0002\u001F\u0001\u0003", "-")));
-			uiCategoriesArray = uiCategories.ToArray();
+			uiCategories = new List<ItemUICategory> { null };
+			uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().GetRows().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name));
+			uiCategoriesArray = uiCategories.Select(x => x == null ? Loc.Localize("DalamudItemSelectAll", "All") : x.Name.Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
 		}
 
 
 		public bool CheckFilter(Item item) {
-			return item.ItemUICategory == selectedCategory;
+			return item.ItemUICategory == uiCategories[selectedCategory].RowId;
 		}
 
 		public void DrawEditor() {
