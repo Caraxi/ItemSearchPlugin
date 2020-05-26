@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -8,6 +9,7 @@ using CheapLoc;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
+using Dalamud.Plugin;
 using ImGuiNET;
 using ImGuiScene;
 using ItemSearchPlugin.Filters;
@@ -19,7 +21,7 @@ namespace ItemSearchPlugin {
     {
         private readonly DataManager data;
         private readonly UiBuilder builder;
-
+        private readonly DalamudPluginInterface pluginInterface;
         private Item selectedItem;
         private int selectedItemIndex = -1;
         private TextureWrap selectedItemTex;
@@ -32,14 +34,17 @@ namespace ItemSearchPlugin {
 
         public event EventHandler<Item> OnItemChosen;
         public event EventHandler<bool> OnConfigButton;
+        public event EventHandler<Item> OnMarketboardOpen;
 
         public List<ISearchFilter> searchFilters;
 
+        private bool marketBoardResponsed = false;
 
-        public ItemSearchWindow(DataManager data, UiBuilder builder, ItemSearchPluginConfig pluginConfig, string searchText = "") {
-            this.data = data;
-            this.builder = builder;
+        public ItemSearchWindow(ItemSearchPluginConfig pluginConfig, DalamudPluginInterface pluginInterface, string searchText = "") {
+            this.data = pluginInterface.Data;
+            this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = pluginConfig;
+            this.pluginInterface = pluginInterface;
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
@@ -50,6 +55,20 @@ namespace ItemSearchPlugin {
             searchFilters.Add(new LevelEquipSearchFilter(pluginConfig));
             searchFilters.Add(new LevelItemSearchFilter(pluginConfig));
             searchFilters.Add(new EquipAsSearchFilter(pluginConfig, data));
+
+            pluginInterface.Subscribe("MarketBoardPlugin", (o) => {
+                PluginLog.Log("Recieved Message from MarketBoardPlugin");
+                dynamic msg = o;
+                if (msg.Target == "ItemSearchPlugin" && msg.Action == "pong") {
+                    marketBoardResponsed = true;
+                }
+            });
+
+            dynamic areYouThereMarketBoard = new ExpandoObject();
+            areYouThereMarketBoard.Target = "MarketBoardPlugin";
+            areYouThereMarketBoard.Action = "ping";
+
+            pluginInterface.SendMessage(areYouThereMarketBoard);
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
         }
@@ -216,18 +235,27 @@ namespace ItemSearchPlugin {
                     Log.Error($"Exception in Choose: {ex.Message}");
                 }
             }
+            ImGui.PopStyleVar();
+
+            if (pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && this.selectedItemIndex >= 0 && this.searchTask.Result[this.selectedItemIndex].ItemSearchCategory > 0){
+                ImGui.SameLine();
+                if (ImGui.Button("Market")){
+                    OnMarketboardOpen?.Invoke(this, this.searchTask.Result[this.selectedItemIndex]);
+                }
+            }
+
 
             if (pluginConfig.SelectedDataSite != null) {
                 ImGui.SameLine();
+                ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 ? 0.25f : 1);
                 if (ImGui.Button($"View on {pluginConfig.SelectedDataSite.Name}")) {
                     if (this.selectedItemIndex >= 0) {
                         pluginConfig.SelectedDataSite.OpenItem(this.searchTask.Result[this.selectedItemIndex]);
                     }
                 }
+                ImGui.PopStyleVar();
             }
             
-            ImGui.PopStyleVar();
-
             if (!pluginConfig.CloseOnChoose) {
                 ImGui.SameLine();
                 if (ImGui.Button(Loc.Localize("Close", "Close")))
@@ -254,7 +282,7 @@ namespace ItemSearchPlugin {
         }
 
         public void Dispose() {
-
+            pluginInterface.Unsubscribe("MarketBoardPlugin");
             foreach(ISearchFilter f in searchFilters){
                 f?.Dispose();
             }

@@ -3,6 +3,7 @@ using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 using ItemSearchPlugin.DataSites;
+using System.Dynamic;
 
 namespace ItemSearchPlugin {
 	public class ItemSearchPlugin : IDalamudPlugin {
@@ -67,7 +68,7 @@ namespace ItemSearchPlugin {
 		}
 
 		public void OnItemSearchCommand(string command, string args) {			
-			itemSearchWindow = new ItemSearchWindow(PluginInterface.Data, PluginInterface.UiBuilder, PluginConfig, args);
+			itemSearchWindow = new ItemSearchWindow(PluginConfig, PluginInterface, args);
 			itemSearchWindow.OnItemChosen += (sender, item) => {
 				PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry{
 					MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
@@ -76,6 +77,15 @@ namespace ItemSearchPlugin {
 			itemSearchWindow.OnConfigButton += (s,c) => {
 				drawConfigWindow = !drawConfigWindow;
 			};
+
+			itemSearchWindow.OnMarketboardOpen += (s,item) => {
+				dynamic itemMessage = new ExpandoObject();
+				itemMessage.Target = "MarketBoardPlugin";
+				itemMessage.Action = "OpenMarketBoard";
+				itemMessage.ItemId = item.RowId;
+				PluginInterface.SendMessage(itemMessage);
+			};
+
 			drawItemSearchWindow = true;
 		}
 
