@@ -8,6 +8,7 @@ using CheapLoc;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
+using Dalamud.Plugin;
 using ImGuiNET;
 using ImGuiScene;
 using ItemSearchPlugin.Filters;
@@ -17,6 +18,7 @@ using Item = Dalamud.Data.TransientSheet.Item;
 namespace ItemSearchPlugin {
     class ItemSearchWindow : IDisposable
     {
+        private readonly DalamudPluginInterface pluginInterface;
         private readonly DataManager data;
         private readonly UiBuilder builder;
 
@@ -36,9 +38,10 @@ namespace ItemSearchPlugin {
         public List<ISearchFilter> searchFilters;
 
 
-        public ItemSearchWindow(DataManager data, UiBuilder builder, ItemSearchPluginConfig pluginConfig, string searchText = "") {
-            this.data = data;
-            this.builder = builder;
+        public ItemSearchWindow(DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig, string searchText = "") {
+            this.pluginInterface = pluginInterface;
+            this.data = pluginInterface.Data;
+            this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = pluginConfig;
 
             while (!data.IsDataReady)

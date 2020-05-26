@@ -67,7 +67,7 @@ namespace ItemSearchPlugin {
 		}
 
 		public void OnItemSearchCommand(string command, string args) {			
-			itemSearchWindow = new ItemSearchWindow(PluginInterface.Data, PluginInterface.UiBuilder, PluginConfig, args);
+			itemSearchWindow = new ItemSearchWindow(PluginInterface, PluginConfig, args);
 			itemSearchWindow.OnItemChosen += (sender, item) => {
 				PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry{
 					MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
