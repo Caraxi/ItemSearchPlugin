@@ -219,7 +219,9 @@ namespace ItemSearchPlugin {
                                 }
 
                                 if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && TryOn != null) {
-                                    TryOn(0xFF, (uint)selectedItem.RowId, 0 , 0, 0);
+                                    if (selectedItem.ClassJobCategory != 0) {
+                                        TryOn(0xFF, (uint)selectedItem.RowId, 0 , 0, 0);
+                                    }
                                 }
                             }
                         }
