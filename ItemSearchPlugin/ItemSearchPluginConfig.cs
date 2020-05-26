@@ -24,6 +24,8 @@ namespace ItemSearchPlugin {
 
 		public int MaxItemLevel { get; set; }
 
+		public bool ShowTryOn { get; set; }
+
 		public string DataSite { get; set; }
 
 		public bool MarketBoardPluginIntegration { get; set; }
@@ -54,6 +56,7 @@ namespace ItemSearchPlugin {
 			ExtraFilters = false;
 			MarketBoardPluginIntegration = false;
 			MaxItemLevel = 505;
+			ShowTryOn = false;
 			DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
 		}
 
@@ -93,6 +96,12 @@ namespace ItemSearchPlugin {
 			bool mbpIntegration = MarketBoardPluginIntegration;
 			if (ImGui.Checkbox("Market Board Plugin Integration", ref mbpIntegration)){
 				MarketBoardPluginIntegration = mbpIntegration;
+				Save();
+			}
+
+			bool showTryOn = ShowTryOn;
+			if (ImGui.Checkbox("Enable Try On Feature", ref showTryOn)){
+				ShowTryOn = showTryOn;
 				Save();
 			}
 

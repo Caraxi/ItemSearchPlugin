@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CheapLoc;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
+using Dalamud.Hooking;
 using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
@@ -19,6 +21,7 @@ using Item = Dalamud.Data.TransientSheet.Item;
 namespace ItemSearchPlugin {
     class ItemSearchWindow : IDisposable
     {
+        private readonly DalamudPluginInterface pluginInterface;
         private readonly DataManager data;
         private readonly UiBuilder builder;
         private readonly DalamudPluginInterface pluginInterface;
@@ -40,7 +43,16 @@ namespace ItemSearchPlugin {
 
         private bool marketBoardResponsed = false;
 
-        public ItemSearchWindow(ItemSearchPluginConfig pluginConfig, DalamudPluginInterface pluginInterface, string searchText = "") {
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, byte stainColor, uint itemGlamourId, byte unknownByte);
+        private TryOnDelegate TryOn;
+        private bool autoTryOn = false;
+
+        private AddressResolver address;
+
+        public ItemSearchWindow(DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig, string searchText = "") {
+            this.pluginInterface = pluginInterface;
             this.data = pluginInterface.Data;
             this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = pluginConfig;
@@ -71,6 +83,15 @@ namespace ItemSearchPlugin {
             pluginInterface.SendMessage(areYouThereMarketBoard);
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
+
+            try {
+                address = new AddressResolver();
+                address.Setup(pluginInterface.TargetModuleScanner);
+                TryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
+            } catch (Exception ex) {
+                PluginLog.LogError(ex.ToString());
+            }
+
         }
 
         public bool Draw() {
@@ -199,6 +220,10 @@ namespace ItemSearchPlugin {
                                         }
                                     }
                                 }
+
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && TryOn != null) {
+                                    TryOn(0xFF, (uint)selectedItem.RowId, 0 , 0, 0);
+                                }
                             }
                         }
                     }
@@ -270,6 +295,10 @@ namespace ItemSearchPlugin {
                 ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
             }
 
+            if (pluginConfig.ShowTryOn) {
+                ImGui.SameLine();
+                ImGui.Checkbox("Try On", ref autoTryOn);
+            }
             string configText = Loc.Localize("ItemSearchConfigButton", "Config");
             ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
             if (ImGui.Button(configText)) {
