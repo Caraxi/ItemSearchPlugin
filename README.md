@@ -1,5 +1,5 @@
 # ItemSearchPlugin
-Dalamud Plugin for searching for items
+Dalamud Plugin for searching for items. Type `/xlitem` in game to open the search window.
 
 Built using the ItemSearchWindow feature of Dalamud, but implemented as a plugin to allow modification easier without rebuilding Dalamud.
 
