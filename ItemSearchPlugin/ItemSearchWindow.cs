@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using CheapLoc;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
-using Dalamud.Hooking;
 using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
@@ -262,7 +261,7 @@ namespace ItemSearchPlugin {
 
             if (pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && this.selectedItemIndex >= 0 && this.searchTask.Result[this.selectedItemIndex].ItemSearchCategory > 0){
                 ImGui.SameLine();
-                if (ImGui.Button("Market")){
+                if (ImGui.Button(Loc.Localize("ItemSearchMarketButton", "Market"))){
                     OnMarketboardOpen?.Invoke(this, this.searchTask.Result[this.selectedItemIndex]);
                 }
             }
@@ -271,7 +270,7 @@ namespace ItemSearchPlugin {
             if (pluginConfig.SelectedDataSite != null) {
                 ImGui.SameLine();
                 ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 ? 0.25f : 1);
-                if (ImGui.Button($"View on {pluginConfig.SelectedDataSite.Name}")) {
+                if (ImGui.Button(string.Format(Loc.Localize("ItemSearchDataSiteViewButton", "View on {0}"), Loc.Localize(pluginConfig.SelectedDataSite.NameTranslationKey, pluginConfig.SelectedDataSite.Name)))) {
                     if (this.selectedItemIndex >= 0) {
                         pluginConfig.SelectedDataSite.OpenItem(this.searchTask.Result[this.selectedItemIndex]);
                     }
@@ -295,7 +294,7 @@ namespace ItemSearchPlugin {
 
             if (pluginConfig.ShowTryOn) {
                 ImGui.SameLine();
-                ImGui.Checkbox("Try On", ref autoTryOn);
+                ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn);
             }
             string configText = Loc.Localize("ItemSearchConfigButton", "Config");
             ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));

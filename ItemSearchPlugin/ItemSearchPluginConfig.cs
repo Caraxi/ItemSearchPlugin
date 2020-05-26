@@ -1,4 +1,5 @@
-﻿using Dalamud.Configuration;
+﻿using CheapLoc;
+using Dalamud.Configuration;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Newtonsoft.Json;
@@ -76,37 +77,37 @@ namespace ItemSearchPlugin {
 
 			bool closeOnChoose = CloseOnChoose;
 
-			if (ImGui.Checkbox("Close window after linking item", ref closeOnChoose)){
+			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCloseAfterLink", "Close window after linking item"), ref closeOnChoose)){
 				CloseOnChoose = closeOnChoose;
 				Save();
 			}
 
 			bool showItemId = ShowItemID;
-			if (ImGui.Checkbox("Show Item IDs", ref showItemId)){
+			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigShowItemId", "Show Item IDs"), ref showItemId)){
 				ShowItemID = showItemId;
 				Save();
 			}
 
 			bool extraFilters = ExtraFilters;
-			if (ImGui.Checkbox("Enable Extra Filters", ref extraFilters)){
+			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigExtraFilters", "Enable Extra Filters"), ref extraFilters)){
 				ExtraFilters = extraFilters;
 				Save();
 			}
 			
 			bool mbpIntegration = MarketBoardPluginIntegration;
-			if (ImGui.Checkbox("Market Board Plugin Integration", ref mbpIntegration)){
+			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableMarketBoard", "Market Board Plugin Integration"), ref mbpIntegration)){
 				MarketBoardPluginIntegration = mbpIntegration;
 				Save();
 			}
 
 			bool showTryOn = ShowTryOn;
-			if (ImGui.Checkbox("Enable Try On Feature", ref showTryOn)){
+			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableTryOn", "Enable Try On Feature"), ref showTryOn)){
 				ShowTryOn = showTryOn;
 				Save();
 			}
 
 			int dataSiteIndex = Array.IndexOf(ItemSearchPlugin.DataSites, this.SelectedDataSite);
-			if (ImGui.Combo("External Data Site", ref dataSiteIndex, ItemSearchPlugin.DataSites.Select(t => t.Name + (string.IsNullOrEmpty(t.Note) ? "":"*")).ToArray(), ItemSearchPlugin.DataSites.Length)) {
+			if (ImGui.Combo(Loc.Localize("ItemSearchConfigExternalDataSite", "External Data Site"), ref dataSiteIndex, ItemSearchPlugin.DataSites.Select(t => Loc.Localize(t.NameTranslationKey, t.Name) + (string.IsNullOrEmpty(t.Note) ? "":"*")).ToArray(), ItemSearchPlugin.DataSites.Length)) {
 				this.DataSite = ItemSearchPlugin.DataSites[dataSiteIndex].Name;
 				Save();
 			}
