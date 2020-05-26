@@ -35,7 +35,8 @@ namespace ItemSearchPlugin.Filters {
 
 			uiCategories = new List<ItemUICategory> { null };
 			uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().GetRows().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name));
-			uiCategoriesArray = uiCategories.Select(x => x == null ? Loc.Localize("DalamudItemSelectAll", "All") : x.Name.Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
+			string nullName = Loc.Localize("ItemUiCategorySearchFilterAll", "All");
+			uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Name.Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
 		}
 
 
