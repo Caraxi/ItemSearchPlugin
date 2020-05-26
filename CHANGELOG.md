@@ -1,4 +1,9 @@
-﻿### 1.1.0.0
+﻿
+### 1.1.1.0 Hotfix
+ - Don't 'Try On' items that aren't equipable. (I meant to do this but forgot)
+ - Fix localization key from displaying on the Category filter when 'All' should show.
+
+### 1.1.0.0
  - New Filter: 'Equip As' Items must be equipable by any or all (toggleable) of the selected classes.
  - Added button to open an external site to the selected item. Supports Teamcraft, Garland Tools and Gamer Escape. (Suggested by BlueKitty)
  - Sorted category list alphabetically.
