@@ -28,6 +28,8 @@ namespace ItemSearchPlugin {
 
 		public string DataSite { get; set; }
 
+		public bool MarketBoardPluginIntegration { get; set; }
+
 		[NonSerialized]
 		private DataSite lastDataSite = null;
 
@@ -52,6 +54,7 @@ namespace ItemSearchPlugin {
 			CloseOnChoose = false;
 			ShowItemID = false;
 			ExtraFilters = false;
+			MarketBoardPluginIntegration = false;
 			MaxItemLevel = 505;
 			ShowTryOn = false;
 			DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
@@ -87,6 +90,12 @@ namespace ItemSearchPlugin {
 			bool extraFilters = ExtraFilters;
 			if (ImGui.Checkbox("Enable Extra Filters", ref extraFilters)){
 				ExtraFilters = extraFilters;
+				Save();
+			}
+			
+			bool mbpIntegration = MarketBoardPluginIntegration;
+			if (ImGui.Checkbox("Market Board Plugin Integration", ref mbpIntegration)){
+				MarketBoardPluginIntegration = mbpIntegration;
 				Save();
 			}
 
