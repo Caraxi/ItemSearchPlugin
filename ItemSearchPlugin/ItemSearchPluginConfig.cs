@@ -24,6 +24,8 @@ namespace ItemSearchPlugin {
 
 		public int MaxItemLevel { get; set; }
 
+		public bool ShowTryOn { get; set; }
+
 		public string DataSite { get; set; }
 
 		[NonSerialized]
@@ -51,6 +53,7 @@ namespace ItemSearchPlugin {
 			ShowItemID = false;
 			ExtraFilters = false;
 			MaxItemLevel = 505;
+			ShowTryOn = false;
 			DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
 		}
 
@@ -84,6 +87,12 @@ namespace ItemSearchPlugin {
 			bool extraFilters = ExtraFilters;
 			if (ImGui.Checkbox("Enable Extra Filters", ref extraFilters)){
 				ExtraFilters = extraFilters;
+				Save();
+			}
+
+			bool showTryOn = ShowTryOn;
+			if (ImGui.Checkbox("Enable Try On Feature", ref showTryOn)){
+				ShowTryOn = showTryOn;
 				Save();
 			}
 
