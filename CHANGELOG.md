@@ -1,9 +1,9 @@
-﻿### X.X.X.X - Unreleased Changes (Coming Soon)
+﻿### 1.1.0.0
  - New Filter: 'Equip As' Items must be equipable by any or all (toggleable) of the selected classes.
  - Added button to open an external site to the selected item. Supports Teamcraft, Garland Tools and Gamer Escape. (Suggested by BlueKitty)
  - Sorted category list alphabetically.
  - Added button to open Market Board Plugin to items from search window.
- - Added option to try on equipment from the Item Search
+ - Added option to try on equipment from the Item Search.
 
 
 ### 1.0.0.0 - Initial Plugin Version
