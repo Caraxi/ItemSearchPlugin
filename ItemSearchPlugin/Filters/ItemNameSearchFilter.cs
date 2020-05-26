@@ -58,7 +58,7 @@ namespace ItemSearchPlugin.Filters {
 
 		public void DrawEditor() {
 			ImGui.PushItemWidth(-1);
-            ImGui.InputText("##ItemNameSearchFilter", ref searchText, 32);
+            ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
             ImGui.PopItemWidth();
 		}
 	}
