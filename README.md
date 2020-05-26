@@ -16,3 +16,7 @@ Enter a [regex](http://regexstorm.net/reference) pattern to find items that matc
 
 ### Item Level and Equip Level filtering
 Limit the displayed items to items within a range in equip level and item level
+
+### Try On
+Try on items right from the search window without having to link it first.
+![Try On Preview](https://raw.githubusercontent.com/Caraxi/ItemSearchPlugin/master/preview/try-on.gif)

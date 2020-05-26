@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CheapLoc;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
+using Dalamud.Hooking;
 using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
@@ -36,7 +38,13 @@ namespace ItemSearchPlugin {
         public event EventHandler<bool> OnConfigButton;
 
         public List<ISearchFilter> searchFilters;
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, byte stainColor, uint itemGlamourId, byte unknownByte);
+        private TryOnDelegate TryOn;
+        private bool autoTryOn = false;
 
+        private AddressResolver address;
 
         public ItemSearchWindow(DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig, string searchText = "") {
             this.pluginInterface = pluginInterface;
@@ -55,6 +63,15 @@ namespace ItemSearchPlugin {
             searchFilters.Add(new EquipAsSearchFilter(pluginConfig, data));
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
+
+            try {
+                address = new AddressResolver();
+                address.Setup(pluginInterface.TargetModuleScanner);
+                TryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
+            } catch (Exception ex) {
+                PluginLog.LogError(ex.ToString());
+            }
+
         }
 
         public bool Draw() {
@@ -183,6 +200,10 @@ namespace ItemSearchPlugin {
                                         }
                                     }
                                 }
+
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && TryOn != null) {
+                                    TryOn(0xFF, (uint)selectedItem.RowId, 0 , 0, 0);
+                                }
                             }
                         }
                     }
@@ -245,6 +266,10 @@ namespace ItemSearchPlugin {
                 ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
             }
 
+            if (pluginConfig.ShowTryOn) {
+                ImGui.SameLine();
+                ImGui.Checkbox("Try On", ref autoTryOn);
+            }
             string configText = Loc.Localize("ItemSearchConfigButton", "Config");
             ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
             if (ImGui.Button(configText)) {
