@@ -24,7 +24,6 @@ namespace ItemSearchPlugin {
         private readonly DalamudPluginInterface pluginInterface;
         private readonly DataManager data;
         private readonly UiBuilder builder;
-        private readonly DalamudPluginInterface pluginInterface;
         private Item selectedItem;
         private int selectedItemIndex = -1;
         private TextureWrap selectedItemTex;
@@ -56,7 +55,6 @@ namespace ItemSearchPlugin {
             this.data = pluginInterface.Data;
             this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = pluginConfig;
-            this.pluginInterface = pluginInterface;
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
