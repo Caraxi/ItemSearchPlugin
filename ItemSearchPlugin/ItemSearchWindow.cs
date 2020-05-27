@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -13,6 +12,7 @@ using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
 using ImGuiScene;
+using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
 using Serilog;
 using Item = Dalamud.Data.TransientSheet.Item;
@@ -35,12 +35,9 @@ namespace ItemSearchPlugin {
 
         public event EventHandler<Item> OnItemChosen;
         public event EventHandler<bool> OnConfigButton;
-        public event EventHandler<Item> OnMarketboardOpen;
 
         public List<ISearchFilter> searchFilters;
-
-        private bool marketBoardResponsed = false;
-
+        public List<IActionButton> actionButtons;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, byte stainColor, uint itemGlamourId, byte unknownByte);
@@ -65,19 +62,9 @@ namespace ItemSearchPlugin {
             searchFilters.Add(new LevelItemSearchFilter(pluginConfig));
             searchFilters.Add(new EquipAsSearchFilter(pluginConfig, data));
 
-            pluginInterface.Subscribe("MarketBoardPlugin", (o) => {
-                PluginLog.Log("Recieved Message from MarketBoardPlugin");
-                dynamic msg = o;
-                if (msg.Target == "ItemSearchPlugin" && msg.Action == "pong") {
-                    marketBoardResponsed = true;
-                }
-            });
-
-            dynamic areYouThereMarketBoard = new ExpandoObject();
-            areYouThereMarketBoard.Target = "MarketBoardPlugin";
-            areYouThereMarketBoard.Action = "ping";
-
-            pluginInterface.SendMessage(areYouThereMarketBoard);
+            actionButtons = new List<IActionButton>();
+            actionButtons.Add(new MarketBoardActionButton(pluginInterface, pluginConfig));
+            actionButtons.Add(new DataSiteActionButton(pluginConfig));
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
 
@@ -121,13 +108,49 @@ namespace ItemSearchPlugin {
 
                 if (selectedItem != null ){
                     ImGui.SameLine();
+                    ImGui.BeginGroup();
+                    
                     ImGui.Text(selectedItem.Name);
 
                     if (pluginConfig.ShowItemID){
                         ImGui.SameLine();
                         ImGui.Text($"(ID: {selectedItem.RowId})");
+                        
                     }
 
+                    var imGuiStyle = ImGui.GetStyle();
+                    var imGuiWindowPos = ImGui.GetWindowPos();
+                    var windowVisible = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
+                    
+                    float currentX = ImGui.GetCursorPosX();
+                    
+                    IActionButton[] buttons = this.actionButtons.Where(ab => ab.ButtonPosition == ActionButtonPosition.TOP).ToArray();
+
+                    for (int i = 0; i < buttons.Length; i++) {
+                        IActionButton button = buttons[i];
+                        
+                        if (button.GetShowButton(selectedItem)) {
+                            string buttonText = button.GetButtonText(selectedItem);
+                            ImGui.PushID($"TopActionButton{i}");
+                            if (ImGui.Button(buttonText)) {
+                                button.OnButtonClicked(selectedItem);
+                            }
+
+                            if (i < buttons.Length - 1) {
+                                float l_x2 = ImGui.GetItemRectMax().X;
+                                float nbw = ImGui.CalcTextSize(buttons[i+1].GetButtonText(selectedItem)).X + imGuiStyle.ItemInnerSpacing.X * 2;
+                                float n_x2 = l_x2 + (imGuiStyle.ItemSpacing.X * 2) + nbw;
+                                if (n_x2 < windowVisible) {
+                                    ImGui.SameLine();
+                                }
+                            }
+                            ImGui.PopID();
+
+                        }
+                    }
+
+
+                    ImGui.EndGroup();
                 }
             } else {
                 ImGui.Text(" ");
@@ -260,25 +283,6 @@ namespace ItemSearchPlugin {
                 }
             }
             ImGui.PopStyleVar();
-
-            if (pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && this.selectedItemIndex >= 0 && this.searchTask.Result[this.selectedItemIndex].ItemSearchCategory > 0){
-                ImGui.SameLine();
-                if (ImGui.Button(Loc.Localize("ItemSearchMarketButton", "Market"))){
-                    OnMarketboardOpen?.Invoke(this, this.searchTask.Result[this.selectedItemIndex]);
-                }
-            }
-
-
-            if (pluginConfig.SelectedDataSite != null) {
-                ImGui.SameLine();
-                ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 ? 0.25f : 1);
-                if (ImGui.Button(string.Format(Loc.Localize("ItemSearchDataSiteViewButton", "View on {0}"), Loc.Localize(pluginConfig.SelectedDataSite.NameTranslationKey, pluginConfig.SelectedDataSite.Name)))) {
-                    if (this.selectedItemIndex >= 0) {
-                        pluginConfig.SelectedDataSite.OpenItem(this.searchTask.Result[this.selectedItemIndex]);
-                    }
-                }
-                ImGui.PopStyleVar();
-            }
             
             if (!pluginConfig.CloseOnChoose) {
                 ImGui.SameLine();
@@ -310,11 +314,12 @@ namespace ItemSearchPlugin {
         }
 
         public void Dispose() {
-            pluginInterface.Unsubscribe("MarketBoardPlugin");
             foreach(ISearchFilter f in searchFilters){
                 f?.Dispose();
             }
-
+            foreach(IActionButton b in actionButtons) {
+                b?.Dispose();
+            }
             this.selectedItemTex?.Dispose();
         }
     }

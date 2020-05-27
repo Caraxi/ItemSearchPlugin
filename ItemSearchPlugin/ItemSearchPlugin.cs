@@ -78,14 +78,6 @@ namespace ItemSearchPlugin {
 				drawConfigWindow = !drawConfigWindow;
 			};
 
-			itemSearchWindow.OnMarketboardOpen += (s,item) => {
-				dynamic itemMessage = new ExpandoObject();
-				itemMessage.Target = "MarketBoardPlugin";
-				itemMessage.Action = "OpenMarketBoard";
-				itemMessage.ItemId = item.RowId;
-				PluginInterface.SendMessage(itemMessage);
-			};
-
 			drawItemSearchWindow = true;
 		}
 
