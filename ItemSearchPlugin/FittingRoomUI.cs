@@ -210,7 +210,7 @@ namespace ItemSearchPlugin {
 				ImGui.Separator();
 				ImGui.Text(Loc.Localize("FittingRoomUI_SelectOutfit", "Select outfit to load:"));
 				float w = ImGui.GetWindowWidth();
-				ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, 300), true, ImGuiWindowFlags.HorizontalScrollbar);
+				ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, 200 * ui.Scale), true, ImGuiWindowFlags.HorizontalScrollbar);
 
 				ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
