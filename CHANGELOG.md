@@ -1,4 +1,9 @@
 ﻿
+### 1.2.0.0
+ - Added ability to save and reload outfits in fitting room
+ - Adjusted location of some buttons on the main search window to avoid overlapping when window is small
+ - Fixed the short pause that was happening every time when opening Item Search
+
 ### 1.1.1.0 Hotfix
  - Don't 'Try On' items that aren't equipable. (I meant to do this but forgot)
  - Fix localization key from displaying on the Category filter when 'All' should show.
