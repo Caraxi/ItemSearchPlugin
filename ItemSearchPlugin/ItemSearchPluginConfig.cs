@@ -4,6 +4,7 @@ using Dalamud.Plugin;
 using ImGuiNET;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
@@ -28,6 +29,8 @@ namespace ItemSearchPlugin {
 		public bool ShowTryOn { get; set; }
 
 		public string DataSite { get; set; }
+
+		public List<FittingRoomSave> FittingRoomSaves { get; set; }
 
 		public bool MarketBoardPluginIntegration { get; set; }
 
@@ -59,6 +62,12 @@ namespace ItemSearchPlugin {
 			MaxItemLevel = 505;
 			ShowTryOn = false;
 			DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
+
+			if (FittingRoomSaves == null)
+			{
+				FittingRoomSaves = new List<FittingRoomSave>();
+			}
+
 		}
 
 		public void Init(DalamudPluginInterface pluginInterface) {

@@ -3,7 +3,6 @@ using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 using ItemSearchPlugin.DataSites;
-using System.Dynamic;
 
 namespace ItemSearchPlugin {
 	public class ItemSearchPlugin : IDalamudPlugin {
@@ -11,6 +10,8 @@ namespace ItemSearchPlugin {
 		public string Name => "Item Search";
 		public DalamudPluginInterface PluginInterface { get; private set; }
 		public ItemSearchPluginConfig PluginConfig { get; private set; }
+		
+		public FittingRoomUI FittingRoomUI { get; private set; }
 
 		private ItemSearchWindow itemSearchWindow;
 		private bool drawItemSearchWindow;
@@ -25,6 +26,8 @@ namespace ItemSearchPlugin {
 
 		public void Dispose() {
 			PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
+			FittingRoomUI?.Dispose();
+			itemSearchWindow?.Dispose();
 			RemoveCommands();
 		}
 
@@ -40,6 +43,8 @@ namespace ItemSearchPlugin {
 			} else {
 				localization.SetupWithUiCulture();
 			}
+
+			FittingRoomUI = new FittingRoomUI(this); 
 
 			PluginInterface.UiBuilder.OnBuildUi += this.BuildUI;
 			SetupCommands();
@@ -68,7 +73,7 @@ namespace ItemSearchPlugin {
 		}
 
 		public void OnItemSearchCommand(string command, string args) {			
-			itemSearchWindow = new ItemSearchWindow(PluginInterface, PluginConfig, args);
+			itemSearchWindow = new ItemSearchWindow(this, args);
 			itemSearchWindow.OnItemChosen += (sender, item) => {
 				PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry{
 					MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
@@ -107,6 +112,9 @@ namespace ItemSearchPlugin {
 				}
 
 			}
+
+
+			FittingRoomUI?.Draw();
 
 			
 		}

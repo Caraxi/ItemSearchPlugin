@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CheapLoc;
@@ -20,6 +19,7 @@ using Item = Dalamud.Data.TransientSheet.Item;
 namespace ItemSearchPlugin {
     class ItemSearchWindow : IDisposable
     {
+	    private readonly ItemSearchPlugin plugin;
         private readonly DalamudPluginInterface pluginInterface;
         private readonly DataManager data;
         private readonly UiBuilder builder;
@@ -38,19 +38,15 @@ namespace ItemSearchPlugin {
 
         public List<ISearchFilter> searchFilters;
         public List<IActionButton> actionButtons;
-        
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, byte stainColor, uint itemGlamourId, byte unknownByte);
-        private TryOnDelegate TryOn;
-        private bool autoTryOn = false;
 
-        private AddressResolver address;
+        private bool autoTryOn;
 
-        public ItemSearchWindow(DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig, string searchText = "") {
-            this.pluginInterface = pluginInterface;
+        public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
+            this.pluginInterface = plugin.PluginInterface;
             this.data = pluginInterface.Data;
             this.builder = pluginInterface.UiBuilder;
-            this.pluginConfig = pluginConfig;
+            this.pluginConfig = plugin.PluginConfig;
+            this.plugin = plugin;
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
@@ -67,15 +63,7 @@ namespace ItemSearchPlugin {
             actionButtons.Add(new DataSiteActionButton(pluginConfig));
 
             Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
-
-            try {
-                address = new AddressResolver();
-                address.Setup(pluginInterface.TargetModuleScanner);
-                TryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
-            } catch (Exception ex) {
-                PluginLog.LogError(ex.ToString());
-            }
-
+            
         }
 
         public bool Draw() {
@@ -241,9 +229,9 @@ namespace ItemSearchPlugin {
                                     }
                                 }
 
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && TryOn != null) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn) {
                                     if (selectedItem.ClassJobCategory != 0) {
-                                        TryOn(0xFF, (uint)selectedItem.RowId, 0 , 0, 0);
+                                        plugin.FittingRoomUI.TryOnItem(selectedItem);
                                     }
                                 }
                             }
