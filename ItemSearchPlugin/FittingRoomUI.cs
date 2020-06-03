@@ -174,8 +174,9 @@ namespace ItemSearchPlugin {
 				hiddenPos.Y -= 24;
 
 				ImGui.SetNextWindowPos(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
+				ImGui.SetNextWindowSize(new Vector2(220, ui.Scale * 200 + 160), ImGuiCond.Always);
 
-				windowCollapsed = !ImGui.Begin(Loc.Localize("FittingRoomUIHeader", "Saved Outfits") + "###ItemSearchPluginFittingRoomUI", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoMove);
+				windowCollapsed = !ImGui.Begin(Loc.Localize("FittingRoomUIHeader", "Saved Outfits") + "###ItemSearchPluginFittingRoomUI", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
 				ImGui.SetNextItemWidth(150f);
 				ImGui.InputText("###FittingRoomUI_SaveNameInput", ref saveNameInput, 32);
