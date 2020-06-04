@@ -136,7 +136,10 @@ namespace ItemSearchPlugin {
 
 		public void TryOnItem(Item item, byte stain = 0, bool HQ = false, byte thatFirstByte = 0xFF) {
 			if (CanUseTryOn) {
-				tryOn(thatFirstByte, (uint)(item.RowId + (HQ ? 1000000 : 0)), stain, 0, 0);
+				if (item.EquipSlotCategory > 0 && item.EquipSlotCategory != 6 && item.EquipSlotCategory != 17)
+				{
+					tryOn(thatFirstByte, (uint)(item.RowId + (HQ ? 1000000 : 0)), stain, 0, 0);
+				}
 			}
 		}
 
