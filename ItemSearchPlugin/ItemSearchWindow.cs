@@ -151,11 +151,15 @@ namespace ItemSearchPlugin {
             float filterNameWidth = searchFilters.Where(f => f.ShowFilter).Select(f => ImGui.CalcTextSize(Loc.Localize(f.NameLocalizationKey, $"{f.Name}: ")).X).Max();
 
             ImGui.SetColumnWidth(0, filterNameWidth + ImGui.GetStyle().ItemSpacing.X * 2);
-
+            Vector4 filterInUseColour = new Vector4(0, 1, 0, 1);
             foreach(ISearchFilter filter in searchFilters) {
                 if (filter.ShowFilter) {
-                    ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
-                    ImGui.NextColumn();
+	                if (filter.IsSet) {
+		                ImGui.TextColored(filterInUseColour, Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+	                } else {
+		                ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+	                }
+	                ImGui.NextColumn();
                     filter.DrawEditor();
                     while(ImGui.GetColumnIndex() != 0)
                     ImGui.NextColumn();
