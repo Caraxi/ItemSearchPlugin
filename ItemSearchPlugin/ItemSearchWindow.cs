@@ -39,6 +39,8 @@ namespace ItemSearchPlugin {
         public List<IActionButton> actionButtons;
 
         private bool autoTryOn;
+        private int debounceKeyPress;
+        private bool doSearchScroll;
 
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
             this.pluginInterface = plugin.PluginInterface;
@@ -225,6 +227,61 @@ namespace ItemSearchPlugin {
                                     if (selectedItem.ClassJobCategory != 0) {
                                         plugin.FittingRoomUI.TryOnItem(selectedItem);
                                     }
+                                }
+                            }
+
+                            if (doSearchScroll && selectedItemIndex == i) {
+                                doSearchScroll = false;
+                                ImGui.SetScrollHereY(0.5f);
+                            }
+                        }
+
+                        var keyStateDown = ImGui.GetIO().KeysDown[0x28] || pluginInterface.ClientState.KeyState[0x28];
+                        var keyStateUp = ImGui.GetIO().KeysDown[0x26] || pluginInterface.ClientState.KeyState[0x26];
+
+                        var hotkeyUsed = false;
+                        if (keyStateUp && !keyStateDown) {
+                            if (debounceKeyPress == 0) {
+                                debounceKeyPress = 5;
+                                if (selectedItemIndex > 0) {
+                                    hotkeyUsed = true;
+                                    selectedItemIndex -= 1;
+                                }
+                            }
+                        } else if (keyStateDown && !keyStateUp) {
+                            if (debounceKeyPress == 0) {
+                                debounceKeyPress = 5;
+                                if (selectedItemIndex < searchTask.Result.Count - 1) {
+                                    selectedItemIndex += 1;
+                                    hotkeyUsed = true;
+                                }
+                            }
+                        } else if (debounceKeyPress > 0) {
+                            debounceKeyPress -= 1;
+                            if (debounceKeyPress < 0) {
+                                debounceKeyPress = 5;
+                            }
+                        }
+
+                        if (hotkeyUsed) {
+                            doSearchScroll = true;
+                            this.selectedItem = this.searchTask.Result[selectedItemIndex];
+                            try {
+                                var iconTex = this.data.GetIcon(this.searchTask.Result[selectedItemIndex].Icon);
+                                this.selectedItemTex?.Dispose();
+
+                                this.selectedItemTex =
+                                    this.builder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width,
+                                        iconTex.Header.Height, 4);
+                            } catch (Exception ex) {
+                                Log.Error(ex, "Failed loading item texture");
+                                this.selectedItemTex?.Dispose();
+                                this.selectedItemTex = null;
+                            }
+
+                            if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                                if (selectedItem.ClassJobCategory != 0) {
+                                    plugin.FittingRoomUI.TryOnItem(selectedItem);
                                 }
                             }
                         }
