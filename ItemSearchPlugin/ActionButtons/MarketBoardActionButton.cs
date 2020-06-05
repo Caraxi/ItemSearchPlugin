@@ -2,11 +2,7 @@
 using Dalamud.Data.TransientSheet;
 using Dalamud.Plugin;
 using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ItemSearchPlugin.ActionButtons {
 	class MarketBoardActionButton : IActionButton {
@@ -22,20 +18,23 @@ namespace ItemSearchPlugin.ActionButtons {
 			this.pluginInterface = pluginInterface;
 			this.pluginConfig = pluginConfig;
 
-			pluginInterface.Subscribe("MarketBoardPlugin", (o) => {
-                PluginLog.Log("Recieved Message from MarketBoardPlugin");
-                dynamic msg = o;
-                if (msg.Target == "ItemSearchPlugin" && msg.Action == "pong") {
-                    marketBoardResponsed = true;
-                }
-            });
-
+            try {
+                pluginInterface.Subscribe("MarketBoardPlugin", (o) => {
+                    PluginLog.Log("Recieved Message from MarketBoardPlugin");
+                    dynamic msg = o;
+                    if (msg.Target == "ItemSearchPlugin" && msg.Action == "pong") {
+                        marketBoardResponsed = true;
+                    }
+                });
+            } catch (Exception ex) {
+				PluginLog.LogError($"Exception Subscribing to MarketBoardPlugin: {ex.Message}");
+            }
+            
 			dynamic areYouThereMarketBoard = new ExpandoObject();
             areYouThereMarketBoard.Target = "MarketBoardPlugin";
             areYouThereMarketBoard.Action = "ping";
 			pluginInterface.SendMessage(areYouThereMarketBoard);
-
-		}
+        }
 
 		public string GetButtonText(Item selectedItem) {
 			return Loc.Localize("ItemSearchMarketButton", "Market");
