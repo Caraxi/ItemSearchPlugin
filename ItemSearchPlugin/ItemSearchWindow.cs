@@ -171,8 +171,8 @@ namespace ItemSearchPlugin {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
             if (this.luminaItems != null) {
-                if (searchFilters.Where(x => x.ShowFilter && x.IsSet).Any()) {
-                    if (searchFilters.Where(x => x.ShowFilter && x.HasChanged).Any()) {
+                if (searchFilters.Any(x => x.ShowFilter && x.IsSet)) {
+                    if (searchFilters.Any(x => x.ShowFilter && x.HasChanged)) {
                         this.searchCancelTokenSource?.Cancel();
 
                         this.searchCancelTokenSource = new CancellationTokenSource();
