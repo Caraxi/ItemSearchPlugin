@@ -233,7 +233,7 @@ namespace ItemSearchPlugin {
                                     }
                                 }
 
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                                     if (selectedItem.ClassJobCategory != 0) {
                                         plugin.FittingRoomUI.TryOnItem(selectedItem);
                                     }
@@ -290,7 +290,7 @@ namespace ItemSearchPlugin {
                 ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
             }
 
-            if (pluginConfig.ShowTryOn) {
+            if (pluginConfig.ShowTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                 ImGui.SameLine();
                 ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn);
             }
