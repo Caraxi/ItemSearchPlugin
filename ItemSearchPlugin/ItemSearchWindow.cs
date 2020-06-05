@@ -57,6 +57,7 @@ namespace ItemSearchPlugin {
             searchFilters.Add(new LevelEquipSearchFilter(pluginConfig));
             searchFilters.Add(new LevelItemSearchFilter(pluginConfig));
             searchFilters.Add(new EquipAsSearchFilter(pluginConfig, data));
+            searchFilters.Add(new RaceSexSearchFilter(pluginConfig, data));
 
             actionButtons = new List<IActionButton>();
             actionButtons.Add(new MarketBoardActionButton(pluginInterface, pluginConfig));
