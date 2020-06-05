@@ -29,6 +29,7 @@ namespace ItemSearchPlugin {
 			FittingRoomUI?.Dispose();
 			itemSearchWindow?.Dispose();
 			RemoveCommands();
+			PluginInterface.Dispose();
 		}
 
 		public void Initialize(DalamudPluginInterface pluginInterface) {
