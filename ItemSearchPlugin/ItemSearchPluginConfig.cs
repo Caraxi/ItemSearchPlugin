@@ -44,7 +44,7 @@ namespace ItemSearchPlugin {
                         return null;
                     }
 
-                    lastDataSite = ItemSearchPlugin.DataSites.Where(ds => ds.Name == this.DataSite).FirstOrDefault();
+                    lastDataSite = ItemSearchPlugin.DataSites.FirstOrDefault(ds => ds.Name == this.DataSite);
                 }
 
                 return lastDataSite;
