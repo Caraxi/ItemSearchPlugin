@@ -5,18 +5,18 @@ using System;
 using System.Dynamic;
 
 namespace ItemSearchPlugin.ActionButtons {
-	class MarketBoardActionButton : IActionButton {
-		private DalamudPluginInterface pluginInterface;
-		private ItemSearchPluginConfig pluginConfig;
+    class MarketBoardActionButton : IActionButton {
+        private DalamudPluginInterface pluginInterface;
+        private ItemSearchPluginConfig pluginConfig;
 
-		private bool marketBoardResponsed = false;
+        private bool marketBoardResponsed = false;
 
 
-		public ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
+        public ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
 
-		public MarketBoardActionButton(Dalamud.Plugin.DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig) {
-			this.pluginInterface = pluginInterface;
-			this.pluginConfig = pluginConfig;
+        public MarketBoardActionButton(Dalamud.Plugin.DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig) {
+            this.pluginInterface = pluginInterface;
+            this.pluginConfig = pluginConfig;
 
             try {
                 pluginInterface.Subscribe("MarketBoardPlugin", (o) => {
@@ -27,34 +27,33 @@ namespace ItemSearchPlugin.ActionButtons {
                     }
                 });
             } catch (Exception ex) {
-				PluginLog.LogError($"Exception Subscribing to MarketBoardPlugin: {ex.Message}");
+                PluginLog.LogError($"Exception Subscribing to MarketBoardPlugin: {ex.Message}");
             }
-            
-			dynamic areYouThereMarketBoard = new ExpandoObject();
+
+            dynamic areYouThereMarketBoard = new ExpandoObject();
             areYouThereMarketBoard.Target = "MarketBoardPlugin";
             areYouThereMarketBoard.Action = "ping";
-			pluginInterface.SendMessage(areYouThereMarketBoard);
+            pluginInterface.SendMessage(areYouThereMarketBoard);
         }
 
-		public string GetButtonText(Item selectedItem) {
-			return Loc.Localize("ItemSearchMarketButton", "Market");
-		}
+        public string GetButtonText(Item selectedItem) {
+            return Loc.Localize("ItemSearchMarketButton", "Market");
+        }
 
-		public bool GetShowButton(Item selectedItem) {
-			return this.pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && selectedItem.ItemSearchCategory > 0;
-		}
+        public bool GetShowButton(Item selectedItem) {
+            return this.pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && selectedItem.ItemSearchCategory > 0;
+        }
 
-		public void OnButtonClicked(Item selectedItem) {
-			dynamic itemMessage = new ExpandoObject();
-			itemMessage.Target = "MarketBoardPlugin";
-			itemMessage.Action = "OpenMarketBoard";
-			itemMessage.ItemId = selectedItem.RowId;
-			pluginInterface.SendMessage(itemMessage);
-		}
+        public void OnButtonClicked(Item selectedItem) {
+            dynamic itemMessage = new ExpandoObject();
+            itemMessage.Target = "MarketBoardPlugin";
+            itemMessage.Action = "OpenMarketBoard";
+            itemMessage.ItemId = selectedItem.RowId;
+            pluginInterface.SendMessage(itemMessage);
+        }
 
-		public void Dispose() {
-			pluginInterface.Unsubscribe("MarketBoardPlugin");
-		}
-
-	}
+        public void Dispose() {
+            pluginInterface.Unsubscribe("MarketBoardPlugin");
+        }
+    }
 }

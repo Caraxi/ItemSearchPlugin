@@ -5,121 +5,115 @@ using Dalamud.Plugin;
 using ItemSearchPlugin.DataSites;
 
 namespace ItemSearchPlugin {
-	public class ItemSearchPlugin : IDalamudPlugin {
+    public class ItemSearchPlugin : IDalamudPlugin {
+        public string Name => "Item Search";
+        public DalamudPluginInterface PluginInterface { get; private set; }
+        public ItemSearchPluginConfig PluginConfig { get; private set; }
 
-		public string Name => "Item Search";
-		public DalamudPluginInterface PluginInterface { get; private set; }
-		public ItemSearchPluginConfig PluginConfig { get; private set; }
-		
-		public FittingRoomUI FittingRoomUI { get; private set; }
+        public FittingRoomUI FittingRoomUI { get; private set; }
 
-		private ItemSearchWindow itemSearchWindow;
-		private bool drawItemSearchWindow;
+        private ItemSearchWindow itemSearchWindow;
+        private bool drawItemSearchWindow;
 
-		private Localization localization;
-		private bool replacedOriginalCommand = false;
-		internal bool drawConfigWindow = false;
+        private Localization localization;
+        private bool replacedOriginalCommand = false;
+        internal bool drawConfigWindow = false;
 
-		public static DataSite[] DataSites { get; } = new DataSite[] {
+        public static DataSite[] DataSites { get; } = new DataSite[] {
             new GarlandToolsDataSite(), new TeamcraftDataSite(), new GamerEscapeDatasite(),
         };
 
-		public void Dispose() {
-			PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
-			FittingRoomUI?.Dispose();
-			itemSearchWindow?.Dispose();
-			RemoveCommands();
-			PluginInterface.Dispose();
-		}
-
-		public void Initialize(DalamudPluginInterface pluginInterface) {
-			this.PluginInterface = pluginInterface;
-			this.PluginConfig = (ItemSearchPluginConfig)pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
-			this.PluginConfig.Init(pluginInterface);
-
-			localization = new Localization();
-
-			if (!string.IsNullOrEmpty(PluginConfig.Language)) {
-				localization.SetupWithLangCode(PluginConfig.Language);
-			} else {
-				localization.SetupWithUiCulture();
-			}
-
-			FittingRoomUI = new FittingRoomUI(this); 
-
-			PluginInterface.UiBuilder.OnBuildUi += this.BuildUI;
-			SetupCommands();
-
-			#if DEBUG
-			OnItemSearchCommand("","");
-			#endif
-
-		}
-
-		public void SetupCommands() {
-			
-			// Move the original xlitem
-			if (PluginInterface.CommandManager.Commands.ContainsKey("/xlitem")){
-				PluginInterface.CommandManager.AddHandler("/xlitem_original", PluginInterface.CommandManager.Commands["/xlitem"]);
-				PluginInterface.CommandManager.Commands["/xlitem_original"].ShowInHelp = false;
-				PluginInterface.CommandManager.RemoveHandler("/xlitem");
-				replacedOriginalCommand = true;
-			}
-
-			PluginInterface.CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo(OnItemSearchCommand) {
-				HelpMessage = Loc.Localize("ItemSearchCommandHelp", "Open a window you can use to link any specific item to chat."),
-				ShowInHelp = true
-			});
-
-		}
-
-		public void OnItemSearchCommand(string command, string args) {			
-			itemSearchWindow = new ItemSearchWindow(this, args);
-			itemSearchWindow.OnItemChosen += (sender, item) => {
-				PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry{
-					MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
-				});
-			};
-			itemSearchWindow.OnConfigButton += (s,c) => {
-				drawConfigWindow = !drawConfigWindow;
-			};
-
-			drawItemSearchWindow = true;
-		}
-
-		public void RemoveCommands() {
-			PluginInterface.CommandManager.RemoveHandler("/xlitem");
-
-			// Put the original xlitem back
-			if (replacedOriginalCommand) {
-				PluginInterface.CommandManager.Commands["/xlitem_original"].ShowInHelp = true;
-				PluginInterface.CommandManager.AddHandler("/xlitem", PluginInterface.CommandManager.Commands["/xlitem_original"]);
-				PluginInterface.CommandManager.RemoveHandler("/xlitem_original");
-				replacedOriginalCommand = false;
-			}
+        public void Dispose() {
+            PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
+            FittingRoomUI?.Dispose();
+            itemSearchWindow?.Dispose();
+            RemoveCommands();
+            PluginInterface.Dispose();
         }
 
-		private void BuildUI() {
-			if (drawItemSearchWindow) {
-				drawItemSearchWindow = itemSearchWindow != null && itemSearchWindow.Draw();
-				drawConfigWindow = drawItemSearchWindow && drawConfigWindow && PluginConfig.DrawConfigUI();
+        public void Initialize(DalamudPluginInterface pluginInterface) {
+            this.PluginInterface = pluginInterface;
+            this.PluginConfig = (ItemSearchPluginConfig) pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
+            this.PluginConfig.Init(pluginInterface);
 
-				if (drawItemSearchWindow == false) {
-					itemSearchWindow?.Dispose();
-					itemSearchWindow = null;
-					drawConfigWindow = false;
-				}
+            localization = new Localization();
+
+            if (!string.IsNullOrEmpty(PluginConfig.Language)) {
+                localization.SetupWithLangCode(PluginConfig.Language);
+            } else {
+                localization.SetupWithUiCulture();
+            }
+
+            FittingRoomUI = new FittingRoomUI(this);
+
+            PluginInterface.UiBuilder.OnBuildUi += this.BuildUI;
+            SetupCommands();
+
+#if DEBUG
+            OnItemSearchCommand("", "");
+#endif
+        }
+
+        public void SetupCommands() {
+            // Move the original xlitem
+            if (PluginInterface.CommandManager.Commands.ContainsKey("/xlitem")) {
+                PluginInterface.CommandManager.AddHandler("/xlitem_original", PluginInterface.CommandManager.Commands["/xlitem"]);
+                PluginInterface.CommandManager.Commands["/xlitem_original"].ShowInHelp = false;
+                PluginInterface.CommandManager.RemoveHandler("/xlitem");
+                replacedOriginalCommand = true;
+            }
+
+            PluginInterface.CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo(OnItemSearchCommand) {
+                HelpMessage = Loc.Localize("ItemSearchCommandHelp", "Open a window you can use to link any specific item to chat."),
+                ShowInHelp = true
+            });
+        }
+
+        public void OnItemSearchCommand(string command, string args) {
+            itemSearchWindow = new ItemSearchWindow(this, args);
+            itemSearchWindow.OnItemChosen += (sender, item) => {
+                PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
+                    MessageBytes = SeStringUtils.CreateItemLink(item, false).Encode()
+                });
+            };
+            itemSearchWindow.OnConfigButton += (s, c) => { drawConfigWindow = !drawConfigWindow; };
+
+            drawItemSearchWindow = true;
+        }
+
+        public void RemoveCommands() {
+            PluginInterface.CommandManager.RemoveHandler("/xlitem");
+
+            // Put the original xlitem back
+            if (replacedOriginalCommand) {
+                PluginInterface.CommandManager.Commands["/xlitem_original"].ShowInHelp = true;
+                PluginInterface.CommandManager.AddHandler("/xlitem", PluginInterface.CommandManager.Commands["/xlitem_original"]);
+                PluginInterface.CommandManager.RemoveHandler("/xlitem_original");
+                replacedOriginalCommand = false;
+            }
+        }
+
+        private void BuildUI() {
+            if (drawItemSearchWindow) {
+                drawItemSearchWindow = itemSearchWindow != null && itemSearchWindow.Draw();
+                drawConfigWindow = drawItemSearchWindow && drawConfigWindow && PluginConfig.DrawConfigUI();
+
+                if (drawItemSearchWindow == false) {
+                    itemSearchWindow?.Dispose();
+                    itemSearchWindow = null;
+                    drawConfigWindow = false;
+                }
             }
 
             if (PluginConfig.EnableFittingRoomSaves || PluginConfig.ShowItemID) {
                 if (FittingRoomUI == null) {
-					FittingRoomUI = new FittingRoomUI(this);
+                    FittingRoomUI = new FittingRoomUI(this);
                 } else {
                     if (PluginConfig.EnableFittingRoomSaves) {
                         FittingRoomUI?.Draw();
-					}
+                    }
                 }
             }
         }
-	}
+    }
 }

@@ -6,23 +6,18 @@ using System.Reflection;
 using CheapLoc;
 using Serilog;
 
-namespace ItemSearchPlugin
-{ 
-
+namespace ItemSearchPlugin {
     /**
      * 
      * https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Localization.cs
      * 
      */
-
     class Localization {
-
-        public static readonly string[] ApplicableLangCodes = { "de", "ja", "fr", "it", "es" };
+        public static readonly string[] ApplicableLangCodes = {"de", "ja", "fr", "it", "es"};
 
 
         public void SetupWithUiCulture() {
-            try
-            {
+            try {
                 var currentUiLang = CultureInfo.CurrentUICulture;
                 Log.Information("Trying to set up Loc for culture {0}", currentUiLang.TwoLetterISOLanguageName);
 
@@ -31,9 +26,7 @@ namespace ItemSearchPlugin
                 } else {
                     Loc.SetupWithFallbacks();
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Log.Error(ex, "Could not get language information. Setting up fallbacks.");
                 Loc.SetupWithFallbacks();
             }
@@ -46,11 +39,10 @@ namespace ItemSearchPlugin
             }
 
             using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"itemsearch_{langCode}")) {
-                using (StreamReader sr = new StreamReader(s)){
+                using (StreamReader sr = new StreamReader(s)) {
                     Loc.Setup(sr.ReadToEnd());
                 }
             }
-
         }
     }
 }
