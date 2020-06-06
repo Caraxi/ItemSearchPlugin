@@ -97,9 +97,7 @@ namespace ItemSearchPlugin {
 				PluginInterface.CommandManager.RemoveHandler("/xlitem_original");
 				replacedOriginalCommand = false;
 			}
-
-
-		}
+        }
 
 		private void BuildUI() {
 			if (drawItemSearchWindow) {
@@ -111,15 +109,17 @@ namespace ItemSearchPlugin {
 					itemSearchWindow = null;
 					drawConfigWindow = false;
 				}
+            }
 
-			}
-
-
-			FittingRoomUI?.Draw();
-
-			
-		}
+            if (PluginConfig.EnableFittingRoomSaves || PluginConfig.ShowItemID) {
+                if (FittingRoomUI == null) {
+					FittingRoomUI = new FittingRoomUI(this);
+                } else {
+                    if (PluginConfig.EnableFittingRoomSaves) {
+                        FittingRoomUI?.Draw();
+					}
+                }
+            }
+        }
 	}
-
-
 }

@@ -34,6 +34,8 @@ namespace ItemSearchPlugin {
 
 		public bool MarketBoardPluginIntegration { get; set; }
 
+        public bool EnableFittingRoomSaves { get; set; }
+
 		[NonSerialized]
 		private DataSite lastDataSite = null;
 
@@ -61,6 +63,7 @@ namespace ItemSearchPlugin {
 			MarketBoardPluginIntegration = false;
 			MaxItemLevel = 505;
 			ShowTryOn = false;
+            EnableFittingRoomSaves = true;
 			DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
 
 			if (FittingRoomSaves == null)
@@ -70,7 +73,9 @@ namespace ItemSearchPlugin {
 
 		}
 
-		public void Init(DalamudPluginInterface pluginInterface) {
+        
+
+        public void Init(DalamudPluginInterface pluginInterface) {
 			this.pluginInterface = pluginInterface;
 		}
 
@@ -112,6 +117,12 @@ namespace ItemSearchPlugin {
 			bool showTryOn = ShowTryOn;
 			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableTryOn", "Enable Try On Feature"), ref showTryOn)){
 				ShowTryOn = showTryOn;
+				Save();
+			}
+
+			bool enableFittingRoomSaves = EnableFittingRoomSaves;
+			if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableFittingRoomSaves", "Enable Outfit Saving"), ref enableFittingRoomSaves)){
+                EnableFittingRoomSaves = enableFittingRoomSaves;
 				Save();
 			}
 
