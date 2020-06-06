@@ -181,6 +181,13 @@ namespace ItemSearchPlugin {
 
                         var asyncEnum = this.luminaItems.ToAsyncEnumerable();
 
+                        if (!pluginConfig.ShowLegacyItems) {
+                            asyncEnum = asyncEnum.Where(x => {
+                                if (x.RowId >= 100 && x.RowId <= 1600) return false;
+                                return true;
+                            });
+                        }
+
                         foreach (ISearchFilter filter in searchFilters) {
                             if (filter.ShowFilter && filter.IsSet) {
                                 asyncEnum = asyncEnum.Where(x => filter.CheckFilter(x));

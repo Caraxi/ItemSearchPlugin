@@ -34,6 +34,8 @@ namespace ItemSearchPlugin {
 
         public bool EnableFittingRoomSaves { get; set; }
 
+        public bool ShowLegacyItems { get; set; }
+
         [NonSerialized] private DataSite lastDataSite = null;
 
         [JsonIgnore]
@@ -63,6 +65,7 @@ namespace ItemSearchPlugin {
             MaxItemLevel = 505;
             ShowTryOn = false;
             EnableFittingRoomSaves = true;
+            ShowLegacyItems = false;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
 
             if (FittingRoomSaves == null) {
@@ -119,6 +122,12 @@ namespace ItemSearchPlugin {
             bool enableFittingRoomSaves = EnableFittingRoomSaves;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableFittingRoomSaves", "Enable Outfit Saving"), ref enableFittingRoomSaves)) {
                 EnableFittingRoomSaves = enableFittingRoomSaves;
+                Save();
+            }
+
+            bool showLegacyItems = ShowLegacyItems;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigShowLegacyItems", "Show Legacy Items"), ref showLegacyItems)) {
+                ShowLegacyItems = showLegacyItems;
                 Save();
             }
 
