@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using CheapLoc;
+using Dalamud;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
@@ -41,6 +42,8 @@ namespace ItemSearchPlugin {
         private bool autoTryOn;
         private int debounceKeyPress;
         private bool doSearchScroll;
+        private ClientLanguage loadedClientLanguage;
+        private bool forceReload;
 
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
             this.pluginInterface = plugin.PluginInterface;
@@ -64,10 +67,19 @@ namespace ItemSearchPlugin {
             actionButtons.Add(new MarketBoardActionButton(pluginInterface, pluginConfig));
             actionButtons.Add(new DataSiteActionButton(pluginConfig));
 
-            Task.Run(() => this.data.GetExcelSheet<Item>().GetRows()).ContinueWith(t => this.luminaItems = t.Result);
+            UpdateItemList();
+        }
+
+        private void UpdateItemList() {
+            loadedClientLanguage = pluginConfig.SelectedClientLanguage;
+            Task.Run(() => this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).GetRows()).ContinueWith(t => {
+                forceReload = true;
+                return this.luminaItems = t.Result;
+            });
         }
 
         public bool Draw() {
+            if (pluginConfig.SelectedClientLanguage != loadedClientLanguage) UpdateItemList();
             ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
 
             var isOpen = true;
@@ -174,7 +186,8 @@ namespace ItemSearchPlugin {
 
             if (this.luminaItems != null) {
                 if (searchFilters.Any(x => x.ShowFilter && x.IsSet)) {
-                    if (searchFilters.Any(x => x.ShowFilter && x.HasChanged)) {
+                    if (searchFilters.Any(x => x.ShowFilter && x.HasChanged) || forceReload) {
+                        forceReload = false;
                         this.searchCancelTokenSource?.Cancel();
 
                         this.searchCancelTokenSource = new CancellationTokenSource();
