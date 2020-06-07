@@ -135,10 +135,8 @@ namespace ItemSearchPlugin {
         }
 
         public void TryOnItem(Item item, byte stain = 0, bool HQ = false, byte thatFirstByte = 0xFF) {
-            if (CanUseTryOn) {
-                if (item.EquipSlotCategory > 0 && item.EquipSlotCategory != 6 && item.EquipSlotCategory != 17) {
-                    tryOn(thatFirstByte, (uint) (item.RowId + (HQ ? 1000000 : 0)), stain, 0, 0);
-                }
+            if (item.EquipSlotCategory > 0 && item.EquipSlotCategory != 6 && item.EquipSlotCategory != 17) {
+                tryOnQueue.Enqueue(((uint) item.RowId, stain));
             }
         }
 
@@ -150,12 +148,12 @@ namespace ItemSearchPlugin {
 
         public void Draw() {
             if (fittingRoomBaseAddress != IntPtr.Zero && tryonUIObject?.Visible == true) {
-                if (tryOnQueue.Count > 0 && (tryOnDelay-- <= 0)) {
+                if (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay-- <= 0)) {
                     tryOnDelay = 1;
                     try {
-                        (uint itemid, byte stain) i = tryOnQueue.Dequeue();
+                        var (itemid, stain) = tryOnQueue.Dequeue();
 
-                        tryOn(0xFF, i.itemid, i.stain, 0, 0);
+                        tryOn(0xFF, itemid, stain, 0, 0);
                     } catch { }
                 }
 
