@@ -67,6 +67,12 @@ namespace ItemSearchPlugin {
                 HelpMessage = Loc.Localize("ItemSearchCommandHelp", "Open a window you can use to link any specific item to chat."),
                 ShowInHelp = true
             });
+
+#if DEBUG
+            PluginInterface.CommandManager.AddHandler("/itemsearchdumploc", new Dalamud.Game.Command.CommandInfo(((command, arguments) => {
+                Loc.ExportLocalizable();
+            })));
+#endif
         }
 
         public void OnItemSearchCommand(string command, string args) {
@@ -91,6 +97,9 @@ namespace ItemSearchPlugin {
                 PluginInterface.CommandManager.RemoveHandler("/xlitem_original");
                 replacedOriginalCommand = false;
             }
+#if DEBUG
+            PluginInterface.CommandManager.RemoveHandler("/itemsearchdumploc");
+#endif
         }
 
         private void BuildUI() {
