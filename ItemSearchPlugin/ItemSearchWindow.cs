@@ -85,14 +85,10 @@ namespace ItemSearchPlugin {
             // Main window
             ImGui.AlignTextToFramePadding();
 
-            ImGui.Text(Loc.Localize("DalamudItemSelect", "Please select an item."));
-
             if (this.selectedItemTex != null) {
-                ImGui.Text(" ");
-
                 ImGui.SetCursorPosY(200f);
                 ImGui.SameLine();
-                ImGui.Image(this.selectedItemTex.ImGuiHandle, new Vector2(40, 40));
+                ImGui.Image(this.selectedItemTex.ImGuiHandle, new Vector2(45, 45));
 
                 if (selectedItem != null) {
                     ImGui.SameLine();
@@ -136,11 +132,12 @@ namespace ItemSearchPlugin {
                         }
                     }
 
-
                     ImGui.EndGroup();
                 }
             } else {
-                ImGui.Text(" ");
+                ImGui.BeginChild("NoTextureBox", new Vector2(200, 45));
+                ImGui.Text(Loc.Localize("ItemSearchSelectItem", "Please select an item."));
+                ImGui.EndChild();
             }
 
 
