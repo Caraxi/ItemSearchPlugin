@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Dalamud;
 
 namespace ItemSearchPlugin {
     public class ItemSearchPluginConfig : IPluginConfiguration {
@@ -36,6 +37,8 @@ namespace ItemSearchPlugin {
 
         public bool ShowLegacyItems { get; set; }
 
+        public byte SelectedLanguage { get; set; }
+
         [NonSerialized] private DataSite lastDataSite = null;
 
         [JsonIgnore]
@@ -53,6 +56,20 @@ namespace ItemSearchPlugin {
             }
         }
 
+        [JsonIgnore]
+        public ClientLanguage SelectedClientLanguage {
+            get {
+                return SelectedLanguage switch {
+                    0 => pluginInterface.ClientState.ClientLanguage,
+                    1 => ClientLanguage.English,
+                    2 => ClientLanguage.Japanese,
+                    3 => ClientLanguage.French,
+                    4 => ClientLanguage.German,
+                    _ => pluginInterface.ClientState.ClientLanguage,
+                };
+            }
+        }
+
         public ItemSearchPluginConfig() {
             LoadDefaults();
         }
@@ -67,6 +84,7 @@ namespace ItemSearchPlugin {
             EnableFittingRoomSaves = true;
             ShowLegacyItems = false;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
+            SelectedLanguage = 0;
 
             if (FittingRoomSaves == null) {
                 FittingRoomSaves = new List<FittingRoomSave>();
@@ -88,8 +106,21 @@ namespace ItemSearchPlugin {
             bool drawConfig = true;
             ImGui.Begin("Item Search Config", ref drawConfig, windowFlags);
 
-            bool closeOnChoose = CloseOnChoose;
+            int selectedLanguage = SelectedLanguage;
+            if (ImGui.BeginCombo(Loc.Localize("ItemSearchConfigItemLanguage", "Item Language") + "###ItemSearchConfigLanguageSelect", SelectedLanguage == 0 ? Loc.Localize("LanguageAutomatic", "Automatic") : SelectedClientLanguage.ToString())) {
+                if (ImGui.Selectable(Loc.Localize("LanguageAutomatic", "Automatic"), selectedLanguage == 0)) SelectedLanguage = 0;
+                if (ImGui.Selectable(Loc.Localize("LanguageEnglish", "English"), selectedLanguage == 1)) SelectedLanguage = 1;
+                if (ImGui.Selectable(Loc.Localize("LanguageJapanese", "Japanese"), selectedLanguage == 2)) SelectedLanguage = 2;
+                if (ImGui.Selectable(Loc.Localize("LanguageFrench", "French"), selectedLanguage == 3)) SelectedLanguage = 3;
+                if (ImGui.Selectable(Loc.Localize("LanguageGerman", "German"), selectedLanguage == 4)) SelectedLanguage = 4;
+                if (SelectedLanguage != selectedLanguage) {
+                    Save();
+                }
 
+                ImGui.EndCombo();
+            }
+
+            bool closeOnChoose = CloseOnChoose;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCloseAfterLink", "Close window after linking item"), ref closeOnChoose)) {
                 CloseOnChoose = closeOnChoose;
                 Save();
