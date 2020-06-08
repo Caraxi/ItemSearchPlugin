@@ -147,16 +147,18 @@ namespace ItemSearchPlugin {
         }
 
         public void Draw() {
-            if (fittingRoomBaseAddress != IntPtr.Zero && tryonUIObject?.Visible == true) {
-                if (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay-- <= 0)) {
-                    tryOnDelay = 1;
-                    try {
-                        var (itemid, stain) = tryOnQueue.Dequeue();
+            if (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay-- <= 0)) {
+                tryOnDelay = 1;
+                try {
+                    var (itemid, stain) = tryOnQueue.Dequeue();
 
-                        tryOn(0xFF, itemid, stain, 0, 0);
-                    } catch { }
+                    tryOn(0xFF, itemid, stain, 0, 0);
+                } catch {
+                    // ignored
                 }
+            }
 
+            if (fittingRoomBaseAddress != IntPtr.Zero && tryonUIObject?.Visible == true) {
                 UIObject ui = tryonUIObject.Value;
 
                 Vector2 pos = ui.Position;
