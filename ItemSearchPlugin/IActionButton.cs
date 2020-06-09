@@ -1,5 +1,5 @@
 ﻿using System;
-using Item = Dalamud.Data.TransientSheet.Item;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     public enum ActionButtonPosition {

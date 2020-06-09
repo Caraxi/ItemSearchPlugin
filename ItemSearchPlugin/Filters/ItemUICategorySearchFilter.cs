@@ -4,7 +4,6 @@ using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
-using Item = Dalamud.Data.TransientSheet.Item;
 
 namespace ItemSearchPlugin.Filters {
     class ItemUICategorySearchFilter : ISearchFilter {
@@ -26,8 +25,8 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        private List<ItemUICategory> uiCategories;
-        private string[] uiCategoriesArray;
+        private readonly List<ItemUICategory> uiCategories;
+        private readonly string[] uiCategoriesArray;
 
         private int selectedCategory = 0;
         private int lastCategory = 0;
@@ -41,7 +40,7 @@ namespace ItemSearchPlugin.Filters {
 
 
         public bool CheckFilter(Item item) {
-            return item.ItemUICategory == uiCategories[selectedCategory].RowId;
+            return item.ItemUICategory.Row == uiCategories[selectedCategory].RowId;
         }
 
         public void DrawEditor() {

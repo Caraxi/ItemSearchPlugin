@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using CheapLoc;
-using Dalamud.Data.TransientSheet;
+using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Internal;
 using Dalamud.Hooking;
 using Dalamud.Plugin;
@@ -134,9 +134,9 @@ namespace ItemSearchPlugin {
             return arr.ToArray();
         }
 
-        public void TryOnItem(Item item, byte stain = 0, bool HQ = false, byte thatFirstByte = 0xFF) {
-            if (item.EquipSlotCategory > 0 && item.EquipSlotCategory != 6 && item.EquipSlotCategory != 17) {
-                tryOnQueue.Enqueue(((uint) item.RowId, stain));
+        public void TryOnItem(Item item, byte stain = 0, bool HQ = false) {
+            if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17) {
+                tryOnQueue.Enqueue((item.RowId + (uint) (HQ ? 1000000 : 0), stain));
             }
         }
 

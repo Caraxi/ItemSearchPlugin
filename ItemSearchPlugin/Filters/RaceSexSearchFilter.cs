@@ -8,7 +8,6 @@ using Dalamud.Data;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using static ItemSearchPlugin.ExcelExtensions;
-using Item = Dalamud.Data.TransientSheet.Item;
 
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : ISearchFilter {
@@ -16,7 +15,7 @@ namespace ItemSearchPlugin.Filters {
         private int selectedIndex = 0;
         private int lastIndex = 0;
         private bool broken; // Only fail once...
-        private readonly List<(string text, int raceId, CharacterSex sex)> options;
+        private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
 
         public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) {
@@ -26,19 +25,20 @@ namespace ItemSearchPlugin.Filters {
 
             equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().GetRows();
 
-            options = new List<(string text, int raceId, CharacterSex sex)> {
+            options = new List<(string text, uint raceId, CharacterSex sex)> {
                 (Loc.Localize("NotSelected", "Not Selected"), 0, CharacterSex.Female)
             };
 
             foreach (var race in data.GetExcelSheet<Race>().GetRows()) {
-                if (race.RSEMBody > 0 && race.RSEFBody > 0) {
+
+                if (race.RSEMBody.Row > 0 && race.RSEFBody.Row > 0) {
                     string male = string.Format(Loc.Localize("RaceSexMale", "Male {0}"), race.Masculine);
                     string female = string.Format(Loc.Localize("RaceSexFemale", "Female {0}"), race.Feminine);
                     options.Add((male, race.RowId, CharacterSex.Male));
                     options.Add((female, race.RowId, CharacterSex.Female));
-                } else if (race.RSEMBody > 0) {
+                } else if (race.RSEMBody.Row > 0) {
                     options.Add((race.Masculine, race.RowId, CharacterSex.Male));
-                } else if (race.RSEFBody > 0) {
+                } else if (race.RSEFBody.Row > 0) {
                     options.Add((race.Feminine, race.RowId, CharacterSex.Female));
                 }
             }

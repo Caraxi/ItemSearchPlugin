@@ -15,7 +15,7 @@ using ImGuiScene;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
 using Serilog;
-using Item = Dalamud.Data.TransientSheet.Item;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     class ItemSearchWindow : IDisposable {
@@ -31,7 +31,7 @@ namespace ItemSearchPlugin {
         private ValueTask<List<Item>> searchTask;
         private List<Item> luminaItems;
 
-        private ItemSearchPluginConfig pluginConfig;
+        private readonly ItemSearchPluginConfig pluginConfig;
 
         public event EventHandler<Item> OnItemChosen;
         public event EventHandler<bool> OnConfigButton;
@@ -55,17 +55,19 @@ namespace ItemSearchPlugin {
             while (!data.IsDataReady)
                 Thread.Sleep(1);
 
-            searchFilters = new List<ISearchFilter>();
-            searchFilters.Add(new ItemNameSearchFilter(searchText));
-            searchFilters.Add(new ItemUICategorySearchFilter(data));
-            searchFilters.Add(new LevelEquipSearchFilter(pluginConfig));
-            searchFilters.Add(new LevelItemSearchFilter(pluginConfig));
-            searchFilters.Add(new EquipAsSearchFilter(pluginConfig, data));
-            searchFilters.Add(new RaceSexSearchFilter(pluginConfig, data));
+            searchFilters = new List<ISearchFilter> {
+                new ItemNameSearchFilter(searchText),
+                new ItemUICategorySearchFilter(data),
+                new LevelEquipSearchFilter(pluginConfig),
+                new LevelItemSearchFilter(pluginConfig),
+                new EquipAsSearchFilter(pluginConfig, data),
+                new RaceSexSearchFilter(pluginConfig, data)
+            };
 
-            actionButtons = new List<IActionButton>();
-            actionButtons.Add(new MarketBoardActionButton(pluginInterface, pluginConfig));
-            actionButtons.Add(new DataSiteActionButton(pluginConfig));
+            actionButtons = new List<IActionButton> {
+                new MarketBoardActionButton(pluginInterface, pluginConfig),
+                new DataSiteActionButton(pluginConfig)
+            };
 
             UpdateItemList();
         }
@@ -241,7 +243,7 @@ namespace ItemSearchPlugin {
                                 }
 
                                 if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
-                                    if (selectedItem.ClassJobCategory != 0) {
+                                    if (selectedItem.ClassJobCategory.Row != 0) {
                                         plugin.FittingRoomUI.TryOnItem(selectedItem);
                                     }
                                 }
@@ -297,7 +299,7 @@ namespace ItemSearchPlugin {
                             }
 
                             if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
-                                if (selectedItem.ClassJobCategory != 0) {
+                                if (selectedItem.ClassJobCategory.Row != 0) {
                                     plugin.FittingRoomUI.TryOnItem(selectedItem);
                                 }
                             }

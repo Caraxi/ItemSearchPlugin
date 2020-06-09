@@ -2,7 +2,7 @@
 
 namespace ItemSearchPlugin {
     public static class ExcelExtensions {
-        public static bool HasClass(this ClassJobCategory cjc, int classJobRowId) {
+        public static bool HasClass(this ClassJobCategory cjc, uint classJobRowId) {
             return classJobRowId switch {
                 0 => cjc.ADV,
                 1 => cjc.GLA,
@@ -54,7 +54,7 @@ namespace ItemSearchPlugin {
             Both = 3
         };
 
-        public static bool AllowsRaceSex(this EquipRaceCategory erc, int raceId, CharacterSex sex) {
+        public static bool AllowsRaceSex(this EquipRaceCategory erc, uint raceId, CharacterSex sex) {
             switch (sex) {
                 case CharacterSex.Both when (erc.Male == false || erc.Female == false):
                 case CharacterSex.Either when (erc.Male == false && erc.Female == false):
@@ -71,8 +71,8 @@ namespace ItemSearchPlugin {
                 4 => erc.Miqote,
                 5 => erc.Roegadyn,
                 6 => erc.AuRa,
-                7 => erc.unknown6, // Hrothgar
-                8 => erc.unknown7, // Viera
+                7 => erc.Unknown6, // Hrothgar
+                8 => erc.Unknown7, // Viera
                 _ => false
             };
         }

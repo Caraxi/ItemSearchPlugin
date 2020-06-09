@@ -6,12 +6,11 @@ using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Item = Dalamud.Data.TransientSheet.Item;
 
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : ISearchFilter {
         private readonly ItemSearchPluginConfig config;
-        private readonly List<int> selectedClassJobs;
+        private readonly List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
         private readonly List<ClassJob> classJobs;
         private bool changed;
@@ -21,7 +20,7 @@ namespace ItemSearchPlugin.Filters {
         public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) {
             this.config = config;
             this.modeAny = true;
-            this.selectedClassJobs = new List<int>();
+            this.selectedClassJobs = new List<uint>();
             this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().GetRows();
             this.classJobs = data.GetExcelSheet<ClassJob>().GetRows();
             changed = false;
@@ -48,11 +47,11 @@ namespace ItemSearchPlugin.Filters {
 
         public bool CheckFilter(Item item) {
             try {
-                if (item.ClassJobCategory != 0) {
-                    ClassJobCategory cjc = classJobCategories[item.ClassJobCategory];
+                if (item.ClassJobCategory.Row != 0) {
+                    ClassJobCategory cjc = classJobCategories[(int)item.ClassJobCategory.Row];
 
                     if (modeAny) {
-                        foreach (int cjid in selectedClassJobs) {
+                        foreach (uint cjid in selectedClassJobs) {
                             if (cjc.HasClass(cjid)) {
                                 return true;
                             }
@@ -60,7 +59,7 @@ namespace ItemSearchPlugin.Filters {
 
                         return false;
                     } else {
-                        foreach (int cjid in selectedClassJobs) {
+                        foreach (uint cjid in selectedClassJobs) {
                             if (!cjc.HasClass(cjid)) {
                                 return false;
                             }
@@ -78,7 +77,7 @@ namespace ItemSearchPlugin.Filters {
 
         public void Dispose() { }
 
-        private string selectedClassString() {
+        private string SelectedClassString() {
             StringBuilder sb = new StringBuilder();
             bool first = true;
             foreach (int i in selectedClassJobs) {
@@ -103,7 +102,7 @@ namespace ItemSearchPlugin.Filters {
             }
 
             ImGui.SameLine();
-            if (ImGui.Button($"{(selectingClasses ? Loc.Localize("EquipAsSearchFilterFinishedSelectingClasses", "Done") : selectedClassString())}###equipAsChangeClassButton")) {
+            if (ImGui.Button($"{(selectingClasses ? Loc.Localize("EquipAsSearchFilterFinishedSelectingClasses", "Done") : SelectedClassString())}###equipAsChangeClassButton")) {
                 selectingClasses = !selectingClasses;
                 changed = true;
             }

@@ -1,4 +1,4 @@
-﻿using Dalamud.Data.TransientSheet;
+﻿using Lumina.Excel.GeneratedSheets;
 using ImGuiNET;
 
 namespace ItemSearchPlugin.Filters {
@@ -13,7 +13,7 @@ namespace ItemSearchPlugin.Filters {
         private int last_minLevel;
         private int last_maxLevel;
 
-        private ItemSearchPluginConfig config;
+        private readonly ItemSearchPluginConfig config;
 
         public LevelEquipSearchFilter(ItemSearchPluginConfig config) {
             minLevel = last_minLevel = MIN_LEVEL;

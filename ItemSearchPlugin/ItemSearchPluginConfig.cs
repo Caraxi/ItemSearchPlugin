@@ -23,7 +23,7 @@ namespace ItemSearchPlugin {
 
         public bool ExtraFilters { get; set; }
 
-        public int MaxItemLevel { get; set; }
+        public uint MaxItemLevel { get; set; }
 
         public bool ShowTryOn { get; set; }
 

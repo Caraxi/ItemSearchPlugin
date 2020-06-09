@@ -1,11 +1,11 @@
 ﻿using CheapLoc;
-using Dalamud.Data.TransientSheet;
+using Lumina.Excel.GeneratedSheets;
 using Dalamud.Plugin;
 using System;
 
 namespace ItemSearchPlugin.ActionButtons {
     class DataSiteActionButton : IActionButton {
-        private ItemSearchPluginConfig pluginConfig;
+        private readonly ItemSearchPluginConfig pluginConfig;
 
         public DataSiteActionButton(ItemSearchPluginConfig pluginConfig) {
             this.pluginConfig = pluginConfig;

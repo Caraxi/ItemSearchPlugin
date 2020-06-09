@@ -1,4 +1,4 @@
-﻿using Dalamud.Data.TransientSheet;
+﻿using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     public abstract class DataSite {

@@ -1,13 +1,13 @@
 ﻿using CheapLoc;
-using Dalamud.Data.TransientSheet;
+using Lumina.Excel.GeneratedSheets;
 using Dalamud.Plugin;
 using System;
 using System.Dynamic;
 
 namespace ItemSearchPlugin.ActionButtons {
     class MarketBoardActionButton : IActionButton {
-        private DalamudPluginInterface pluginInterface;
-        private ItemSearchPluginConfig pluginConfig;
+        private readonly DalamudPluginInterface pluginInterface;
+        private readonly ItemSearchPluginConfig pluginConfig;
 
         private bool marketBoardResponsed = false;
 
@@ -41,7 +41,7 @@ namespace ItemSearchPlugin.ActionButtons {
         }
 
         public bool GetShowButton(Item selectedItem) {
-            return this.pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && selectedItem.ItemSearchCategory > 0;
+            return this.pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && selectedItem.ItemSearchCategory.Row > 0;
         }
 
         public void OnButtonClicked(Item selectedItem) {
