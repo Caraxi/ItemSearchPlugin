@@ -30,7 +30,6 @@ namespace ItemSearchPlugin.Filters {
             };
 
             foreach (var race in data.GetExcelSheet<Race>().GetRows()) {
-
                 if (race.RSEMBody.Row > 0 && race.RSEFBody.Row > 0) {
                     string male = string.Format(Loc.Localize("RaceSexMale", "Male {0}"), race.Masculine);
                     string female = string.Format(Loc.Localize("RaceSexFemale", "Female {0}"), race.Feminine);

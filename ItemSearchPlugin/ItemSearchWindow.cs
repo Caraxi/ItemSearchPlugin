@@ -32,10 +32,6 @@ namespace ItemSearchPlugin {
         private List<Item> luminaItems;
 
         private readonly ItemSearchPluginConfig pluginConfig;
-
-        public event EventHandler<Item> OnItemChosen;
-        public event EventHandler<bool> OnConfigButton;
-
         public List<ISearchFilter> searchFilters;
         public List<IActionButton> actionButtons;
 
@@ -234,10 +230,14 @@ namespace ItemSearchPlugin {
 
                                 if (ImGui.IsMouseDoubleClicked(0)) {
                                     if (this.selectedItemTex != null) {
-                                        OnItemChosen?.Invoke(this, this.searchTask.Result[i]);
-                                        if (pluginConfig.CloseOnChoose) {
-                                            this.selectedItemTex?.Dispose();
-                                            isOpen = false;
+                                        try {
+                                            plugin.LinkItem(selectedItem);
+                                            if (pluginConfig.CloseOnChoose) {
+                                                this.selectedItemTex?.Dispose();
+                                                isOpen = false;
+                                            }
+                                        } catch (Exception ex) {
+                                            PluginLog.LogError(ex.ToString());
                                         }
                                     }
                                 }
@@ -326,7 +326,7 @@ namespace ItemSearchPlugin {
             if (ImGui.Button(Loc.Localize("Choose", "Choose"))) {
                 try {
                     if (this.selectedItemTex != null) {
-                        OnItemChosen?.Invoke(this, this.searchTask.Result[this.selectedItemIndex]);
+                        plugin.LinkItem(selectedItem);
                         if (pluginConfig.CloseOnChoose) {
                             this.selectedItemTex?.Dispose();
                             isOpen = false;
@@ -360,7 +360,7 @@ namespace ItemSearchPlugin {
             string configText = Loc.Localize("ItemSearchConfigButton", "Config");
             ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
             if (ImGui.Button(configText)) {
-                OnConfigButton.Invoke(this, true);
+                plugin.ToggleConfigWindow();
             }
 
             ImGui.End();

@@ -3,6 +3,7 @@ using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 using ItemSearchPlugin.DataSites;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     public class ItemSearchPlugin : IDalamudPlugin {
@@ -17,7 +18,7 @@ namespace ItemSearchPlugin {
 
         private Localization localization;
         private bool replacedOriginalCommand = false;
-        internal bool drawConfigWindow = false;
+        private bool drawConfigWindow = false;
 
         public static DataSite[] DataSites { get; } = new DataSite[] {
             new GarlandToolsDataSite(), new TeamcraftDataSite(), new GamerEscapeDatasite(),
@@ -76,14 +77,8 @@ namespace ItemSearchPlugin {
         }
 
         public void OnItemSearchCommand(string command, string args) {
+            itemSearchWindow?.Dispose();
             itemSearchWindow = new ItemSearchWindow(this, args);
-            itemSearchWindow.OnItemChosen += (sender, item) => {
-                PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
-                    MessageBytes = SeStringUtils.CreateItemLink(item.RowId, false).Encode()
-                });
-            };
-            itemSearchWindow.OnConfigButton += (s, c) => { drawConfigWindow = !drawConfigWindow; };
-
             drawItemSearchWindow = true;
         }
 
@@ -123,6 +118,21 @@ namespace ItemSearchPlugin {
                     }
                 }
             }
+        }
+
+        internal void LinkItem(Item item) {
+            if (item == null) {
+                PluginLog.Log("Tried to link NULL item.");
+                return;
+            }
+
+            PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
+                MessageBytes = SeStringUtils.CreateItemLink(item.RowId, false, item.Name).Encode()
+            });
+        }
+
+        internal void ToggleConfigWindow() {
+            drawConfigWindow = !drawConfigWindow;
         }
     }
 }
