@@ -4,7 +4,7 @@ using System;
 using System.Text.RegularExpressions;
 
 namespace ItemSearchPlugin.Filters {
-    class ItemNameSearchFilter : ISearchFilter {
+    class ItemNameSearchFilter : SearchFilter {
         private string searchText;
         private string lastSearchText;
 
@@ -16,15 +16,13 @@ namespace ItemSearchPlugin.Filters {
         }
 
 
-        public string Name => "Search";
+        public override string Name => "Search";
 
-        public string NameLocalizationKey => "DalamudItemSearchVerb";
+        public override string NameLocalizationKey => "DalamudItemSearchVerb";
 
-        public bool ShowFilter => true;
+        public override bool IsSet => !string.IsNullOrEmpty(searchText);
 
-        public bool IsSet => !string.IsNullOrEmpty(searchText);
-
-        public bool HasChanged {
+        public override bool HasChanged {
             get {
                 if (searchText != lastSearchText) {
                     searchRegex = null;
@@ -44,7 +42,7 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public bool CheckFilter(Item item) {
+        public override bool CheckFilter(Item item) {
             if (searchRegex != null) {
                 return searchRegex.IsMatch(item.Name);
             }
@@ -52,9 +50,7 @@ namespace ItemSearchPlugin.Filters {
             return item.Name.ToLower().Contains(searchText.ToLower()) || int.TryParse(searchText, out var parsedId) && parsedId == item.RowId && item.Icon < 65000;
         }
 
-        public void Dispose() { }
-
-        public void DrawEditor() {
+        public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
             ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
             ImGui.PopItemWidth();

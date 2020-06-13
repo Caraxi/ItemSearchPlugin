@@ -6,15 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ItemSearchPlugin.Filters {
-    class ItemUICategorySearchFilter : ISearchFilter {
-        public string Name => "Category";
-        public string NameLocalizationKey => "DalamudItemSelectCategory";
+    class ItemUICategorySearchFilter : SearchFilter {
+        public override string Name => "Category";
+        public override string NameLocalizationKey => "DalamudItemSelectCategory";
 
-        public bool IsSet => selectedCategory != 0;
+        public override bool IsSet => selectedCategory != 0;
 
-        public bool ShowFilter => true;
-
-        public bool HasChanged {
+        public override bool HasChanged {
             get {
                 if (lastCategory != selectedCategory) {
                     lastCategory = selectedCategory;
@@ -39,16 +37,14 @@ namespace ItemSearchPlugin.Filters {
         }
 
 
-        public bool CheckFilter(Item item) {
+        public override bool CheckFilter(Item item) {
             return item.ItemUICategory.Row == uiCategories[selectedCategory].RowId;
         }
 
-        public void DrawEditor() {
+        public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
             ImGui.Combo("##ItemUiCategorySearchFilterBox", ref this.selectedCategory, uiCategoriesArray, uiCategories.Count);
             ImGui.PopItemWidth();
         }
-
-        public void Dispose() { }
     }
 }

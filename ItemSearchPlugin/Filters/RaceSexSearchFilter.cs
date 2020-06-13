@@ -10,7 +10,7 @@ using Lumina.Excel.GeneratedSheets;
 using static ItemSearchPlugin.ExcelExtensions;
 
 namespace ItemSearchPlugin.Filters {
-    internal class RaceSexSearchFilter : ISearchFilter {
+    internal class RaceSexSearchFilter : SearchFilter {
         private readonly ItemSearchPluginConfig pluginConfig;
         private int selectedIndex = 0;
         private int lastIndex = 0;
@@ -43,15 +43,15 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public string Name => "Sex / Race";
+        public override string Name => "Sex / Race";
 
-        public string NameLocalizationKey => "RaceSexSearchFilter";
+        public override string NameLocalizationKey => "RaceSexSearchFilter";
 
-        public bool ShowFilter => !broken && pluginConfig.ExtraFilters;
+        public override bool ShowFilter => !broken && pluginConfig.ExtraFilters;
 
-        public bool IsSet => !broken && selectedIndex > 0;
+        public override bool IsSet => !broken && selectedIndex > 0;
 
-        public bool HasChanged {
+        public override bool HasChanged {
             get {
                 if (lastIndex == selectedIndex) return false;
                 lastIndex = selectedIndex;
@@ -59,7 +59,7 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public bool CheckFilter(Item item) {
+        public override bool CheckFilter(Item item) {
             if (broken) return true;
             try {
                 var (text, raceId, sex) = options[selectedIndex];
@@ -72,9 +72,7 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public void Dispose() { }
-
-        public void DrawEditor() {
+        public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
             ImGui.Combo("##RaceSexSearchFilter", ref this.selectedIndex, options.Select(a => a.text).ToArray(), options.Count);
             ImGui.PopItemWidth();

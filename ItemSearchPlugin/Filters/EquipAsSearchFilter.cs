@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace ItemSearchPlugin.Filters {
-    class EquipAsSearchFilter : ISearchFilter {
+    class EquipAsSearchFilter : SearchFilter {
         private readonly ItemSearchPluginConfig config;
         private readonly List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
@@ -26,15 +26,15 @@ namespace ItemSearchPlugin.Filters {
             changed = false;
         }
 
-        public string Name => "Equip as";
+        public override string Name => "Equip as";
 
-        public string NameLocalizationKey => "EquipAsSearchFilter";
+        public override string NameLocalizationKey => "EquipAsSearchFilter";
 
-        public bool ShowFilter => config.ExtraFilters;
+        public override bool ShowFilter => config.ExtraFilters;
 
-        public bool IsSet => selectedClassJobs.Count >= 1;
+        public override bool IsSet => selectedClassJobs.Count >= 1;
 
-        public bool HasChanged {
+        public override bool HasChanged {
             get {
                 if (changed) {
                     changed = false;
@@ -45,10 +45,10 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public bool CheckFilter(Item item) {
+        public override bool CheckFilter(Item item) {
             try {
                 if (item.ClassJobCategory.Row != 0) {
-                    ClassJobCategory cjc = classJobCategories[(int)item.ClassJobCategory.Row];
+                    ClassJobCategory cjc = classJobCategories[(int) item.ClassJobCategory.Row];
 
                     if (modeAny) {
                         foreach (uint cjid in selectedClassJobs) {
@@ -75,8 +75,6 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public void Dispose() { }
-
         private string SelectedClassString() {
             StringBuilder sb = new StringBuilder();
             bool first = true;
@@ -96,7 +94,7 @@ namespace ItemSearchPlugin.Filters {
             return sb.ToString();
         }
 
-        public void DrawEditor() {
+        public override void DrawEditor() {
             if (ImGui.Checkbox($"{(modeAny ? Loc.Localize("SearchFilterAny", "Any") : Loc.Localize("SearchFilterAll", "All"))}: ##equipAsSearchFilterShowAny", ref modeAny)) {
                 changed = true;
             }

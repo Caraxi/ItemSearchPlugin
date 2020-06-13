@@ -2,10 +2,8 @@
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.Filters {
-    class DyeableSearchFilter : ISearchFilter {
+    class DyeableSearchFilter : SearchFilter {
         private readonly ItemSearchPluginConfig pluginConfig;
-
-        public void Dispose() { }
 
         private bool showDyeable = true;
         private bool showNotDyeable = true;
@@ -16,12 +14,12 @@ namespace ItemSearchPlugin.Filters {
             this.pluginConfig = pluginConfig;
         }
 
-        public string Name { get; } = "Dyeability";
-        public string NameLocalizationKey { get; } = "DyeableSearchFilter";
-        public bool ShowFilter => pluginConfig.ExtraFilters;
-        public bool IsSet => showDyeable == false || showNotDyeable == false;
+        public override string Name { get; } = "Dyeability";
+        public override string NameLocalizationKey { get; } = "DyeableSearchFilter";
+        public override bool ShowFilter => pluginConfig.ExtraFilters;
+        public override bool IsSet => showDyeable == false || showNotDyeable == false;
 
-        public bool HasChanged {
+        public override bool HasChanged {
             get {
                 if (changed) {
                     changed = false;
@@ -32,15 +30,15 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public bool CheckFilter(Item item) {
+        public override bool CheckFilter(Item item) {
             return item.IsDyeable ? showDyeable : showNotDyeable;
         }
 
-        public void DrawEditor() {
+        public override void DrawEditor() {
             if (ImGui.Checkbox("Dyeable", ref showDyeable)) {
                 changed = true;
             }
-            
+
             ImGui.SameLine();
             if (ImGui.Checkbox("Not Dyeable", ref showNotDyeable)) {
                 changed = true;

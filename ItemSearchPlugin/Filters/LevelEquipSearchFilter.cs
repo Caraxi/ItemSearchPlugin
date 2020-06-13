@@ -2,7 +2,7 @@
 using ImGuiNET;
 
 namespace ItemSearchPlugin.Filters {
-    class LevelEquipSearchFilter : ISearchFilter {
+    class LevelEquipSearchFilter : SearchFilter {
         private static readonly int MIN_LEVEL = 1;
         private static readonly int MAX_LEVEL = 80;
 
@@ -23,15 +23,15 @@ namespace ItemSearchPlugin.Filters {
         }
 
 
-        public string Name => "Equip Level";
+        public override string Name => "Equip Level";
 
-        public string NameLocalizationKey => "SearchFilterLevelEquip";
+        public override string NameLocalizationKey => "SearchFilterLevelEquip";
 
-        public bool ShowFilter => config.ExtraFilters;
+        public override bool ShowFilter => config.ExtraFilters;
 
-        public bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
+        public override bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
 
-        public bool HasChanged {
+        public override bool HasChanged {
             get {
                 if (minLevel != last_minLevel || maxLevel != last_maxLevel) {
                     last_maxLevel = maxLevel;
@@ -43,13 +43,11 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        public bool CheckFilter(Item item) {
+        public override bool CheckFilter(Item item) {
             return item.LevelEquip >= minLevel && item.LevelEquip <= maxLevel;
         }
 
-        public void Dispose() { }
-
-        public void DrawEditor() {
+        public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
             if (ImGui.DragIntRange2("##LevelEquipSearchFilterRange", ref minLevel, ref maxLevel, 1f, MIN_LEVEL, MAX_LEVEL)) {
                 // Force ImGui to behave
