@@ -29,7 +29,7 @@ namespace ItemSearchPlugin.Filters {
         private int selectedCategory = 0;
         private int lastCategory = 0;
 
-        public ItemUICategorySearchFilter(DataManager data) {
+        public ItemUICategorySearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             uiCategories = new List<ItemUICategory> {null};
             uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().GetRows().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name));
             string nullName = Loc.Localize("ItemUiCategorySearchFilterAll", "All");

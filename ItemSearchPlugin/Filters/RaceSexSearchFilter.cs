@@ -11,16 +11,13 @@ using static ItemSearchPlugin.ExcelExtensions;
 
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
-        private readonly ItemSearchPluginConfig pluginConfig;
         private int selectedIndex = 0;
         private int lastIndex = 0;
         private bool broken; // Only fail once...
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
 
-        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) {
-            this.pluginConfig = pluginConfig;
-
+        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) : base(pluginConfig) {
             while (!data.IsDataReady) Thread.Sleep(1);
 
             equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().GetRows();
@@ -47,7 +44,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "RaceSexSearchFilter";
 
-        public override bool ShowFilter => !broken && pluginConfig.ExtraFilters;
+        public override bool ShowFilter => !broken && PluginConfig.ExtraFilters;
 
         public override bool IsSet => !broken && selectedIndex > 0;
 

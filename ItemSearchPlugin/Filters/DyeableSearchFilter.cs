@@ -3,20 +3,16 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.Filters {
     class DyeableSearchFilter : SearchFilter {
-        private readonly ItemSearchPluginConfig pluginConfig;
-
         private bool showDyeable = true;
         private bool showNotDyeable = true;
 
         private bool changed;
 
-        public DyeableSearchFilter(ItemSearchPluginConfig pluginConfig) {
-            this.pluginConfig = pluginConfig;
-        }
+        public DyeableSearchFilter(ItemSearchPluginConfig pluginConfig) : base(pluginConfig) { }
 
         public override string Name { get; } = "Dyeability";
         public override string NameLocalizationKey { get; } = "DyeableSearchFilter";
-        public override bool ShowFilter => pluginConfig.ExtraFilters;
+        public override bool ShowFilter => PluginConfig.ExtraFilters;
         public override bool IsSet => showDyeable == false || showNotDyeable == false;
 
         public override bool HasChanged {

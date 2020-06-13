@@ -52,8 +52,8 @@ namespace ItemSearchPlugin {
                 Thread.Sleep(1);
 
             searchFilters = new List<ISearchFilter> {
-                new ItemNameSearchFilter(searchText),
-                new ItemUICategorySearchFilter(data),
+                new ItemNameSearchFilter(pluginConfig, searchText),
+                new ItemUICategorySearchFilter(pluginConfig, data),
                 new LevelEquipSearchFilter(pluginConfig),
                 new LevelItemSearchFilter(pluginConfig),
                 new EquipAsSearchFilter(pluginConfig, data),

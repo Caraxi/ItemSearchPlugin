@@ -9,7 +9,6 @@ using System.Text;
 
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : SearchFilter {
-        private readonly ItemSearchPluginConfig config;
         private readonly List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
         private readonly List<ClassJob> classJobs;
@@ -17,8 +16,7 @@ namespace ItemSearchPlugin.Filters {
         private bool modeAny;
         private bool selectingClasses = false;
 
-        public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) {
-            this.config = config;
+        public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             this.modeAny = true;
             this.selectedClassJobs = new List<uint>();
             this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().GetRows();
@@ -30,7 +28,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "EquipAsSearchFilter";
 
-        public override bool ShowFilter => config.ExtraFilters;
+        public override bool ShowFilter => PluginConfig.ExtraFilters;
 
         public override bool IsSet => selectedClassJobs.Count >= 1;
 

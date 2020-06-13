@@ -15,5 +15,11 @@ namespace ItemSearchPlugin {
         public abstract bool HasChanged { get; }
         public abstract bool CheckFilter(Item item);
         public abstract void DrawEditor();
+
+        protected ItemSearchPluginConfig PluginConfig;
+
+        protected SearchFilter(ItemSearchPluginConfig config) {
+            this.PluginConfig = config;
+        }
     }
 }

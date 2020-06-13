@@ -10,7 +10,7 @@ namespace ItemSearchPlugin.Filters {
 
         private Regex searchRegex;
 
-        public ItemNameSearchFilter(string startingValue = "") {
+        public ItemNameSearchFilter(ItemSearchPluginConfig config, string startingValue = "") : base(config) {
             searchText = startingValue;
             lastSearchText = string.Empty;
         }

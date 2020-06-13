@@ -13,13 +13,9 @@ namespace ItemSearchPlugin.Filters {
         private int last_minLevel;
         private int last_maxLevel;
 
-        private readonly ItemSearchPluginConfig config;
-
-        public LevelEquipSearchFilter(ItemSearchPluginConfig config) {
+        public LevelEquipSearchFilter(ItemSearchPluginConfig config) : base(config) {
             minLevel = last_minLevel = MIN_LEVEL;
             maxLevel = last_maxLevel = MAX_LEVEL;
-
-            this.config = config;
         }
 
 
@@ -27,7 +23,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "SearchFilterLevelEquip";
 
-        public override bool ShowFilter => config.ExtraFilters;
+        public override bool ShowFilter => PluginConfig.ExtraFilters;
 
         public override bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
 
