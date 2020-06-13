@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
@@ -16,10 +12,20 @@ namespace ItemSearchPlugin {
         public abstract bool CheckFilter(Item item);
         public abstract void DrawEditor();
 
+        public bool IsEnabled => !this.CanBeDisabled || !this.PluginConfig.DisabledFilters.Contains(this.NameLocalizationKey);
+
+        public virtual bool CanBeDisabled => true;
+
         protected ItemSearchPluginConfig PluginConfig;
 
+        [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected SearchFilter(ItemSearchPluginConfig config) {
             this.PluginConfig = config;
+            (string l, string e) a = (NameLocalizationKey, Name);
+            
+            if (CanBeDisabled && !PluginConfig.FilterNames.Contains(a)) {
+                config.FilterNames.Add(a);
+            }
         }
     }
 }

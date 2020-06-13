@@ -160,19 +160,17 @@ namespace ItemSearchPlugin {
 
             ImGui.SetColumnWidth(0, filterNameWidth + ImGui.GetStyle().ItemSpacing.X * 2);
             Vector4 filterInUseColour = new Vector4(0, 1, 0, 1);
-            foreach (ISearchFilter filter in searchFilters) {
-                if (filter.ShowFilter) {
-                    if (filter.IsSet) {
-                        ImGui.TextColored(filterInUseColour, Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
-                    } else {
-                        ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
-                    }
-
-                    ImGui.NextColumn();
-                    filter.DrawEditor();
-                    while (ImGui.GetColumnIndex() != 0)
-                        ImGui.NextColumn();
+            foreach (ISearchFilter filter in searchFilters.Where(x => x.IsEnabled && x.ShowFilter)) {
+                if (filter.IsSet) {
+                    ImGui.TextColored(filterInUseColour, Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+                } else {
+                    ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
                 }
+
+                ImGui.NextColumn();
+                filter.DrawEditor();
+                while (ImGui.GetColumnIndex() != 0)
+                    ImGui.NextColumn();
             }
 
             ImGui.Columns(1);
@@ -182,9 +180,9 @@ namespace ItemSearchPlugin {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
             if (this.luminaItems != null) {
-                if (searchFilters.Any(x => x.ShowFilter && x.IsSet)) {
+                if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.IsSet)) {
                     isSearch = true;
-                    if (searchFilters.Any(x => x.ShowFilter && x.HasChanged) || forceReload) {
+                    if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
                         forceReload = false;
                         this.searchCancelTokenSource?.Cancel();
 
@@ -200,7 +198,7 @@ namespace ItemSearchPlugin {
                         }
 
                         foreach (ISearchFilter filter in searchFilters) {
-                            if (filter.ShowFilter && filter.IsSet) {
+                            if (filter.IsEnabled && filter.ShowFilter && filter.IsSet) {
                                 asyncEnum = asyncEnum.Where(x => filter.CheckFilter(x));
                             }
                         }

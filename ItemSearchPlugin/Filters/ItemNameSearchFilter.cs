@@ -14,13 +14,14 @@ namespace ItemSearchPlugin.Filters {
             searchText = startingValue;
             lastSearchText = string.Empty;
         }
-
-
+        
         public override string Name => "Search";
 
         public override string NameLocalizationKey => "DalamudItemSearchVerb";
 
         public override bool IsSet => !string.IsNullOrEmpty(searchText);
+
+        public override bool CanBeDisabled => false;
 
         public override bool HasChanged {
             get {

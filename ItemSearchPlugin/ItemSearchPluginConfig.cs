@@ -12,6 +12,7 @@ using Dalamud;
 namespace ItemSearchPlugin {
     public class ItemSearchPluginConfig : IPluginConfiguration {
         [NonSerialized] private DalamudPluginInterface pluginInterface;
+        [JsonIgnore] internal List<(string localizationKey, string englishName)> FilterNames { get; } = new List<(string localizationKey, string englishName)>();
 
         public int Version { get; set; }
 
@@ -39,6 +40,8 @@ namespace ItemSearchPlugin {
 
         public byte SelectedLanguage { get; set; }
 
+        public List<string> DisabledFilters { get; set; }
+        
         [NonSerialized] private DataSite lastDataSite = null;
 
         [JsonIgnore]
@@ -85,6 +88,7 @@ namespace ItemSearchPlugin {
             ShowLegacyItems = false;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
             SelectedLanguage = 0;
+            DisabledFilters = new List<string>();
 
             if (FittingRoomSaves == null) {
                 FittingRoomSaves = new List<FittingRoomSave>();
@@ -171,6 +175,25 @@ namespace ItemSearchPlugin {
             if (!string.IsNullOrEmpty(SelectedDataSite.Note)) {
                 ImGui.TextColored(new Vector4(1, 1, 1, 0.5f), $"*{SelectedDataSite.Note}");
             }
+
+            ImGui.Text("Show Filters: ");
+
+            ImGui.BeginChild("###scrollingFilterSelection", new Vector2(0, 180), true);
+
+            foreach (var (localizationKey, englishName) in FilterNames) {
+                var enabled = !DisabledFilters.Contains(localizationKey);
+                if (ImGui.Checkbox(Loc.Localize(localizationKey, englishName) + "##checkboxToggleFilterEnabled", ref enabled)) {
+                    if (enabled) {
+                        DisabledFilters.RemoveAll(a => a == localizationKey);
+                    } else {
+                        DisabledFilters.Add(localizationKey);
+                    }
+
+                    Save();
+                }
+            }
+
+            ImGui.EndChild();
 
             ImGui.End();
             return drawConfig;

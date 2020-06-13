@@ -25,6 +25,16 @@ namespace ItemSearchPlugin {
         public bool IsSet { get; }
 
         /// <summary>
+        /// True if the filter is not disabled.
+        /// </summary>
+        public bool IsEnabled { get; }
+
+        /// <summary>
+        /// True if the filter should be shown in the "Enabled Filters" section of config.
+        /// </summary>
+        public bool CanBeDisabled { get; }
+
+        /// <summary>
         /// True if the filter has changed since the last time HasChanged was called.
         /// Should only be true once, then false until the next change.
         /// </summary>
