@@ -78,6 +78,7 @@ namespace ItemSearchPlugin {
         }
 
         public bool Draw() {
+            bool isSearch = false;
             if (pluginConfig.SelectedClientLanguage != loadedClientLanguage) UpdateItemList();
             ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
 
@@ -182,6 +183,7 @@ namespace ItemSearchPlugin {
 
             if (this.luminaItems != null) {
                 if (searchFilters.Any(x => x.ShowFilter && x.IsSet)) {
+                    isSearch = true;
                     if (searchFilters.Any(x => x.ShowFilter && x.HasChanged) || forceReload) {
                         forceReload = false;
                         this.searchCancelTokenSource?.Cancel();
@@ -359,6 +361,12 @@ namespace ItemSearchPlugin {
             }
 
             string configText = Loc.Localize("ItemSearchConfigButton", "Config");
+            if (isSearch) {
+                string itemCountText = string.Format(Loc.Localize("ItemCount", "{0} Items"), this.searchTask.Result.Count);
+                ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * 2));
+                ImGui.Text(itemCountText);
+            }
+
             ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
             if (ImGui.Button(configText)) {
                 plugin.ToggleConfigWindow();
