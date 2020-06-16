@@ -54,8 +54,6 @@ namespace ItemSearchPlugin {
         public FittingRoomUI(ItemSearchPlugin plugin) {
             this.plugin = plugin;
 
-            plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
-
             try {
                 var address = new AddressResolver();
                 address.Setup(plugin.PluginInterface.TargetModuleScanner);
@@ -67,6 +65,7 @@ namespace ItemSearchPlugin {
                 getFittingLocationHook = new Hook<GetFittingRoomArrayLocation>(address.GetTryOnArrayLocation, new GetFittingRoomArrayLocation(GetFittingRoomArrayLocationDetour));
                 getFittingLocationHook.Enable();
                 CanUseTryOn = true;
+                plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
             } catch (Exception ex) {
                 PluginLog.LogError(ex.ToString());
             }
@@ -74,6 +73,7 @@ namespace ItemSearchPlugin {
 
         private void OnFrameworkUpdate(Framework framework) {
             try {
+                if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
                 IntPtr baseUIObject = getBaseUIObj();
                 if (baseUIObject != IntPtr.Zero) {
                     IntPtr tryonUIPtr = getUI2ObjByName(Marshal.ReadIntPtr(baseUIObject, 0x20), "Tryon", 1);
@@ -259,8 +259,8 @@ namespace ItemSearchPlugin {
         }
 
         public void Dispose() {
-            getFittingLocationHook?.Disable();
             plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
+            getFittingLocationHook?.Disable();
         }
     }
 }
