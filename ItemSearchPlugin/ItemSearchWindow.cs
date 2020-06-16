@@ -86,7 +86,7 @@ namespace ItemSearchPlugin {
 
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
 
-            if (!ImGui.Begin(Loc.Localize("DalamudItemSelectHeader", "Select an item"), ref isOpen, ImGuiWindowFlags.NoCollapse)) {
+            if (!ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", "Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.NoCollapse)) {
                 ImGui.PopStyleVar();
                 ImGui.End();
                 return false;
