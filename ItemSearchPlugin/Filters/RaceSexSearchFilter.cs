@@ -13,7 +13,6 @@ namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
         private int selectedIndex = 0;
         private int lastIndex = 0;
-        private bool broken; // Only fail once...
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
 
@@ -44,9 +43,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "RaceSexSearchFilter";
 
-        public override bool ShowFilter => !broken;
-
-        public override bool IsSet => !broken && selectedIndex > 0;
+        public override bool IsSet => selectedIndex > 0;
 
         public override bool HasChanged {
             get {
@@ -57,14 +54,12 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override bool CheckFilter(Item item) {
-            if (broken) return true;
             try {
                 var (text, raceId, sex) = options[selectedIndex];
                 var erc = equipRaceCategories[item.EquipRestriction];
                 return erc.AllowsRaceSex(raceId, sex);
             } catch (Exception ex) {
                 PluginLog.LogError(ex.ToString());
-                broken = true;
                 return true;
             }
         }
