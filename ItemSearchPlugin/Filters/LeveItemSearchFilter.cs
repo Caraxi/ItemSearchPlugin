@@ -25,8 +25,6 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "SearchFilterLevelItem";
 
-        public override bool ShowFilter => PluginConfig.ExtraFilters;
-
         public override bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
 
         public override bool HasChanged {

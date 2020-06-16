@@ -44,7 +44,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "RaceSexSearchFilter";
 
-        public override bool ShowFilter => !broken && PluginConfig.ExtraFilters;
+        public override bool ShowFilter => !broken;
 
         public override bool IsSet => !broken && selectedIndex > 0;
 

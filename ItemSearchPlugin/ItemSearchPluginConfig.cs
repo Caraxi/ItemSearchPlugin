@@ -80,7 +80,6 @@ namespace ItemSearchPlugin {
         public void LoadDefaults() {
             CloseOnChoose = false;
             ShowItemID = false;
-            ExtraFilters = false;
             MarketBoardPluginIntegration = false;
             MaxItemLevel = 505;
             ShowTryOn = false;
@@ -133,12 +132,6 @@ namespace ItemSearchPlugin {
             bool showItemId = ShowItemID;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigShowItemId", "Show Item IDs"), ref showItemId)) {
                 ShowItemID = showItemId;
-                Save();
-            }
-
-            bool extraFilters = ExtraFilters;
-            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigExtraFilters", "Enable Extra Filters"), ref extraFilters)) {
-                ExtraFilters = extraFilters;
                 Save();
             }
 

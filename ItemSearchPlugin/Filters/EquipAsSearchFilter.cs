@@ -28,8 +28,6 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "EquipAsSearchFilter";
 
-        public override bool ShowFilter => PluginConfig.ExtraFilters;
-
         public override bool IsSet => selectedClassJobs.Count >= 1;
 
         public override bool HasChanged {

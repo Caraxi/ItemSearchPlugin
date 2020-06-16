@@ -12,7 +12,6 @@ namespace ItemSearchPlugin.Filters {
 
         public override string Name { get; } = "Dyeability";
         public override string NameLocalizationKey { get; } = "DyeableSearchFilter";
-        public override bool ShowFilter => PluginConfig.ExtraFilters;
         public override bool IsSet => showDyeable == false || showNotDyeable == false;
 
         public override bool HasChanged {
