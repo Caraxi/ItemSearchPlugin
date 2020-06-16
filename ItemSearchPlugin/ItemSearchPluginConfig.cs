@@ -22,8 +22,6 @@ namespace ItemSearchPlugin {
 
         public bool ShowItemID { get; set; }
 
-        public bool ExtraFilters { get; set; }
-
         public uint MaxItemLevel { get; set; }
 
         public bool ShowTryOn { get; set; }
