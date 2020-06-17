@@ -8,8 +8,8 @@ using Dalamud.Plugin;
 using Newtonsoft.Json;
 
 namespace ItemSearchPlugin {
-    class Loc {
-        public static readonly string[] ApplicableLangCodes = {"de", "ja", "fr"};
+    internal class Loc {
+        internal static readonly string[] ApplicableLangCodes = {"de", "ja", "fr"};
 
         private static Dictionary<string, string> localizationStrings = new Dictionary<string, string>();
 
@@ -52,7 +52,7 @@ namespace ItemSearchPlugin {
             }
         }
 
-        public static void ExportLoadedDictionary() {
+        internal static void ExportLoadedDictionary() {
             string json = JsonConvert.SerializeObject(localizationStrings, Formatting.Indented);
             PluginLog.Log(json);
         }
