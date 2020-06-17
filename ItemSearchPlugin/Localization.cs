@@ -19,15 +19,11 @@ namespace ItemSearchPlugin {
                 return;
             }
 
-            foreach (var resourceFile in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
-                PluginLog.Log(resourceFile);
-            }
-
             using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ItemSearchPlugin.Localization.{langCode}.json");
 
             if (s == null) {
                 PluginLog.LogError("Failed to find language file.");
-
+                localizationStrings = new Dictionary<string, string>();
                 return;
             }
 
