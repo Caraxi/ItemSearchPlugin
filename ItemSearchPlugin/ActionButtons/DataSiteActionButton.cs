@@ -1,7 +1,4 @@
-﻿using CheapLoc;
-using Lumina.Excel.GeneratedSheets;
-using Dalamud.Plugin;
-using System;
+﻿using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.ActionButtons {
     class DataSiteActionButton : IActionButton {

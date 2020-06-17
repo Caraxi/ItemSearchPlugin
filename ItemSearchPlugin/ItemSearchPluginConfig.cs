@@ -1,5 +1,4 @@
-﻿using CheapLoc;
-using Dalamud.Configuration;
+﻿using Dalamud.Configuration;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Newtonsoft.Json;
@@ -12,6 +11,7 @@ using Dalamud;
 namespace ItemSearchPlugin {
     public class ItemSearchPluginConfig : IPluginConfiguration {
         [NonSerialized] private DalamudPluginInterface pluginInterface;
+        [NonSerialized] private ItemSearchPlugin plugin;
         [JsonIgnore] internal List<(string localizationKey, string englishName)> FilterNames { get; } = new List<(string localizationKey, string englishName)>();
 
         public int Version { get; set; }
@@ -93,8 +93,9 @@ namespace ItemSearchPlugin {
         }
 
 
-        public void Init(DalamudPluginInterface pluginInterface) {
+        public void Init(DalamudPluginInterface pluginInterface, ItemSearchPlugin plugin) {
             this.pluginInterface = pluginInterface;
+            this.plugin = plugin;
         }
 
         public void Save() {
@@ -110,12 +111,38 @@ namespace ItemSearchPlugin {
             int selectedLanguage = SelectedLanguage;
             if (ImGui.BeginCombo(Loc.Localize("ItemSearchConfigItemLanguage", "Item Language") + "###ItemSearchConfigLanguageSelect", SelectedLanguage == 0 ? Loc.Localize("LanguageAutomatic", "Automatic") : SelectedClientLanguage.ToString())) {
                 if (ImGui.Selectable(Loc.Localize("LanguageAutomatic", "Automatic"), selectedLanguage == 0)) SelectedLanguage = 0;
-                if (ImGui.Selectable(Loc.Localize("LanguageEnglish", "English"), selectedLanguage == 1)) SelectedLanguage = 1;
-                if (ImGui.Selectable(Loc.Localize("LanguageJapanese", "Japanese"), selectedLanguage == 2)) SelectedLanguage = 2;
-                if (ImGui.Selectable(Loc.Localize("LanguageFrench", "French"), selectedLanguage == 3)) SelectedLanguage = 3;
-                if (ImGui.Selectable(Loc.Localize("LanguageGerman", "German"), selectedLanguage == 4)) SelectedLanguage = 4;
+                if (ImGui.Selectable("English##itemLanguageOption", selectedLanguage == 1)) SelectedLanguage = 1;
+                if (ImGui.Selectable("日本語##itemLanguageOption", selectedLanguage == 2)) SelectedLanguage = 2;
+                if (ImGui.Selectable("Français##itemLanguageOption", selectedLanguage == 3)) SelectedLanguage = 3;
+                if (ImGui.Selectable("Deutsch##itemLanguageOption", selectedLanguage == 4)) SelectedLanguage = 4;
                 if (SelectedLanguage != selectedLanguage) {
                     Save();
+                }
+
+                ImGui.EndCombo();
+            }
+
+            string uiLanguage = Language;
+            string selectedLanguageString = Loc.Localize("LanguageDefault", "Default");
+            if (!string.IsNullOrEmpty(uiLanguage)) {
+                selectedLanguageString = uiLanguage switch {
+                    "en" => "English",
+                    "jp" => "日本語",
+                    "de" => "Deutsch",
+                    "fr" => "Français",
+                    _ => "Unknown Language"
+                };
+            }
+
+            if (ImGui.BeginCombo(Loc.Localize("ItemSearchConfigItemLanguage", "UI Language") + "###ItemSearchConfigUiLanguageSelect", selectedLanguageString)) {
+                if (ImGui.Selectable(Loc.Localize("LanguageDefault", "Default"), string.IsNullOrEmpty(uiLanguage))) Language = null;
+                if (ImGui.Selectable("English##uiLanguageOption", uiLanguage == "en")) Language = "en";
+                if (ImGui.Selectable("日本語##uiLanguageOption", uiLanguage == "jp")) Language = "jp";
+                if (ImGui.Selectable("Français##uiLanguageOption", uiLanguage == "fr")) Language = "fr";
+                if (ImGui.Selectable("Language_de##uiLanguageOption", uiLanguage == "de")) Language = "de";
+                if (Language != uiLanguage) {
+                    Save();
+                    plugin.ReloadLocalization();
                 }
 
                 ImGui.EndCombo();

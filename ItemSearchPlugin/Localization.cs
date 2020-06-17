@@ -1,48 +1,64 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using CheapLoc;
-using Serilog;
+using Dalamud.Plugin;
+using Newtonsoft.Json;
 
 namespace ItemSearchPlugin {
-    /**
-     * 
-     * https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Localization.cs
-     * 
-     */
-    class Localization {
-        public static readonly string[] ApplicableLangCodes = {"de", "ja", "fr", "it", "es"};
+    class Loc {
+        public static readonly string[] ApplicableLangCodes = {"de", "ja", "fr"};
 
+        private static Dictionary<string, string> localizationStrings = new Dictionary<string, string>();
 
-        public void SetupWithUiCulture() {
-            try {
-                var currentUiLang = CultureInfo.CurrentUICulture;
-                Log.Information("Trying to set up Loc for culture {0}", currentUiLang.TwoLetterISOLanguageName);
-
-                if (ApplicableLangCodes.Any(x => currentUiLang.TwoLetterISOLanguageName == x)) {
-                    SetupWithLangCode(currentUiLang.TwoLetterISOLanguageName);
-                } else {
-                    Loc.SetupWithFallbacks();
-                }
-            } catch (Exception ex) {
-                Log.Error(ex, "Could not get language information. Setting up fallbacks.");
-                Loc.SetupWithFallbacks();
-            }
-        }
-
-        public void SetupWithLangCode(string langCode) {
+        internal static void LoadLanguage(string langCode) {
             if (langCode.ToLower() == "en") {
-                Loc.SetupWithFallbacks();
+                localizationStrings = new Dictionary<string, string>();
                 return;
             }
 
-            using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"itemsearch_{langCode}")) {
-                using (StreamReader sr = new StreamReader(s)) {
-                    Loc.Setup(sr.ReadToEnd());
-                }
+            foreach (var resourceFile in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
+                PluginLog.Log(resourceFile);
             }
+
+            using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ItemSearchPlugin.Localization.{langCode}.json");
+
+            if (s == null) {
+                PluginLog.LogError("Failed to find language file.");
+
+                return;
+            }
+
+            using var sr = new StreamReader(s);
+            localizationStrings = JsonConvert.DeserializeObject<Dictionary<string, string>>(sr.ReadToEnd());
+        }
+
+        internal static string Localize(string key, string fallbackValue) {
+            try {
+                return localizationStrings[key];
+            } catch {
+                localizationStrings[key] = fallbackValue;
+                return fallbackValue;
+            }
+        }
+
+
+        internal static void LoadDefaultLanguage() {
+            try {
+                var currentUiLang = CultureInfo.CurrentUICulture;
+                PluginLog.Log("Trying to set up Loc for culture {0}", currentUiLang.TwoLetterISOLanguageName);
+                LoadLanguage(ApplicableLangCodes.Any(x => currentUiLang.TwoLetterISOLanguageName == x) ? currentUiLang.TwoLetterISOLanguageName : "en");
+            } catch (Exception ex) {
+                PluginLog.LogError("Could not get language information. Setting up fallbacks. {0}", ex.ToString());
+                LoadLanguage("en");
+            }
+        }
+
+        public static void ExportLoadedDictionary() {
+            string json = JsonConvert.SerializeObject(localizationStrings, Formatting.Indented);
+            PluginLog.Log(json);
         }
     }
 }

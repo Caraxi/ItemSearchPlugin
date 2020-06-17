@@ -1,5 +1,4 @@
-﻿using CheapLoc;
-using Dalamud.Game.Chat;
+﻿using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 using ItemSearchPlugin.DataSites;
@@ -16,7 +15,6 @@ namespace ItemSearchPlugin {
         private ItemSearchWindow itemSearchWindow;
         private bool drawItemSearchWindow;
 
-        private Localization localization;
         private bool replacedOriginalCommand = false;
         private bool drawConfigWindow = false;
 
@@ -35,15 +33,9 @@ namespace ItemSearchPlugin {
         public void Initialize(DalamudPluginInterface pluginInterface) {
             this.PluginInterface = pluginInterface;
             this.PluginConfig = (ItemSearchPluginConfig) pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
-            this.PluginConfig.Init(pluginInterface);
+            this.PluginConfig.Init(pluginInterface, this);
 
-            localization = new Localization();
-
-            if (!string.IsNullOrEmpty(PluginConfig.Language)) {
-                localization.SetupWithLangCode(PluginConfig.Language);
-            } else {
-                localization.SetupWithUiCulture();
-            }
+            ReloadLocalization();
 
             FittingRoomUI = new FittingRoomUI(this);
 
@@ -54,6 +46,16 @@ namespace ItemSearchPlugin {
             OnItemSearchCommand("", "");
 #endif
         }
+
+        public void ReloadLocalization() {
+
+            if (!string.IsNullOrEmpty(PluginConfig.Language)) {
+                Loc.LoadLanguage(PluginConfig.Language);
+            } else {
+                Loc.LoadDefaultLanguage();
+            }
+        }
+
 
         public void SetupCommands() {
             // Move the original xlitem
@@ -71,7 +73,7 @@ namespace ItemSearchPlugin {
 
 #if DEBUG
             PluginInterface.CommandManager.AddHandler("/itemsearchdumploc", new Dalamud.Game.Command.CommandInfo(((command, arguments) => {
-                Loc.ExportLocalizable();
+                Loc.ExportLoadedDictionary();
             })));
 #endif
         }

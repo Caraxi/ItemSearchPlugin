@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using CheapLoc;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Internal;
 using Dalamud.Hooking;

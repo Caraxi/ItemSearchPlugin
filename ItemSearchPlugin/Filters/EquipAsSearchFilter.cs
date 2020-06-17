@@ -1,5 +1,4 @@
-﻿using CheapLoc;
-using Dalamud.Data;
+﻿using Dalamud.Data;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;

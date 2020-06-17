@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using CheapLoc;
 using Dalamud;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;

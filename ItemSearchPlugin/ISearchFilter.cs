@@ -9,7 +9,7 @@ namespace ItemSearchPlugin {
         public string Name { get; }
 
         /// <summary>
-        /// CheapLoc localization key
+        /// Localization key
         /// </summary>
         public string NameLocalizationKey { get; }
 
