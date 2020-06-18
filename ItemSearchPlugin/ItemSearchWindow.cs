@@ -58,6 +58,7 @@ namespace ItemSearchPlugin {
                 new EquipAsSearchFilter(pluginConfig, data),
                 new RaceSexSearchFilter(pluginConfig, data),
                 new DyeableSearchFilter(pluginConfig),
+                new StatSearchFilter(pluginConfig, data),
             };
 
             actionButtons = new List<IActionButton> {
