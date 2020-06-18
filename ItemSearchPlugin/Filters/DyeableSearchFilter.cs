@@ -6,24 +6,11 @@ namespace ItemSearchPlugin.Filters {
         private bool showDyeable = true;
         private bool showNotDyeable = true;
 
-        private bool changed;
-
         public DyeableSearchFilter(ItemSearchPluginConfig pluginConfig) : base(pluginConfig) { }
 
         public override string Name { get; } = "Dyeability";
         public override string NameLocalizationKey { get; } = "DyeableSearchFilter";
         public override bool IsSet => showDyeable == false || showNotDyeable == false;
-
-        public override bool HasChanged {
-            get {
-                if (changed) {
-                    changed = false;
-                    return true;
-                }
-
-                return false;
-            }
-        }
 
         public override bool CheckFilter(Item item) {
             return item.IsDyeable ? showDyeable : showNotDyeable;
@@ -31,12 +18,12 @@ namespace ItemSearchPlugin.Filters {
 
         public override void DrawEditor() {
             if (ImGui.Checkbox("Dyeable", ref showDyeable)) {
-                changed = true;
+                Modified = true;
             }
 
             ImGui.SameLine();
             if (ImGui.Checkbox("Not Dyeable", ref showNotDyeable)) {
-                changed = true;
+                Modified = true;
             }
         }
     }

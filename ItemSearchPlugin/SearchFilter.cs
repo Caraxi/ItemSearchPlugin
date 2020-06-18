@@ -3,12 +3,23 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     abstract class SearchFilter : ISearchFilter {
+
+        protected bool Modified = false;
+
         public virtual void Dispose() { }
         public abstract string Name { get; }
         public abstract string NameLocalizationKey { get; }
         public virtual bool ShowFilter => true;
         public abstract bool IsSet { get; }
-        public abstract bool HasChanged { get; }
+
+        public virtual bool HasChanged {
+            get {
+                if (!Modified) return false;
+                Modified = false;
+                return true;
+            }
+        }
+
         public abstract bool CheckFilter(Item item);
         public abstract void DrawEditor();
 
