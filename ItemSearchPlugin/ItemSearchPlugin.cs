@@ -1,6 +1,7 @@
 ﻿using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
+using ImGuiNET;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.GeneratedSheets;
 
@@ -120,6 +121,17 @@ namespace ItemSearchPlugin {
                     }
                 }
             }
+
+#if DEBUG
+            ImGui.BeginMainMenuBar();
+            if (ImGui.MenuItem("ItemSearch")) {
+                itemSearchWindow?.Dispose();
+                itemSearchWindow = new ItemSearchWindow(this, "");
+                drawItemSearchWindow = true;
+            }
+
+            ImGui.EndMainMenuBar();
+#endif
         }
 
         internal void LinkItem(Item item) {
