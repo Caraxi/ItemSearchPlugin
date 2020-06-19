@@ -141,7 +141,7 @@ namespace ItemSearchPlugin {
             }
 
             PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
-                MessageBytes = SeStringUtils.CreateItemLink(item.RowId, false, item.Name).Encode()
+                MessageBytes = SeStringUtils.CreateItemLink(item.RowId, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11], item.Name).Encode()
             });
         }
 
