@@ -31,7 +31,7 @@ namespace ItemSearchPlugin {
         private List<Item> luminaItems;
 
         private readonly ItemSearchPluginConfig pluginConfig;
-        public List<ISearchFilter> searchFilters;
+        public List<SearchFilter> searchFilters;
         public List<IActionButton> actionButtons;
 
         private bool autoTryOn;
@@ -50,7 +50,7 @@ namespace ItemSearchPlugin {
             while (!data.IsDataReady)
                 Thread.Sleep(1);
 
-            searchFilters = new List<ISearchFilter> {
+            searchFilters = new List<SearchFilter> {
                 new ItemNameSearchFilter(pluginConfig, searchText),
                 new ItemUICategorySearchFilter(pluginConfig, data),
                 new LevelEquipSearchFilter(pluginConfig),
@@ -156,15 +156,21 @@ namespace ItemSearchPlugin {
             ImGui.Separator();
 
             ImGui.Columns(2);
-            float filterNameWidth = searchFilters.Where(f => f.ShowFilter).Select(f => ImGui.CalcTextSize(Loc.Localize(f.NameLocalizationKey, $"{f.Name}: ")).X).Max();
+            var filterNameMax = searchFilters.Where(x => x.IsEnabled && x.ShowFilter).Select(x => {
+                x._LocalizedName = Loc.Localize(x.NameLocalizationKey, x.Name);
+                x._LocalizedNameWidth = ImGui.CalcTextSize($"{x._LocalizedName}").X;
+                return x._LocalizedNameWidth;
+            }).Max();
 
-            ImGui.SetColumnWidth(0, filterNameWidth + ImGui.GetStyle().ItemSpacing.X * 2);
-            Vector4 filterInUseColour = new Vector4(0, 1, 0, 1);
-            foreach (ISearchFilter filter in searchFilters.Where(x => x.IsEnabled && x.ShowFilter)) {
+            ImGui.SetColumnWidth(0, filterNameMax + ImGui.GetStyle().ItemSpacing.X * 2);
+            var filterInUseColour = new Vector4(0, 1, 0, 1);
+            foreach (var filter in searchFilters.Where(x => x.IsEnabled && x.ShowFilter)) {
+                ImGui.SetCursorPosX((filterNameMax + ImGui.GetStyle().ItemSpacing.X) - filter._LocalizedNameWidth);
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3);
                 if (filter.IsSet) {
-                    ImGui.TextColored(filterInUseColour, Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+                    ImGui.TextColored(filterInUseColour, $"{filter._LocalizedName}: ");
                 } else {
-                    ImGui.Text(Loc.Localize(filter.NameLocalizationKey, $"{filter.Name}: "));
+                    ImGui.Text($"{filter._LocalizedName}: ");
                 }
 
                 ImGui.NextColumn();

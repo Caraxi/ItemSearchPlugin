@@ -3,6 +3,9 @@ using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     abstract class SearchFilter : ISearchFilter {
+        // Temp Variables
+        internal string _LocalizedName = "";
+        internal float _LocalizedNameWidth = 0;
 
         protected bool Modified = false;
 

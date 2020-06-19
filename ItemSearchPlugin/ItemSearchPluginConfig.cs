@@ -4,6 +4,7 @@ using ImGuiNET;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Dalamud;
@@ -134,7 +135,7 @@ namespace ItemSearchPlugin {
                 };
             }
 
-            if (ImGui.BeginCombo(Loc.Localize("ItemSearchConfigItemLanguage", "UI Language") + "###ItemSearchConfigUiLanguageSelect", selectedLanguageString)) {
+            if (ImGui.BeginCombo(Loc.Localize("ItemSearchConfigUILanguage", "UI Language") + "###ItemSearchConfigUiLanguageSelect", selectedLanguageString)) {
                 if (ImGui.Selectable(Loc.Localize("LanguageDefault", "Default"), string.IsNullOrEmpty(uiLanguage))) Language = null;
                 if (ImGui.Selectable("English##uiLanguageOption", uiLanguage == "en")) Language = "en";
                 if (ImGui.Selectable("日本語##uiLanguageOption", uiLanguage == "jp")) Language = "jp";
@@ -212,6 +213,12 @@ namespace ItemSearchPlugin {
             }
 
             ImGui.EndChild();
+
+            ImGui.TextUnformatted("Help translate: ");
+            ImGui.SameLine();
+            if (ImGui.Button("Open POEditor")) {
+                Process.Start("https://poeditor.com/join/project/RkcNcGm27q");
+            }
 
             ImGui.End();
             return drawConfig;
