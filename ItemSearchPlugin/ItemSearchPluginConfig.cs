@@ -140,7 +140,7 @@ namespace ItemSearchPlugin {
                 if (ImGui.Selectable("English##uiLanguageOption", uiLanguage == "en")) Language = "en";
                 if (ImGui.Selectable("日本語##uiLanguageOption", uiLanguage == "jp")) Language = "jp";
                 if (ImGui.Selectable("Français##uiLanguageOption", uiLanguage == "fr")) Language = "fr";
-                if (ImGui.Selectable("Language_de##uiLanguageOption", uiLanguage == "de")) Language = "de";
+                if (ImGui.Selectable("Deutsch##uiLanguageOption", uiLanguage == "de")) Language = "de";
                 if (Language != uiLanguage) {
                     Save();
                     plugin.ReloadLocalization();
