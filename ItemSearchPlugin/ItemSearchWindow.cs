@@ -40,6 +40,8 @@ namespace ItemSearchPlugin {
         private ClientLanguage loadedClientLanguage;
         private bool forceReload;
 
+        private bool errorLoadingItems;
+
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
             this.pluginInterface = plugin.PluginInterface;
             this.data = pluginInterface.Data;
@@ -66,12 +68,28 @@ namespace ItemSearchPlugin {
                 new DataSiteActionButton(pluginConfig)
             };
 
-            UpdateItemList();
+            UpdateItemList(1000);
         }
 
-        private void UpdateItemList() {
+        private void UpdateItemList(int delay = 100) {
+            errorLoadingItems = false;
+            this.luminaItems = null;
             loadedClientLanguage = pluginConfig.SelectedClientLanguage;
-            Task.Run(() => this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).GetRows()).ContinueWith(t => {
+            Task.Run(async () => {
+                await Task.Delay(delay);
+                try {
+                    return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).GetRows();
+                } catch (Exception ex) {
+                    errorLoadingItems = true;
+                    PluginLog.LogError("Failed loading Items");
+                    PluginLog.LogError(ex.ToString());
+                    return new List<Item>();
+                }
+            }).ContinueWith(t => {
+                if (errorLoadingItems) {
+                    return luminaItems;
+                }
+
                 forceReload = true;
                 return this.luminaItems = t.Result;
             });
@@ -185,7 +203,12 @@ namespace ItemSearchPlugin {
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
-            if (this.luminaItems != null) {
+            if (errorLoadingItems) {
+                ImGui.TextColored(new Vector4(1f, 0.1f, 0.1f, 1.00f), Loc.Localize("ItemSearchListLoadFailed", "Error loading item list."));
+                if (ImGui.SmallButton("Retry")) {
+                    UpdateItemList();
+                }
+            } else if (this.luminaItems != null) {
                 if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.IsSet)) {
                     isSearch = true;
                     if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
