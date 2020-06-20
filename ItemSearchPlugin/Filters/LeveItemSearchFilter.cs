@@ -4,20 +4,20 @@ using System;
 
 namespace ItemSearchPlugin.Filters {
     class LevelItemSearchFilter : SearchFilter {
-        private static readonly uint MIN_LEVEL = 1;
-        private static uint MAX_LEVEL = 505;
+        private const uint MinItemLevel = 1;
+        private uint maxItemLevel = 505;
 
         private uint minLevel;
         private uint maxLevel;
 
-        private uint last_minLevel;
-        private uint last_maxLevel;
+        private uint lastMinLevel;
+        private uint lastMaxLevel;
 
         public LevelItemSearchFilter(ItemSearchPluginConfig config) : base(config) {
-            minLevel = last_minLevel = MIN_LEVEL;
-            maxLevel = last_maxLevel = MAX_LEVEL;
+            minLevel = lastMinLevel = MinItemLevel;
+            maxLevel = lastMaxLevel = maxItemLevel;
 
-            MAX_LEVEL = Math.Max(MAX_LEVEL, config.MaxItemLevel);
+            maxItemLevel = Math.Max(maxItemLevel, config.MaxItemLevel);
         }
 
 
@@ -25,13 +25,13 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "SearchFilterLevelItem";
 
-        public override bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
+        public override bool IsSet => minLevel != MinItemLevel || maxLevel != maxItemLevel;
 
         public override bool HasChanged {
             get {
-                if (minLevel != last_minLevel || maxLevel != last_maxLevel) {
-                    last_maxLevel = maxLevel;
-                    last_minLevel = minLevel;
+                if (minLevel != lastMinLevel || maxLevel != lastMaxLevel) {
+                    lastMaxLevel = maxLevel;
+                    lastMinLevel = minLevel;
                     return true;
                 }
 
@@ -40,11 +40,11 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override bool CheckFilter(Item item) {
-            if (item.LevelItem.Row > MAX_LEVEL) {
-                if (maxLevel == MAX_LEVEL) {
-                    maxLevel = MAX_LEVEL = item.LevelItem.Row;
+            if (item.LevelItem.Row > maxItemLevel) {
+                if (maxLevel == maxItemLevel) {
+                    maxLevel = maxItemLevel = item.LevelItem.Row;
                 } else {
-                    MAX_LEVEL = item.LevelItem.Row;
+                    maxItemLevel = item.LevelItem.Row;
                 }
             }
 
@@ -53,18 +53,18 @@ namespace ItemSearchPlugin.Filters {
 
         public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
-            int minLevel = (int) this.minLevel;
-            int maxLevel = (int) this.maxLevel;
-            if (ImGui.DragIntRange2("##LevelItemSearchFilterRange", ref minLevel, ref maxLevel, 1f, (int) MIN_LEVEL, (int) MAX_LEVEL)) {
+            var minLevelInt = (int) minLevel;
+            var maxLevelInt = (int) maxLevel;
+            if (ImGui.DragIntRange2("##LevelItemSearchFilterRange", ref minLevelInt, ref maxLevelInt, 1f, (int) MinItemLevel, (int) maxItemLevel)) {
                 // Force ImGui to behave
                 // https://cdn.discordapp.com/attachments/653504487352303619/713825323967447120/ehS7GdAHKG.gif
-                if (minLevel > maxLevel && minLevel != last_minLevel) minLevel = maxLevel;
-                if (maxLevel < minLevel && maxLevel != last_maxLevel) maxLevel = minLevel;
-                if (minLevel < MIN_LEVEL) this.minLevel = MIN_LEVEL;
-                if (maxLevel > MAX_LEVEL) this.maxLevel = MAX_LEVEL;
+                if (minLevelInt > maxLevelInt && minLevelInt != lastMinLevel) minLevelInt = maxLevelInt;
+                if (maxLevelInt < minLevelInt && maxLevelInt != lastMaxLevel) maxLevelInt = minLevelInt;
+                if (minLevelInt < MinItemLevel) minLevel = MinItemLevel;
+                if (maxLevelInt > maxItemLevel) maxLevel = maxItemLevel;
 
-                this.minLevel = (uint) minLevel;
-                this.maxLevel = (uint) maxLevel;
+                minLevel = (uint) minLevelInt;
+                maxLevel = (uint) maxLevelInt;
             }
 
             ImGui.PopItemWidth();

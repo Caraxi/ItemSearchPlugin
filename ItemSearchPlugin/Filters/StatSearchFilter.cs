@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
@@ -10,10 +8,10 @@ using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.Filters {
-    class StatSearchFilter : SearchFilter {
+    internal class StatSearchFilter : SearchFilter {
         public class Stat {
-            public BaseParam BaseParam = null;
-            public int BaseParamIndex = 0;
+            public BaseParam BaseParam;
+            public int BaseParamIndex;
         }
 
         private BaseParam[] baseParams;
@@ -47,7 +45,6 @@ namespace ItemSearchPlugin.Filters {
         public override string Name => "Has Stats";
         public override string NameLocalizationKey => "StatSearchFilter";
         public override bool IsSet => Stats.Count > 0 && Stats.Any(s => s.BaseParam != null && s.BaseParam.RowId != 0);
-
 
         public override bool CheckFilter(Item item) {
             if (baseParams == null) return true;
@@ -83,8 +80,7 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-
-            Vector2 btnSize = new Vector2(24);
+            var btnSize = new Vector2(24);
 
             if (baseParams == null) {
                 // Still loading

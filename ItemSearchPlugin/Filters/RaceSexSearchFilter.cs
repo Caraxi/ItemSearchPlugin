@@ -10,8 +10,8 @@ using static ItemSearchPlugin.ExcelExtensions;
 
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
-        private int selectedIndex = 0;
-        private int lastIndex = 0;
+        private int selectedIndex;
+        private int lastIndex;
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
 
@@ -54,7 +54,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override bool CheckFilter(Item item) {
             try {
-                var (text, raceId, sex) = options[selectedIndex];
+                var (_, raceId, sex) = options[selectedIndex];
                 var erc = equipRaceCategories[item.EquipRestriction];
                 return erc.AllowsRaceSex(raceId, sex);
             } catch (Exception ex) {

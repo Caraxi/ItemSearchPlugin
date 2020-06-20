@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
@@ -17,7 +16,7 @@ using Serilog;
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
-    class ItemSearchWindow : IDisposable {
+    internal class ItemSearchWindow : IDisposable {
         private readonly ItemSearchPlugin plugin;
         private readonly DalamudPluginInterface pluginInterface;
         private readonly DataManager data;
@@ -30,8 +29,8 @@ namespace ItemSearchPlugin {
         private ValueTask<List<Item>> searchTask;
 
         private readonly ItemSearchPluginConfig pluginConfig;
-        public List<SearchFilter> searchFilters;
-        public List<IActionButton> actionButtons;
+        public List<SearchFilter> SearchFilters;
+        public List<IActionButton> ActionButtons;
 
         private bool autoTryOn;
         private int debounceKeyPress;
@@ -50,7 +49,7 @@ namespace ItemSearchPlugin {
             while (!data.IsDataReady)
                 Thread.Sleep(1);
 
-            searchFilters = new List<SearchFilter> {
+            SearchFilters = new List<SearchFilter> {
                 new ItemNameSearchFilter(pluginConfig, searchText),
                 new ItemUICategorySearchFilter(pluginConfig, data),
                 new LevelEquipSearchFilter(pluginConfig),
@@ -61,7 +60,7 @@ namespace ItemSearchPlugin {
                 new StatSearchFilter(pluginConfig, data),
             };
 
-            actionButtons = new List<IActionButton> {
+            ActionButtons = new List<IActionButton> {
                 new MarketBoardActionButton(pluginInterface, pluginConfig),
                 new DataSiteActionButton(pluginConfig)
             };
@@ -92,7 +91,7 @@ namespace ItemSearchPlugin {
         }
 
         public bool Draw() {
-            bool isSearch = false;
+            var isSearch = false;
             if (pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage) UpdateItemList(1000);
             ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
 
@@ -130,23 +129,23 @@ namespace ItemSearchPlugin {
                     var imGuiStyle = ImGui.GetStyle();
                     var windowVisible = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
 
-                    IActionButton[] buttons = this.actionButtons.Where(ab => ab.ButtonPosition == ActionButtonPosition.TOP).ToArray();
+                    IActionButton[] buttons = this.ActionButtons.Where(ab => ab.ButtonPosition == ActionButtonPosition.TOP).ToArray();
 
-                    for (int i = 0; i < buttons.Length; i++) {
-                        IActionButton button = buttons[i];
+                    for (var i = 0; i < buttons.Length; i++) {
+                        var button = buttons[i];
 
                         if (button.GetShowButton(selectedItem)) {
-                            string buttonText = button.GetButtonText(selectedItem);
+                            var buttonText = button.GetButtonText(selectedItem);
                             ImGui.PushID($"TopActionButton{i}");
                             if (ImGui.Button(buttonText)) {
                                 button.OnButtonClicked(selectedItem);
                             }
 
                             if (i < buttons.Length - 1) {
-                                float l_x2 = ImGui.GetItemRectMax().X;
-                                float nbw = ImGui.CalcTextSize(buttons[i + 1].GetButtonText(selectedItem)).X + imGuiStyle.ItemInnerSpacing.X * 2;
-                                float n_x2 = l_x2 + (imGuiStyle.ItemSpacing.X * 2) + nbw;
-                                if (n_x2 < windowVisible) {
+                                var lX2 = ImGui.GetItemRectMax().X;
+                                var nbw = ImGui.CalcTextSize(buttons[i + 1].GetButtonText(selectedItem)).X + imGuiStyle.ItemInnerSpacing.X * 2;
+                                var nX2 = lX2 + (imGuiStyle.ItemSpacing.X * 2) + nbw;
+                                if (nX2 < windowVisible) {
                                     ImGui.SameLine();
                                 }
                             }
@@ -167,7 +166,7 @@ namespace ItemSearchPlugin {
             ImGui.Separator();
 
             ImGui.Columns(2);
-            var filterNameMax = searchFilters.Where(x => x.IsEnabled && x.ShowFilter).Select(x => {
+            var filterNameMax = SearchFilters.Where(x => x.IsEnabled && x.ShowFilter).Select(x => {
                 x._LocalizedName = Loc.Localize(x.NameLocalizationKey, x.Name);
                 x._LocalizedNameWidth = ImGui.CalcTextSize($"{x._LocalizedName}").X;
                 return x._LocalizedNameWidth;
@@ -175,7 +174,7 @@ namespace ItemSearchPlugin {
 
             ImGui.SetColumnWidth(0, filterNameMax + ImGui.GetStyle().ItemSpacing.X * 2);
             var filterInUseColour = new Vector4(0, 1, 0, 1);
-            foreach (var filter in searchFilters.Where(x => x.IsEnabled && x.ShowFilter)) {
+            foreach (var filter in SearchFilters.Where(x => x.IsEnabled && x.ShowFilter)) {
                 ImGui.SetCursorPosX((filterNameMax + ImGui.GetStyle().ItemSpacing.X) - filter._LocalizedNameWidth);
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3);
                 if (filter.IsSet) {
@@ -202,9 +201,9 @@ namespace ItemSearchPlugin {
                     UpdateItemList();
                 }
             } else if (plugin.LuminaItems != null) {
-                if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.IsSet)) {
+                if (SearchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.IsSet)) {
                     isSearch = true;
-                    if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
+                    if (SearchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
                         forceReload = false;
                         this.searchCancelTokenSource?.Cancel();
 
@@ -219,7 +218,7 @@ namespace ItemSearchPlugin {
                             });
                         }
 
-                        foreach (ISearchFilter filter in searchFilters) {
+                        foreach (ISearchFilter filter in SearchFilters) {
                             if (filter.IsEnabled && filter.ShowFilter && filter.IsSet) {
                                 asyncEnum = asyncEnum.Where(x => filter.CheckFilter(x));
                             }
@@ -398,11 +397,11 @@ namespace ItemSearchPlugin {
         }
 
         public void Dispose() {
-            foreach (ISearchFilter f in searchFilters) {
+            foreach (ISearchFilter f in SearchFilters) {
                 f?.Dispose();
             }
 
-            foreach (IActionButton b in actionButtons) {
+            foreach (IActionButton b in ActionButtons) {
                 b?.Dispose();
             }
 

@@ -2,12 +2,12 @@
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
-    abstract class SearchFilter : ISearchFilter {
+    internal abstract class SearchFilter : ISearchFilter {
         // Temp Variables
         internal string _LocalizedName = "";
         internal float _LocalizedNameWidth = 0;
 
-        protected bool Modified = false;
+        protected bool Modified;
 
         public virtual void Dispose() { }
         public abstract string Name { get; }

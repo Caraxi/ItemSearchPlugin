@@ -3,19 +3,19 @@ using ImGuiNET;
 
 namespace ItemSearchPlugin.Filters {
     class LevelEquipSearchFilter : SearchFilter {
-        private static readonly int MIN_LEVEL = 1;
-        private static readonly int MAX_LEVEL = 80;
+        private const int MinLevel = 1;
+        private const int MaxLevel = 80;
 
 
         private int minLevel;
         private int maxLevel;
 
-        private int last_minLevel;
-        private int last_maxLevel;
+        private int lastMinLevel;
+        private int lastMaxLevel;
 
         public LevelEquipSearchFilter(ItemSearchPluginConfig config) : base(config) {
-            minLevel = last_minLevel = MIN_LEVEL;
-            maxLevel = last_maxLevel = MAX_LEVEL;
+            minLevel = lastMinLevel = MinLevel;
+            maxLevel = lastMaxLevel = MaxLevel;
         }
 
 
@@ -23,13 +23,13 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "SearchFilterLevelEquip";
 
-        public override bool IsSet => minLevel != MIN_LEVEL || maxLevel != MAX_LEVEL;
+        public override bool IsSet => minLevel != MinLevel || maxLevel != MaxLevel;
 
         public override bool HasChanged {
             get {
-                if (minLevel != last_minLevel || maxLevel != last_maxLevel) {
-                    last_maxLevel = maxLevel;
-                    last_minLevel = minLevel;
+                if (minLevel != lastMinLevel || maxLevel != lastMaxLevel) {
+                    lastMaxLevel = maxLevel;
+                    lastMinLevel = minLevel;
                     return true;
                 }
 
@@ -43,13 +43,13 @@ namespace ItemSearchPlugin.Filters {
 
         public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
-            if (ImGui.DragIntRange2("##LevelEquipSearchFilterRange", ref minLevel, ref maxLevel, 1f, MIN_LEVEL, MAX_LEVEL)) {
+            if (ImGui.DragIntRange2("##LevelEquipSearchFilterRange", ref minLevel, ref maxLevel, 1f, MinLevel, MaxLevel)) {
                 // Force ImGui to behave
                 // https://cdn.discordapp.com/attachments/653504487352303619/713825323967447120/ehS7GdAHKG.gif
-                if (minLevel > maxLevel && minLevel != last_minLevel) minLevel = maxLevel;
-                if (maxLevel < minLevel && maxLevel != last_maxLevel) maxLevel = minLevel;
-                if (minLevel < MIN_LEVEL) minLevel = MIN_LEVEL;
-                if (maxLevel > MAX_LEVEL) maxLevel = MAX_LEVEL;
+                if (minLevel > maxLevel && minLevel != lastMinLevel) minLevel = maxLevel;
+                if (maxLevel < minLevel && maxLevel != lastMaxLevel) maxLevel = minLevel;
+                if (minLevel < MinLevel) minLevel = MinLevel;
+                if (maxLevel > MaxLevel) maxLevel = MaxLevel;
             }
 
             ImGui.PopItemWidth();

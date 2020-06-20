@@ -4,6 +4,7 @@ using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ItemSearchPlugin.Filters {
@@ -13,7 +14,7 @@ namespace ItemSearchPlugin.Filters {
         private readonly List<ClassJob> classJobs;
         private bool changed;
         private bool modeAny;
-        private bool selectingClasses = false;
+        private bool selectingClasses;
 
         public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             this.modeAny = true;
@@ -73,13 +74,16 @@ namespace ItemSearchPlugin.Filters {
         private string SelectedClassString() {
             StringBuilder sb = new StringBuilder();
             bool first = true;
-            foreach (int i in selectedClassJobs) {
+            foreach (var i in selectedClassJobs) {
                 if (!first) {
                     sb.Append(", ");
                 }
 
                 first = false;
-                sb.Append(classJobs[i].Abbreviation);
+                var cj = classJobs.FirstOrDefault(c => c.RowId == i);
+                if (cj != null) {
+                    sb.Append(cj.Abbreviation);
+                }
             }
 
             if (first) {

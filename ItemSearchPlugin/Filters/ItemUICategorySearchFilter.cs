@@ -25,8 +25,8 @@ namespace ItemSearchPlugin.Filters {
         private readonly List<ItemUICategory> uiCategories;
         private readonly string[] uiCategoriesArray;
 
-        private int selectedCategory = 0;
-        private int lastCategory = 0;
+        private int selectedCategory;
+        private int lastCategory;
 
         public ItemUICategorySearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             uiCategories = new List<ItemUICategory> {null};

@@ -41,7 +41,7 @@ namespace ItemSearchPlugin {
 
         public List<string> DisabledFilters { get; set; }
         
-        [NonSerialized] private DataSite lastDataSite = null;
+        [NonSerialized] private DataSite lastDataSite;
 
         [JsonIgnore]
         public DataSite SelectedDataSite {

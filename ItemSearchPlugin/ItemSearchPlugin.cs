@@ -18,8 +18,8 @@ namespace ItemSearchPlugin {
         private ItemSearchWindow itemSearchWindow;
         private bool drawItemSearchWindow;
 
-        private bool replacedOriginalCommand = false;
-        private bool drawConfigWindow = false;
+        private bool replacedOriginalCommand;
+        private bool drawConfigWindow;
 
         internal List<Item> LuminaItems { get; set; }
         internal ClientLanguage LuminaItemsClientLanguage { get; set; }
@@ -130,7 +130,7 @@ namespace ItemSearchPlugin {
             ImGui.BeginMainMenuBar();
             if (ImGui.MenuItem("ItemSearch")) {
                 itemSearchWindow?.Dispose();
-                itemSearchWindow = new ItemSearchWindow(this, "");
+                itemSearchWindow = new ItemSearchWindow(this);
                 drawItemSearchWindow = true;
             }
 
