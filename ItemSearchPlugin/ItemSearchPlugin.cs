@@ -1,4 +1,6 @@
-﻿using Dalamud.Game.Chat;
+﻿using System.Collections.Generic;
+using Dalamud;
+using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 using ImGuiNET;
@@ -19,6 +21,9 @@ namespace ItemSearchPlugin {
         private bool replacedOriginalCommand = false;
         private bool drawConfigWindow = false;
 
+        internal List<Item> LuminaItems { get; set; }
+        internal ClientLanguage LuminaItemsClientLanguage { get; set; }
+        
         public static DataSite[] DataSites { get; } = new DataSite[] {
             new GarlandToolsDataSite(), new TeamcraftDataSite(), new GamerEscapeDatasite(),
         };
@@ -49,7 +54,6 @@ namespace ItemSearchPlugin {
         }
 
         public void ReloadLocalization() {
-
             if (!string.IsNullOrEmpty(PluginConfig.Language)) {
                 Loc.LoadLanguage(PluginConfig.Language);
             } else {
@@ -75,7 +79,7 @@ namespace ItemSearchPlugin {
 #if DEBUG
             PluginInterface.CommandManager.AddHandler("/itemsearchdumploc", new Dalamud.Game.Command.CommandInfo(((command, arguments) => {
                 Loc.ExportLoadedDictionary();
-            })));
+            })) {ShowInHelp = false, HelpMessage = ""});
 #endif
         }
 

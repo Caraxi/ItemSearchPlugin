@@ -28,7 +28,6 @@ namespace ItemSearchPlugin {
 
         private CancellationTokenSource searchCancelTokenSource;
         private ValueTask<List<Item>> searchTask;
-        private List<Item> luminaItems;
 
         private readonly ItemSearchPluginConfig pluginConfig;
         public List<SearchFilter> searchFilters;
@@ -37,7 +36,6 @@ namespace ItemSearchPlugin {
         private bool autoTryOn;
         private int debounceKeyPress;
         private bool doSearchScroll;
-        private ClientLanguage loadedClientLanguage;
         private bool forceReload;
 
         private bool errorLoadingItems;
@@ -67,14 +65,12 @@ namespace ItemSearchPlugin {
                 new MarketBoardActionButton(pluginInterface, pluginConfig),
                 new DataSiteActionButton(pluginConfig)
             };
-
-            UpdateItemList(1000);
         }
 
         private void UpdateItemList(int delay = 100) {
             errorLoadingItems = false;
-            this.luminaItems = null;
-            loadedClientLanguage = pluginConfig.SelectedClientLanguage;
+            plugin.LuminaItems = null;
+            plugin.LuminaItemsClientLanguage = pluginConfig.SelectedClientLanguage;
             Task.Run(async () => {
                 await Task.Delay(delay);
                 try {
@@ -87,17 +83,17 @@ namespace ItemSearchPlugin {
                 }
             }).ContinueWith(t => {
                 if (errorLoadingItems) {
-                    return luminaItems;
+                    return plugin.LuminaItems;
                 }
 
                 forceReload = true;
-                return this.luminaItems = t.Result;
+                return plugin.LuminaItems = t.Result;
             });
         }
 
         public bool Draw() {
             bool isSearch = false;
-            if (pluginConfig.SelectedClientLanguage != loadedClientLanguage) UpdateItemList();
+            if (pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage) UpdateItemList(1000);
             ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
 
             var isOpen = true;
@@ -132,10 +128,7 @@ namespace ItemSearchPlugin {
                     }
 
                     var imGuiStyle = ImGui.GetStyle();
-                    var imGuiWindowPos = ImGui.GetWindowPos();
                     var windowVisible = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
-
-                    float currentX = ImGui.GetCursorPosX();
 
                     IActionButton[] buttons = this.actionButtons.Where(ab => ab.ButtonPosition == ActionButtonPosition.TOP).ToArray();
 
@@ -208,7 +201,7 @@ namespace ItemSearchPlugin {
                 if (ImGui.SmallButton("Retry")) {
                     UpdateItemList();
                 }
-            } else if (this.luminaItems != null) {
+            } else if (plugin.LuminaItems != null) {
                 if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.IsSet)) {
                     isSearch = true;
                     if (searchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
@@ -217,7 +210,7 @@ namespace ItemSearchPlugin {
 
                         this.searchCancelTokenSource = new CancellationTokenSource();
 
-                        var asyncEnum = this.luminaItems.ToAsyncEnumerable();
+                        var asyncEnum = plugin.LuminaItems.ToAsyncEnumerable();
 
                         if (!pluginConfig.ShowLegacyItems) {
                             asyncEnum = asyncEnum.Where(x => {
