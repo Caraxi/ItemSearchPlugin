@@ -206,28 +206,17 @@ namespace ItemSearchPlugin {
                     if (SearchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
                         forceReload = false;
                         this.searchCancelTokenSource?.Cancel();
-
                         this.searchCancelTokenSource = new CancellationTokenSource();
-
                         var asyncEnum = plugin.LuminaItems.ToAsyncEnumerable();
 
                         if (!pluginConfig.ShowLegacyItems) {
-                            asyncEnum = asyncEnum.Where(x => {
-                                if (x.RowId >= 100 && x.RowId <= 1600) return false;
-                                return true;
-                            });
+                            asyncEnum = asyncEnum.Where(x => x.RowId < 100 || x.RowId > 1600);
                         }
 
-                        foreach (ISearchFilter filter in SearchFilters) {
-                            if (filter.IsEnabled && filter.ShowFilter && filter.IsSet) {
-                                asyncEnum = asyncEnum.Where(x => filter.CheckFilter(x));
-                            }
-                        }
-
+                        asyncEnum = SearchFilters.Where(filter => filter.IsEnabled && filter.ShowFilter && filter.IsSet).Aggregate(asyncEnum, (current, filter) => current.Where(filter.CheckFilter));
                         this.selectedItemIndex = -1;
                         this.selectedItemTex?.Dispose();
                         this.selectedItemTex = null;
-
                         this.searchTask = asyncEnum.ToListAsync(this.searchCancelTokenSource.Token);
                     }
 
