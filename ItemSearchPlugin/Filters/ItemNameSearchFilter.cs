@@ -48,7 +48,9 @@ namespace ItemSearchPlugin.Filters {
                 return searchRegex.IsMatch(item.Name);
             }
 
-            return item.Name.ToLower().Contains(searchText.ToLower()) || int.TryParse(searchText, out var parsedId) && parsedId == item.RowId && item.Icon < 65000;
+            return
+                item.Name.ToLower().Contains(searchText.ToLower())
+                || (int.TryParse(searchText, out var parsedId) && parsedId == item.RowId);
         }
 
         public override void DrawEditor() {
