@@ -199,6 +199,7 @@ namespace ItemSearchPlugin {
 
             ImGui.BeginChild("###scrollingFilterSelection", new Vector2(0, 180), true);
 
+            ImGui.Columns(2, "###itemSearchToggleFilters", false);
             foreach (var (localizationKey, englishName) in FilterNames) {
                 var enabled = !DisabledFilters.Contains(localizationKey);
                 if (ImGui.Checkbox(Loc.Localize(localizationKey, englishName) + "##checkboxToggleFilterEnabled", ref enabled)) {
@@ -210,8 +211,11 @@ namespace ItemSearchPlugin {
 
                     Save();
                 }
+
+                ImGui.NextColumn();
             }
 
+            ImGui.Columns(1);
             ImGui.EndChild();
 
             ImGui.TextUnformatted("Help translate: ");
