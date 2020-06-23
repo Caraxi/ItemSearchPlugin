@@ -37,7 +37,7 @@ namespace ItemSearchPlugin.Filters {
                         }
                     }
 
-                    searchTokens = searchText[1..].Trim().ToLower().Split(' ').Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                    searchTokens = searchText.Trim().ToLower().Split(' ').Where(t => !string.IsNullOrEmpty(t)).ToArray();
                     lastSearchText = searchText;
                     return true;
                 }
