@@ -1,12 +1,14 @@
 ﻿using Lumina.Excel.GeneratedSheets;
 using ImGuiNET;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ItemSearchPlugin.Filters {
     class ItemNameSearchFilter : SearchFilter {
         private string searchText;
         private string lastSearchText;
+        private string[] searchTokens;
 
         private Regex searchRegex;
 
@@ -35,6 +37,7 @@ namespace ItemSearchPlugin.Filters {
                         }
                     }
 
+                    searchTokens = searchText[1..].Trim().ToLower().Split(' ').Where(t => !string.IsNullOrEmpty(t)).ToArray();
                     lastSearchText = searchText;
                     return true;
                 }
@@ -50,6 +53,7 @@ namespace ItemSearchPlugin.Filters {
 
             return
                 item.Name.ToLower().Contains(searchText.ToLower())
+                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToLower().Contains(t)))
                 || (int.TryParse(searchText, out var parsedId) && parsedId == item.RowId);
         }
 
