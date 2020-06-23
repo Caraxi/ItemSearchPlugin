@@ -220,7 +220,7 @@ namespace ItemSearchPlugin {
 
             ImGui.TextUnformatted("Help translate: ");
             ImGui.SameLine();
-            if (ImGui.Button("Open POEditor")) {
+            if (ImGui.SmallButton("Open POEditor")) {
                 Process.Start("https://poeditor.com/join/project/RkcNcGm27q");
             }
 
