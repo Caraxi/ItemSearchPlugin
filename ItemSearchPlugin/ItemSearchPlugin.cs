@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dalamud;
 using Dalamud.Game.Chat;
-using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Plugin;
 using ImGuiNET;
 using ItemSearchPlugin.DataSites;
