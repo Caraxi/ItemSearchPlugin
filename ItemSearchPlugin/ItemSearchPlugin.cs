@@ -15,7 +15,6 @@ namespace ItemSearchPlugin {
 
         public FittingRoomUI FittingRoomUI { get; private set; }
 
-        private SeStringManager seStringManager;
         private ItemSearchWindow itemSearchWindow;
         private bool drawItemSearchWindow;
 
@@ -41,7 +40,6 @@ namespace ItemSearchPlugin {
             this.PluginInterface = pluginInterface;
             this.PluginConfig = (ItemSearchPluginConfig) pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
             this.PluginConfig.Init(pluginInterface, this);
-            seStringManager = new SeStringManager(pluginInterface.Data);
 
             ReloadLocalization();
 
@@ -147,7 +145,7 @@ namespace ItemSearchPlugin {
             }
 
             PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
-                MessageBytes = seStringManager.CreateItemLink(item.RowId, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11], item.Name).Encode()
+                MessageBytes = PluginInterface.SeStringManager.CreateItemLink(item.RowId, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11], item.Name).Encode()
             });
         }
 
