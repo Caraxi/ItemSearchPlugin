@@ -18,7 +18,6 @@ namespace ItemSearchPlugin {
         private ItemSearchWindow itemSearchWindow;
         private bool drawItemSearchWindow;
 
-        private bool replacedOriginalCommand;
         private bool drawConfigWindow;
 
         internal List<Item> LuminaItems { get; set; }
@@ -63,14 +62,6 @@ namespace ItemSearchPlugin {
 
 
         public void SetupCommands() {
-            // Move the original xlitem
-            if (PluginInterface.CommandManager.Commands.ContainsKey("/xlitem")) {
-                PluginInterface.CommandManager.AddHandler("/xlitem_original", PluginInterface.CommandManager.Commands["/xlitem"]);
-                PluginInterface.CommandManager.Commands["/xlitem_original"].ShowInHelp = false;
-                PluginInterface.CommandManager.RemoveHandler("/xlitem");
-                replacedOriginalCommand = true;
-            }
-
             PluginInterface.CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo(OnItemSearchCommand) {
                 HelpMessage = Loc.Localize("ItemSearchCommandHelp", "Open a window you can use to link any specific item to chat."),
                 ShowInHelp = true
@@ -91,14 +82,6 @@ namespace ItemSearchPlugin {
 
         public void RemoveCommands() {
             PluginInterface.CommandManager.RemoveHandler("/xlitem");
-
-            // Put the original xlitem back
-            if (replacedOriginalCommand) {
-                PluginInterface.CommandManager.Commands["/xlitem_original"].ShowInHelp = true;
-                PluginInterface.CommandManager.AddHandler("/xlitem", PluginInterface.CommandManager.Commands["/xlitem_original"]);
-                PluginInterface.CommandManager.RemoveHandler("/xlitem_original");
-                replacedOriginalCommand = false;
-            }
 #if DEBUG
             PluginInterface.CommandManager.RemoveHandler("/itemsearchdumploc");
 #endif
