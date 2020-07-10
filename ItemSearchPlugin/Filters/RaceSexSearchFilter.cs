@@ -18,13 +18,13 @@ namespace ItemSearchPlugin.Filters {
         public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) : base(pluginConfig) {
             while (!data.IsDataReady) Thread.Sleep(1);
 
-            equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().GetRows();
+            equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().ToList();
 
             options = new List<(string text, uint raceId, CharacterSex sex)> {
                 (Loc.Localize("NotSelected", "Not Selected"), 0, CharacterSex.Female)
             };
 
-            foreach (var race in data.GetExcelSheet<Race>().GetRows()) {
+            foreach (var race in data.GetExcelSheet<Race>().ToList()) {
                 if (race.RSEMBody.Row > 0 && race.RSEFBody.Row > 0) {
                     string male = string.Format(Loc.Localize("RaceSexMale", "Male {0}"), race.Masculine);
                     string female = string.Format(Loc.Localize("RaceSexFemale", "Female {0}"), race.Feminine);

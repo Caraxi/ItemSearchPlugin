@@ -31,7 +31,7 @@ namespace ItemSearchPlugin.Filters {
                     searchRegex = null;
                     if (searchText.Length >= 3 && searchText.StartsWith("/") && searchText.EndsWith("/")) {
                         try {
-                            searchRegex = new Regex(searchText[1..^1], RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                            searchRegex = new Regex(searchText.Substring(1, searchText.Length - 2), RegexOptions.IgnoreCase | RegexOptions.Singleline);
                         } catch (Exception) {
                             searchRegex = null;
                         }

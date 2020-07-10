@@ -73,7 +73,7 @@ namespace ItemSearchPlugin {
             Task.Run(async () => {
                 await Task.Delay(delay);
                 try {
-                    return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).GetRows();
+                    return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).ToList();
                 } catch (Exception ex) {
                     errorLoadingItems = true;
                     PluginLog.LogError("Failed loading Items");

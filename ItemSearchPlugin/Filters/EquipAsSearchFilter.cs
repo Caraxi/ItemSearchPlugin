@@ -19,8 +19,8 @@ namespace ItemSearchPlugin.Filters {
         public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             this.modeAny = true;
             this.selectedClassJobs = new List<uint>();
-            this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().GetRows();
-            this.classJobs = data.GetExcelSheet<ClassJob>().GetRows();
+            this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().ToList();
+            this.classJobs = data.GetExcelSheet<ClassJob>().ToList();
             changed = false;
         }
 
