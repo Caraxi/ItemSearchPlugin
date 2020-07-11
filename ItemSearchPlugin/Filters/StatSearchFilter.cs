@@ -116,7 +116,7 @@ namespace ItemSearchPlugin.Filters {
 
             if (Stats.Count > 1) {
                 ImGui.SameLine();
-                if (ImGui.Checkbox($"{(modeAny ? Loc.Localize("StatSearchFilterMatchAny", "Match Any") : Loc.Localize("StatSearchFilterMatchAll", "Match All"))}###StatSearchFilterShowAny", ref modeAny)) {
+                if (ImGui.Checkbox($"{Loc.Localize("StatSearchFilterMatchAny", "Match Any")}###StatSearchFilterShowAny", ref modeAny)) {
                     Modified = true;
                 }
             }
