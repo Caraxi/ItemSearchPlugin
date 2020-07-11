@@ -19,7 +19,18 @@ namespace ItemSearchPlugin.Filters {
         public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             this.selectedClassJobs = new List<uint>();
             this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().ToList();
-            this.classJobs = data.GetExcelSheet<ClassJob>().ToList();
+            this.classJobs = data.GetExcelSheet<ClassJob>()
+                .Where(cj => cj.RowId != 0)
+                .OrderBy(cj => {
+                    return cj.Role switch {
+                        0 => 3,
+                        1 => 0,
+                        2 => 2,
+                        3 => 2,
+                        4 => 1,
+                        _ => 4
+                    };
+                }).ToList();
             changed = false;
         }
 
@@ -93,9 +104,8 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-
             ImGui.SetNextItemWidth(60);
-            if (ImGui.Combo("###equipAsSearchFilterModeCombo", ref selectedMode, new string[] {
+            if (ImGui.Combo("###equipAsSearchFilterModeCombo", ref selectedMode, new[] {
                 Loc.Localize("SearchFilterAny", "Any"),
                 Loc.Localize("SearchFilterAll", "All"),
             }, 2)) {
@@ -117,7 +127,7 @@ namespace ItemSearchPlugin.Filters {
 
                 if (ImGui.SmallButton("Select All")) {
                     foreach (ClassJob cj in classJobs) {
-                        if (!selectedClassJobs.Contains(cj.RowId)) {
+                        if (cj.RowId != 0 && !selectedClassJobs.Contains(cj.RowId)) {
                             selectedClassJobs.Add(cj.RowId);
                         }
                     }
@@ -125,11 +135,7 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Select None")) {
-                    foreach (ClassJob cj in classJobs) {
-                        if (selectedClassJobs.Contains(cj.RowId)) {
-                            selectedClassJobs.Remove(cj.RowId);
-                        }
-                    }
+                    selectedClassJobs.Clear();
                 }
                 
                 ImGui.Columns(Math.Max(3, (int) wWidth / 70), "###equipAsClassList", false);
