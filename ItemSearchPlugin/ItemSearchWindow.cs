@@ -23,7 +23,8 @@ namespace ItemSearchPlugin {
         private readonly UiBuilder builder;
         private Item selectedItem;
         private int selectedItemIndex = -1;
-        private TextureWrap selectedItemTex;
+
+        private readonly Dictionary<ushort, TextureWrap> textureDictionary = new Dictionary<ushort, TextureWrap>();
 
         private CancellationTokenSource searchCancelTokenSource;
         private ValueTask<List<Item>> searchTask;
@@ -110,58 +111,93 @@ namespace ItemSearchPlugin {
             // Main window
             ImGui.AlignTextToFramePadding();
 
-            if (this.selectedItemTex != null) {
-                ImGui.SetCursorPosY(200f);
-                ImGui.SameLine();
-                ImGui.Image(this.selectedItemTex.ImGuiHandle, new Vector2(45, 45));
+            if (selectedItem != null) {
+                var icon = selectedItem.Icon;
 
-                if (selectedItem != null) {
-                    ImGui.SameLine();
-                    ImGui.BeginGroup();
-
-                    ImGui.Text(selectedItem.Name);
-
-                    if (pluginConfig.ShowItemID) {
-                        ImGui.SameLine();
-                        ImGui.Text($"(ID: {selectedItem.RowId})");
-                    }
-
-                    var imGuiStyle = ImGui.GetStyle();
-                    var windowVisible = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
-
-                    IActionButton[] buttons = this.ActionButtons.Where(ab => ab.ButtonPosition == ActionButtonPosition.TOP).ToArray();
-
-                    for (var i = 0; i < buttons.Length; i++) {
-                        var button = buttons[i];
-
-                        if (button.GetShowButton(selectedItem)) {
-                            var buttonText = button.GetButtonText(selectedItem);
-                            ImGui.PushID($"TopActionButton{i}");
-                            if (ImGui.Button(buttonText)) {
-                                button.OnButtonClicked(selectedItem);
-                            }
-
-                            if (i < buttons.Length - 1) {
-                                var lX2 = ImGui.GetItemRectMax().X;
-                                var nbw = ImGui.CalcTextSize(buttons[i + 1].GetButtonText(selectedItem)).X + imGuiStyle.ItemInnerSpacing.X * 2;
-                                var nX2 = lX2 + (imGuiStyle.ItemSpacing.X * 2) + nbw;
-                                if (nX2 < windowVisible) {
-                                    ImGui.SameLine();
-                                }
-                            }
-
-                            ImGui.PopID();
+                if (icon < 65000) {
+                    if (textureDictionary.ContainsKey(icon)) {
+                        var tex = textureDictionary[icon];
+                        if (tex == null || tex.ImGuiHandle == IntPtr.Zero) {
+                            ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
+                            ImGui.BeginChild("FailedTexture", new Vector2(45, 45), true);
+                            ImGui.Text(icon.ToString());
+                            ImGui.EndChild();
+                            ImGui.PopStyleColor();
+                        } else {
+                            ImGui.Image(textureDictionary[icon].ImGuiHandle, new Vector2(45, 45));
                         }
+                    } else {
+                        ImGui.BeginChild("WaitingTexture", new Vector2(45, 45), true);
+                        ImGui.EndChild();
+
+                        textureDictionary[icon] = null;
+
+                        Task.Run(() => {
+                            try {
+                                var iconTex = this.data.GetIcon(icon);
+                                var tex = this.builder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
+                                if (tex != null && tex.ImGuiHandle != IntPtr.Zero) {
+                                    textureDictionary[icon] = tex;
+                                }
+                            } catch {
+                                // Ignore
+                            }
+                        });
+                    }
+                } else {
+                    ImGui.BeginChild("NoIcon", new Vector2(45, 45), true);
+                    if (pluginConfig.ShowItemID) {
+                        ImGui.Text(icon.ToString());
                     }
 
-                    ImGui.EndGroup();
+                    ImGui.EndChild();
                 }
+                
+
+                ImGui.SameLine();
+                ImGui.BeginGroup();
+
+                ImGui.Text(selectedItem.Name);
+
+                if (pluginConfig.ShowItemID) {
+                    ImGui.SameLine();
+                    ImGui.Text($"(ID: {selectedItem.RowId}) (Rarity: {selectedItem.Rarity})");
+                }
+
+                var imGuiStyle = ImGui.GetStyle();
+                var windowVisible = ImGui.GetWindowPos().X + ImGui.GetWindowContentRegionMax().X;
+
+                IActionButton[] buttons = this.ActionButtons.Where(ab => ab.ButtonPosition == ActionButtonPosition.TOP).ToArray();
+
+                for (var i = 0; i < buttons.Length; i++) {
+                    var button = buttons[i];
+
+                    if (button.GetShowButton(selectedItem)) {
+                        var buttonText = button.GetButtonText(selectedItem);
+                        ImGui.PushID($"TopActionButton{i}");
+                        if (ImGui.Button(buttonText)) {
+                            button.OnButtonClicked(selectedItem);
+                        }
+
+                        if (i < buttons.Length - 1) {
+                            var lX2 = ImGui.GetItemRectMax().X;
+                            var nbw = ImGui.CalcTextSize(buttons[i + 1].GetButtonText(selectedItem)).X + imGuiStyle.ItemInnerSpacing.X * 2;
+                            var nX2 = lX2 + (imGuiStyle.ItemSpacing.X * 2) + nbw;
+                            if (nX2 < windowVisible) {
+                                ImGui.SameLine();
+                            }
+                        }
+
+                        ImGui.PopID();
+                    }
+                }
+
+                ImGui.EndGroup();
             } else {
-                ImGui.BeginChild("NoTextureBox", new Vector2(200, 45));
+                ImGui.BeginChild("NoSelectedItemBox", new Vector2(200, 45));
                 ImGui.Text(Loc.Localize("ItemSearchSelectItem", "Please select an item."));
                 ImGui.EndChild();
             }
-
 
             ImGui.Separator();
 
@@ -216,8 +252,7 @@ namespace ItemSearchPlugin {
 
                         asyncEnum = SearchFilters.Where(filter => filter.IsEnabled && filter.ShowFilter && filter.IsSet).Aggregate(asyncEnum, (current, filter) => current.Where(filter.CheckFilter));
                         this.selectedItemIndex = -1;
-                        this.selectedItemTex?.Dispose();
-                        this.selectedItemTex = null;
+                        selectedItem = null;
                         this.searchTask = asyncEnum.ToListAsync(this.searchCancelTokenSource.Token);
                     }
 
@@ -244,25 +279,11 @@ namespace ItemSearchPlugin {
                                 this.selectedItem = this.searchTask.Result[i];
                                 this.selectedItemIndex = i;
 
-                                try {
-                                    var iconTex = this.data.GetIcon(this.searchTask.Result[i].Icon);
-                                    this.selectedItemTex?.Dispose();
-
-                                    this.selectedItemTex =
-                                        this.builder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width,
-                                            iconTex.Header.Height, 4);
-                                } catch (Exception ex) {
-                                    Log.Error(ex, "Failed loading item texture");
-                                    this.selectedItemTex?.Dispose();
-                                    this.selectedItemTex = null;
-                                }
-
                                 if (ImGui.IsMouseDoubleClicked(0)) {
-                                    if (this.selectedItemTex != null) {
+                                    if (this.selectedItem != null && selectedItem.Icon < 65000) {
                                         try {
                                             plugin.LinkItem(selectedItem);
                                             if (pluginConfig.CloseOnChoose) {
-                                                this.selectedItemTex?.Dispose();
                                                 isOpen = false;
                                             }
                                         } catch (Exception ex) {
@@ -296,6 +317,26 @@ namespace ItemSearchPlugin {
                         var keyStateDown = ImGui.GetIO().KeysDown[0x28] || pluginInterface.ClientState.KeyState[0x28];
                         var keyStateUp = ImGui.GetIO().KeysDown[0x26] || pluginInterface.ClientState.KeyState[0x26];
 
+#if DEBUG
+                        // Random up/down if both are pressed
+                        if (keyStateUp && keyStateDown) {
+                            debounceKeyPress = 0;
+
+                            var r = new Random().Next(0, 5);
+
+                            if (r == 1) {
+                                keyStateUp = true;
+                                keyStateDown = false;
+                            } else if (r == 0) {
+                                keyStateUp = false;
+                                keyStateDown = false;
+                            } else {
+                                keyStateUp = false;
+                                keyStateDown = true;
+                            }
+                        }
+#endif
+
                         var hotkeyUsed = false;
                         if (keyStateUp && !keyStateDown) {
                             if (debounceKeyPress == 0) {
@@ -323,19 +364,6 @@ namespace ItemSearchPlugin {
                         if (hotkeyUsed) {
                             doSearchScroll = true;
                             this.selectedItem = this.searchTask.Result[selectedItemIndex];
-                            try {
-                                var iconTex = this.data.GetIcon(this.searchTask.Result[selectedItemIndex].Icon);
-                                this.selectedItemTex?.Dispose();
-
-                                this.selectedItemTex =
-                                    this.builder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width,
-                                        iconTex.Header.Height, 4);
-                            } catch (Exception ex) {
-                                Log.Error(ex, "Failed loading item texture");
-                                this.selectedItemTex?.Dispose();
-                                this.selectedItemTex = null;
-                            }
-
                             if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                                 if (selectedItem.ClassJobCategory.Row != 0) {
                                     plugin.FittingRoomUI.TryOnItem(selectedItem);
@@ -347,8 +375,7 @@ namespace ItemSearchPlugin {
                     ImGui.TextColored(new Vector4(0.86f, 0.86f, 0.86f, 1.00f), Loc.Localize("DalamudItemSelectHint", "Type to start searching..."));
 
                     this.selectedItemIndex = -1;
-                    this.selectedItemTex?.Dispose();
-                    this.selectedItemTex = null;
+                    selectedItem = null;
                 }
             } else {
                 ImGui.TextColored(new Vector4(0.86f, 0.86f, 0.86f, 1.00f), Loc.Localize("DalamudItemSelectLoading", "Loading item list..."));
@@ -359,14 +386,13 @@ namespace ItemSearchPlugin {
             ImGui.EndChild();
 
             // Darken choose button if it shouldn't be clickable
-            ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 || this.selectedItemTex == null ? 0.25f : 1);
+            ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 || selectedItem == null || selectedItem.Icon >= 65000 ? 0.25f : 1);
 
             if (ImGui.Button(Loc.Localize("Choose", "Choose"))) {
                 try {
-                    if (this.selectedItemTex != null) {
+                    if (selectedItem != null && selectedItem.Icon < 65000) {
                         plugin.LinkItem(selectedItem);
                         if (pluginConfig.CloseOnChoose) {
-                            this.selectedItemTex?.Dispose();
                             isOpen = false;
                         }
                     }
@@ -380,12 +406,12 @@ namespace ItemSearchPlugin {
             if (!pluginConfig.CloseOnChoose) {
                 ImGui.SameLine();
                 if (ImGui.Button(Loc.Localize("Close", "Close"))) {
-                    this.selectedItemTex?.Dispose();
+                    selectedItem = null;
                     isOpen = false;
                 }
             }
 
-            if (this.selectedItemIndex >= 0 && this.selectedItemTex == null) {
+            if (this.selectedItemIndex >= 0 && this.selectedItem != null && selectedItem.Icon >= 65000) {
                 ImGui.SameLine();
                 ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
             }
@@ -421,7 +447,11 @@ namespace ItemSearchPlugin {
                 b?.Dispose();
             }
 
-            this.selectedItemTex?.Dispose();
+            foreach (var t in textureDictionary) {
+                t.Value?.Dispose();
+            }
+
+            textureDictionary.Clear();
         }
     }
 }
