@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dalamud;
 using Dalamud.Game.Chat;
+using Dalamud.Game.Chat.SeStringHandling.Payloads;
 using Dalamud.Plugin;
 using ImGuiNET;
 using ItemSearchPlugin.DataSites;
@@ -126,8 +127,21 @@ namespace ItemSearchPlugin {
                 return;
             }
 
+            var payload = PluginInterface.SeStringManager.CreateItemLink(item, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11], item.Name);
+
+            foreach (var p in payload.Payloads.GetRange(0, 2)) {
+                switch (p) {
+                    case UIForegroundPayload f:
+                        f.ColorKey = (ushort) (0x223 + item.Rarity * 2);
+                        break;
+                    case UIGlowPayload g:
+                        g.ColorKey = (ushort) (0x224 + item.Rarity * 2);
+                        break;
+                }
+            }
+
             PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
-                MessageBytes = PluginInterface.SeStringManager.CreateItemLink(item.RowId, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11], item.Name).Encode()
+                MessageBytes = payload.Encode()
             });
         }
 
