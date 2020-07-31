@@ -191,7 +191,8 @@ namespace ItemSearchPlugin {
 
             ImGui.Columns(1);
             var windowSize = ImGui.GetWindowSize();
-            ImGui.BeginChild("scrolling", new Vector2(0, Math.Max(100, windowSize.Y - ImGui.GetCursorPosY() - 40)), true, ImGuiWindowFlags.HorizontalScrollbar);
+            var childSize = new Vector2(0, Math.Max(100, windowSize.Y - ImGui.GetCursorPosY() - 40));
+            ImGui.BeginChild("scrolling", childSize, true, ImGuiWindowFlags.HorizontalScrollbar);
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
@@ -221,8 +222,25 @@ namespace ItemSearchPlugin {
                     }
 
                     if (this.searchTask.IsCompletedSuccessfully) {
+                        var itemSize = Vector2.Zero;
+                        float cursorPosY = 0;
+                        var scrollY = ImGui.GetScrollY();
+                        var style = ImGui.GetStyle();
                         for (var i = 0; i < this.searchTask.Result.Count; i++) {
-                            if (ImGui.Selectable(this.searchTask.Result[i].Name, this.selectedItemIndex == i, ImGuiSelectableFlags.AllowDoubleClick)) {
+                            if (i == 0 && itemSize == Vector2.Zero) {
+                                itemSize = ImGui.CalcTextSize(this.searchTask.Result[i].Name);
+                                if (!doSearchScroll) {
+                                    var sizePerItem = itemSize.Y + style.ItemSpacing.Y;
+                                    var skipItems = (int) Math.Floor(scrollY / sizePerItem);
+                                    cursorPosY = skipItems * sizePerItem;
+                                    ImGui.SetCursorPosY(cursorPosY + style.ItemSpacing.X);
+                                    i = skipItems;
+                                }
+                            }
+
+                            if (!(doSearchScroll && selectedItemIndex == i) && (cursorPosY < scrollY - itemSize.Y || cursorPosY > scrollY + childSize.Y)) {
+                                ImGui.SetCursorPosY(cursorPosY + itemSize.Y + style.ItemSpacing.Y);
+                            } else if (ImGui.Selectable(this.searchTask.Result[i].Name, this.selectedItemIndex == i, ImGuiSelectableFlags.AllowDoubleClick)) {
                                 this.selectedItem = this.searchTask.Result[i];
                                 this.selectedItemIndex = i;
 
@@ -263,6 +281,15 @@ namespace ItemSearchPlugin {
                             if (doSearchScroll && selectedItemIndex == i) {
                                 doSearchScroll = false;
                                 ImGui.SetScrollHereY(0.5f);
+                            }
+
+                            cursorPosY = ImGui.GetCursorPosY();
+
+                            if (cursorPosY > scrollY + childSize.Y && !doSearchScroll) {
+                                var c = this.searchTask.Result.Count - i;
+                                ImGui.BeginChild("###scrollFillerBottom", new Vector2(0, c * (itemSize.Y + style.ItemSpacing.Y)), false);
+                                ImGui.EndChild();
+                                break;
                             }
                         }
 
