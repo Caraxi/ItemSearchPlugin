@@ -35,17 +35,17 @@ namespace ItemSearchPlugin {
 
         private UIObject? tryonUIObject;
 
-        private float lastUiWidth = 0;
+        private float lastUiWidth;
 
 
         private string saveNameInput = "";
-        private FittingRoomSave selectedSave = null;
+        private FittingRoomSave selectedSave;
         private string saveErrorMessage = "";
 
         private int tryOnDelay = 10;
-        private bool windowCollapsed = false;
+        private bool windowCollapsed;
 
-        private bool deletingSelectedSave = false;
+        private bool deletingSelectedSave;
 
         private readonly Queue<(uint itemid, byte stain)> tryOnQueue = new Queue<(uint itemid, byte stain)>();
 
@@ -72,18 +72,15 @@ namespace ItemSearchPlugin {
 
         private void OnFrameworkUpdate(Framework framework) {
             try {
+                tryonUIObject = null;
                 if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
-                IntPtr baseUIObject = getBaseUIObj();
-                if (baseUIObject != IntPtr.Zero) {
-                    IntPtr tryonUIPtr = getUI2ObjByName(Marshal.ReadIntPtr(baseUIObject, 0x20), "Tryon", 1);
-                    if (tryonUIPtr != IntPtr.Zero) {
-                        tryonUIObject = Marshal.PtrToStructure<UIObject>(tryonUIPtr);
-                    } else {
-                        tryonUIObject = null;
-                    }
-                } else {
-                    tryonUIObject = null;
-                }
+                var baseUIObject = getBaseUIObj();
+                if (baseUIObject == IntPtr.Zero) return;
+                var baseUiProperties = Marshal.ReadIntPtr(baseUIObject, 0x20);
+                if (baseUiProperties == IntPtr.Zero) return;
+                var tryonUIPtr = getUI2ObjByName(baseUiProperties, "Tryon", 1);
+                if (tryonUIPtr == IntPtr.Zero) return;
+                tryonUIObject = Marshal.PtrToStructure<UIObject>(tryonUIPtr);
             } catch (NullReferenceException) {
                 tryonUIObject = null;
             }
@@ -104,15 +101,15 @@ namespace ItemSearchPlugin {
                 return null;
             }
 
-            List<FittingRoomSaveItem> arr = new List<FittingRoomSaveItem>();
+            var arr = new List<FittingRoomSaveItem>();
 
             for (int i = 0; i < 14; i++) {
-                IntPtr itemOffset = fittingRoomBaseAddress + 0x0D8 + (0x20 * i);
-                IntPtr stainOffset = fittingRoomBaseAddress + 0x2C2 + (0x18 * i);
+                var itemOffset = fittingRoomBaseAddress + 0x0D8 + (0x20 * i);
+                var stainOffset = fittingRoomBaseAddress + 0x2C2 + (0x18 * i);
 
 
-                int itemBase = Marshal.ReadInt32(itemOffset);
-                int itemGlamour = Marshal.ReadInt32(itemOffset, 0x4);
+                var itemBase = Marshal.ReadInt32(itemOffset);
+                var itemGlamour = Marshal.ReadInt32(itemOffset, 0x4);
 
                 if (itemBase > 1000000) itemBase -= 1000000;
                 if (itemGlamour > 1000000) itemGlamour -= 1000000;
@@ -121,8 +118,8 @@ namespace ItemSearchPlugin {
                     continue;
                 }
 
-                byte stainBase = Marshal.ReadByte(stainOffset);
-                byte stainPreview = Marshal.ReadByte(stainOffset, 0x1);
+                var stainBase = Marshal.ReadByte(stainOffset);
+                var stainPreview = Marshal.ReadByte(stainOffset, 0x1);
 
                 arr.Add(new FittingRoomSaveItem() {
                     ItemID = itemGlamour == 0 ? itemBase : itemGlamour,
@@ -133,9 +130,9 @@ namespace ItemSearchPlugin {
             return arr.ToArray();
         }
 
-        public void TryOnItem(Item item, byte stain = 0, bool HQ = false) {
+        public void TryOnItem(Item item, byte stain = 0, bool hq = false) {
             if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17) {
-                tryOnQueue.Enqueue((item.RowId + (uint) (HQ ? 1000000 : 0), stain));
+                tryOnQueue.Enqueue((item.RowId + (uint) (hq ? 1000000 : 0), stain));
             }
         }
 
