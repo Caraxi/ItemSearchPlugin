@@ -155,9 +155,9 @@ namespace ItemSearchPlugin {
             }
 
             if (fittingRoomBaseAddress != IntPtr.Zero && tryonUIObject?.Visible == true) {
-                UIObject ui = tryonUIObject.Value;
+                var ui = tryonUIObject.Value;
 
-                Vector2 pos = ui.Position;
+                var pos = ui.Position;
                 pos.Y += 20 * ui.Scale;
                 if (pos.X < lastUiWidth + 20) {
                     pos.X += ui.Scale * 340;
@@ -165,7 +165,7 @@ namespace ItemSearchPlugin {
                     pos.X -= lastUiWidth;
                 }
 
-                Vector2 hiddenPos = ui.Position;
+                var hiddenPos = ui.Position;
 
                 hiddenPos.Y -= 24;
 
@@ -184,7 +184,7 @@ namespace ItemSearchPlugin {
                     if (plugin.PluginConfig.FittingRoomSaves.Any(a => a.Name.ToLower() == saveNameInput.ToLower())) {
                         saveErrorMessage = Loc.Localize("FittingRoomUI_Error_SaveAlreadyExists", "A save with that name already exists.");
                     } else {
-                        FittingRoomSave save = new FittingRoomSave {
+                        var save = new FittingRoomSave {
                             Name = saveNameInput,
                             Items = GetFittingRoomItems()
                         };
@@ -204,12 +204,12 @@ namespace ItemSearchPlugin {
 
                 ImGui.Separator();
                 ImGui.Text(Loc.Localize("FittingRoomUI_SelectOutfit", "Select outfit to load:"));
-                float w = ImGui.GetWindowWidth();
+                var w = ImGui.GetWindowWidth();
                 ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, 200 * ui.Scale), true, ImGuiWindowFlags.HorizontalScrollbar);
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                foreach (FittingRoomSave save in plugin.PluginConfig.FittingRoomSaves) {
+                foreach (var save in plugin.PluginConfig.FittingRoomSaves) {
                     if (ImGui.Selectable($"{save.Name}##fittingRoomSave", selectedSave == save)) {
                         deletingSelectedSave = false;
                         selectedSave = save;
@@ -220,9 +220,9 @@ namespace ItemSearchPlugin {
 
                 ImGui.EndChild();
                 if (selectedSave != null) {
-                    float buttonWidth = w - (ImGui.GetStyle().ItemSpacing.X * 2);
+                    var buttonWidth = w - (ImGui.GetStyle().ItemSpacing.X * 2);
 
-                    Vector2 buttonSize = new Vector2(buttonWidth, 26);
+                    var buttonSize = new Vector2(buttonWidth, 26);
 
                     if (deletingSelectedSave) {
                         if (ImGui.Button(Loc.Localize("FittingRoomUI_ConfirmDelete", "Confirm Delete"), buttonSize)) {
@@ -237,7 +237,7 @@ namespace ItemSearchPlugin {
                         }
                     } else {
                         if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_LoadButton", "Load '{0}'"), selectedSave.Name), buttonSize)) {
-                            foreach (FittingRoomSaveItem item in selectedSave.Items) {
+                            foreach (var item in selectedSave.Items) {
                                 SetSaveDeleteButton(true);
                                 tryOnQueue.Enqueue(((uint) item.ItemID, item.Stain));
                             }
