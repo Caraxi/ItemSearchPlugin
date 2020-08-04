@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Dalamud;
 using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling.Payloads;
@@ -26,6 +27,7 @@ namespace ItemSearchPlugin {
         public static DataSite[] DataSites { get; } = new DataSite[] {
             new GarlandToolsDataSite(), new TeamcraftDataSite(), new GamerEscapeDatasite(),
         };
+        public string Version { get; private set; }
 
         public void Dispose() {
             PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
@@ -36,6 +38,7 @@ namespace ItemSearchPlugin {
         }
 
         public void Initialize(DalamudPluginInterface pluginInterface) {
+            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.PluginInterface = pluginInterface;
             this.PluginConfig = (ItemSearchPluginConfig) pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
             this.PluginConfig.Init(pluginInterface, this);

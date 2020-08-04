@@ -422,12 +422,9 @@ namespace ItemSearchPlugin {
             }
 
             string configText = Loc.Localize("ItemSearchConfigButton", "Config");
-            if (isSearch) {
-                string itemCountText = string.Format(Loc.Localize("ItemCount", "{0} Items"), this.searchTask.Result.Count);
-                ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * 2));
-                ImGui.Text(itemCountText);
-            }
-
+            var itemCountText = isSearch ? string.Format(Loc.Localize("ItemCount", "{0} Items"), this.searchTask.Result.Count) : $"v{plugin.Version}";
+            ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * 2));
+            ImGui.Text(itemCountText);
             ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
             if (ImGui.Button(configText)) {
                 plugin.ToggleConfigWindow();
