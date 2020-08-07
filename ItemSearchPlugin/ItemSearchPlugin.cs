@@ -2,6 +2,7 @@
 using System.Reflection;
 using Dalamud;
 using Dalamud.Game.Chat;
+using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Game.Chat.SeStringHandling.Payloads;
 using Dalamud.Plugin;
 using ImGuiNET;
@@ -130,18 +131,21 @@ namespace ItemSearchPlugin {
                 return;
             }
 
-            var payload = PluginInterface.SeStringManager.CreateItemLink(item, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11], item.Name);
+            var payloadList = new List<Payload> {
+                new UIForegroundPayload(PluginInterface.Data, (ushort) (0x223 + item.Rarity * 2)),
+                new UIGlowPayload(PluginInterface.Data, (ushort) (0x224 + item.Rarity * 2)),
+                new ItemPayload(PluginInterface.Data, item.RowId, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11]),
+                new UIForegroundPayload(PluginInterface.Data, 500),
+                new UIGlowPayload(PluginInterface.Data, 501),
+                new TextPayload($"{(char) SeIconChar.LinkMarker}"),
+                new UIForegroundPayload(PluginInterface.Data, 0),
+                new UIGlowPayload(PluginInterface.Data, 0),
+                new TextPayload(item.Name),
+                new RawPayload(new byte[] {0x02, 0x27, 0x07, 0xCF, 0x01, 0x01, 0x01, 0xFF, 0x01, 0x03}),
+                new RawPayload(new byte[] {0x02, 0x13, 0x02, 0xEC, 0x03})
+            };
 
-            foreach (var p in payload.Payloads.GetRange(0, 2)) {
-                switch (p) {
-                    case UIForegroundPayload f:
-                        f.ColorKey = (ushort) (0x223 + item.Rarity * 2);
-                        break;
-                    case UIGlowPayload g:
-                        g.ColorKey = (ushort) (0x224 + item.Rarity * 2);
-                        break;
-                }
-            }
+            var payload = new SeString(payloadList);
 
             PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
                 MessageBytes = payload.Encode()
