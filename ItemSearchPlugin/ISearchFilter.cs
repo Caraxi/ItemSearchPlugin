@@ -1,6 +1,6 @@
 ﻿using Lumina.Excel.GeneratedSheets;
 using System;
-
+using Item = ItemSearchPlugin.ItemTemp;
 namespace ItemSearchPlugin {
     public interface ISearchFilter : IDisposable {
         /// <summary>

@@ -14,6 +14,7 @@ using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
 using Serilog;
 using Lumina.Excel.GeneratedSheets;
+using Item = ItemSearchPlugin.ItemTemp;
 
 namespace ItemSearchPlugin {
     internal class ItemSearchWindow : IDisposable {
@@ -40,6 +41,9 @@ namespace ItemSearchPlugin {
 
         private bool errorLoadingItems;
 
+        private int styleCounter = 0;
+
+
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
             this.pluginInterface = plugin.PluginInterface;
             this.data = pluginInterface.Data;
@@ -57,7 +61,7 @@ namespace ItemSearchPlugin {
                 new LevelItemSearchFilter(pluginConfig),
                 new EquipAsSearchFilter(pluginConfig, data),
                 new RaceSexSearchFilter(pluginConfig, data),
-                new DyeableSearchFilter(pluginConfig),
+                // new DyeableSearchFilter(pluginConfig),
                 new StatSearchFilter(pluginConfig, data),
             };
 
@@ -108,15 +112,16 @@ namespace ItemSearchPlugin {
                 ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
                 
                 ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
-
+                styleCounter++;
                 if (!ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", "Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.NoCollapse)) {
-                    ImGui.PopStyleVar();
+                    ImGui.PopStyleVar(styleCounter);
+                    styleCounter = 0;
                     ImGui.End();
                     return false;
                 }
 
                 ImGui.PopStyleVar();
-
+                styleCounter--;
                 // Main window
                 ImGui.AlignTextToFramePadding();
 
@@ -240,7 +245,7 @@ namespace ItemSearchPlugin {
                 ImGui.BeginChild("scrolling", childSize, true, ImGuiWindowFlags.HorizontalScrollbar);
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
-
+                styleCounter++;
                 if (errorLoadingItems) {
                     ImGui.TextColored(new Vector4(1f, 0.1f, 0.1f, 1.00f), Loc.Localize("ItemSearchListLoadFailed", "Error loading item list."));
                     if (ImGui.SmallButton("Retry")) {
@@ -301,7 +306,7 @@ namespace ItemSearchPlugin {
                                         }
                                     }
 
-                                    if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                                    if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn) {
                                         if (selectedItem.ClassJobCategory.Row != 0) {
                                             plugin.FittingRoomUI.TryOnItem(selectedItem);
                                         }
@@ -377,7 +382,7 @@ namespace ItemSearchPlugin {
                             if (hotkeyUsed) {
                                 doSearchScroll = true;
                                 this.selectedItem = this.searchTask.Result[selectedItemIndex];
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn) {
                                     if (selectedItem.ClassJobCategory.Row != 0) {
                                         plugin.FittingRoomUI.TryOnItem(selectedItem);
                                     }
@@ -395,12 +400,12 @@ namespace ItemSearchPlugin {
                 }
 
                 ImGui.PopStyleVar();
-
+                styleCounter--;
                 ImGui.EndChild();
 
                 // Darken choose button if it shouldn't be clickable
                 ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 || selectedItem == null || selectedItem.Icon >= 65000 ? 0.25f : 1);
-
+                styleCounter++;
                 if (ImGui.Button(Loc.Localize("Choose", "Choose"))) {
                     try {
                         if (selectedItem != null && selectedItem.Icon < 65000) {
@@ -415,7 +420,7 @@ namespace ItemSearchPlugin {
                 }
 
                 ImGui.PopStyleVar();
-
+                styleCounter--;
                 if (!pluginConfig.CloseOnChoose) {
                     ImGui.SameLine();
                     if (ImGui.Button(Loc.Localize("Close", "Close"))) {
@@ -429,7 +434,7 @@ namespace ItemSearchPlugin {
                     ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
                 }
 
-                if (pluginConfig.ShowTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                if (pluginConfig.ShowTryOn) {
                     ImGui.SameLine();
                     ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn);
                 }
@@ -443,11 +448,14 @@ namespace ItemSearchPlugin {
                     plugin.ToggleConfigWindow();
                 }
 
+                if (styleCounter > 0) ImGui.PopStyleVar(styleCounter);
                 ImGui.End();
 
                 return isOpen;
             } catch (Exception ex) {
+                PluginLog.LogError("Error in ItemSearchPlugin.ItemSearchWindow.Draw");
                 PluginLog.LogError(ex.ToString());
+                if (styleCounter > 0) ImGui.PopStyleVar(styleCounter);
                 selectedItem = null;
                 selectedItemIndex = -1;
 

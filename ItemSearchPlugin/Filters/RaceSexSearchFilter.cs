@@ -7,7 +7,7 @@ using Dalamud.Data;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using static ItemSearchPlugin.ExcelExtensions;
-
+using Item = ItemSearchPlugin.ItemTemp;
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
         private int selectedIndex;

@@ -3,7 +3,7 @@ using ImGuiNET;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using Item = ItemSearchPlugin.ItemTemp;
 namespace ItemSearchPlugin.Filters {
     class ItemNameSearchFilter : SearchFilter {
         private string searchText;

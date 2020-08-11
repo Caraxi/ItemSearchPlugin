@@ -2,7 +2,7 @@
 using Dalamud.Plugin;
 using System;
 using System.Dynamic;
-
+using Item = ItemSearchPlugin.ItemTemp;
 namespace ItemSearchPlugin.ActionButtons {
     class MarketBoardActionButton : IActionButton {
         private readonly DalamudPluginInterface pluginInterface;

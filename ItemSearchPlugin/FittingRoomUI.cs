@@ -8,7 +8,7 @@ using Dalamud.Game.Internal;
 using Dalamud.Hooking;
 using Dalamud.Plugin;
 using ImGuiNET;
-
+using Item = ItemSearchPlugin.ItemTemp;
 namespace ItemSearchPlugin {
     public class FittingRoomUI : IDisposable {
         private readonly ItemSearchPlugin plugin;
@@ -24,7 +24,7 @@ namespace ItemSearchPlugin {
         private readonly GetUI2ObjByNameDelegate getUI2ObjByName;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, byte stainColor, uint itemGlamourId, byte unknownByte);
+        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, Int64 stainColor, uint itemGlamourId, byte unknownByte);
 
         private readonly TryOnDelegate tryOn;
 
@@ -94,7 +94,7 @@ namespace ItemSearchPlugin {
             return getFittingLocationHook.Original(fittingRoomBaseAddress, unknownByte1, unknownByte2);
         }
 
-        public bool CanUseTryOn { get; }
+        public bool CanUseTryOn { get; } = true;
 
         public FittingRoomSaveItem[] GetFittingRoomItems() {
             if (fittingRoomBaseAddress == IntPtr.Zero) {
