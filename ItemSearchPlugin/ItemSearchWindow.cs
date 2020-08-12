@@ -40,6 +40,36 @@ namespace ItemSearchPlugin {
 
         private bool errorLoadingItems;
 
+
+        private int styleCounter;
+        private void PushStyle(ImGuiStyleVar styleVar, Vector2 val) {
+            ImGui.PushStyleVar(styleVar, val);
+            styleCounter += 1;
+        }
+
+        private void PushStyle(ImGuiStyleVar styleVar, float val) {
+            ImGui.PushStyleVar(styleVar, val);
+            styleCounter += 1;
+        }
+
+        private void PopStyle() {
+            if (styleCounter <= 0) return;
+            ImGui.PopStyleVar();
+            styleCounter -= 1;
+        }
+
+        private void PopStyle(int count) {
+            if (count > styleCounter) count = styleCounter;
+            ImGui.PopStyleVar(count);
+            styleCounter -= count;
+        }
+
+        private void ResetStyle() {
+            if (styleCounter <= 0) return;
+            ImGui.PopStyleVar(styleCounter);
+            styleCounter = 0;
+        }
+
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
             this.pluginInterface = plugin.PluginInterface;
             this.data = pluginInterface.Data;
@@ -107,15 +137,15 @@ namespace ItemSearchPlugin {
 
                 ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
                 
-                ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
+                PushStyle(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
 
                 if (!ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", "Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.NoCollapse)) {
-                    ImGui.PopStyleVar();
+                    ResetStyle();
                     ImGui.End();
                     return false;
                 }
 
-                ImGui.PopStyleVar();
+                PopStyle();
 
                 // Main window
                 ImGui.AlignTextToFramePadding();
@@ -239,7 +269,7 @@ namespace ItemSearchPlugin {
                 var childSize = new Vector2(0, Math.Max(100, windowSize.Y - ImGui.GetCursorPosY() - 40));
                 ImGui.BeginChild("scrolling", childSize, true, ImGuiWindowFlags.HorizontalScrollbar);
 
-                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
+                PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
                 if (errorLoadingItems) {
                     ImGui.TextColored(new Vector4(1f, 0.1f, 0.1f, 1.00f), Loc.Localize("ItemSearchListLoadFailed", "Error loading item list."));
@@ -394,12 +424,12 @@ namespace ItemSearchPlugin {
                     ImGui.TextColored(new Vector4(0.86f, 0.86f, 0.86f, 1.00f), Loc.Localize("DalamudItemSelectLoading", "Loading item list..."));
                 }
 
-                ImGui.PopStyleVar();
+                PopStyle();
 
                 ImGui.EndChild();
 
                 // Darken choose button if it shouldn't be clickable
-                ImGui.PushStyleVar(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 || selectedItem == null || selectedItem.Icon >= 65000 ? 0.25f : 1);
+                PushStyle(ImGuiStyleVar.Alpha, this.selectedItemIndex < 0 || selectedItem == null || selectedItem.Icon >= 65000 ? 0.25f : 1);
 
                 if (ImGui.Button(Loc.Localize("Choose", "Choose"))) {
                     try {
@@ -414,7 +444,7 @@ namespace ItemSearchPlugin {
                     }
                 }
 
-                ImGui.PopStyleVar();
+                PopStyle();
 
                 if (!pluginConfig.CloseOnChoose) {
                     ImGui.SameLine();
@@ -447,10 +477,10 @@ namespace ItemSearchPlugin {
 
                 return isOpen;
             } catch (Exception ex) {
+                ResetStyle();
                 PluginLog.LogError(ex.ToString());
                 selectedItem = null;
                 selectedItemIndex = -1;
-
                 return isOpen;
             }
         }
