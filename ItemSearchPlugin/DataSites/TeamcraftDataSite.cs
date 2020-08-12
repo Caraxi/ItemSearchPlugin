@@ -1,5 +1,5 @@
 ﻿using Lumina.Excel.GeneratedSheets;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.DataSites {
     public class TeamcraftDataSite : DataSite {
         public override string Name => "Teamcraft";

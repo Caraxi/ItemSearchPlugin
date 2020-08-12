@@ -9,8 +9,6 @@ using ImGuiNET;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.GeneratedSheets;
 
-using Item = ItemSearchPlugin.ItemTemp;
-
 namespace ItemSearchPlugin {
     public class ItemSearchPlugin : IDalamudPlugin {
         public string Name => "Item Search";

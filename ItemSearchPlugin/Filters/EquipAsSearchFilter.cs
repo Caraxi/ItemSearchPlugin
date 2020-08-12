@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : SearchFilter {
         private readonly List<uint> selectedClassJobs;

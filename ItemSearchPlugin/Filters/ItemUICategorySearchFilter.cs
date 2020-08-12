@@ -3,7 +3,7 @@ using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.Filters {
     class ItemUICategorySearchFilter : SearchFilter {
         public override string Name => "Category";

@@ -1,5 +1,5 @@
 ﻿using Lumina.Excel.GeneratedSheets;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.ActionButtons {
     class DataSiteActionButton : IActionButton {
         private readonly ItemSearchPluginConfig pluginConfig;

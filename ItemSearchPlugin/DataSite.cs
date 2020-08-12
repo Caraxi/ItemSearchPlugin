@@ -1,5 +1,5 @@
 ﻿using Lumina.Excel.GeneratedSheets;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin {
     public abstract class DataSite {
         public abstract string GetItemUrl(Item item);

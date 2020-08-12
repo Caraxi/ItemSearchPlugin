@@ -1,6 +1,6 @@
 ﻿using System;
 using Lumina.Excel.GeneratedSheets;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin {
     public enum ActionButtonPosition {
         TOP,

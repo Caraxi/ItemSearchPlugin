@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Dalamud.Data;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.Filters {
     internal class StatSearchFilter : SearchFilter {
         public class Stat {

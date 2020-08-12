@@ -1,6 +1,6 @@
 ﻿using Lumina.Excel.GeneratedSheets;
 using ImGuiNET;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.Filters {
     class LevelEquipSearchFilter : SearchFilter {
         private const int MinLevel = 1;

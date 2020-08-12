@@ -1,6 +1,6 @@
 ﻿using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
-using Item = ItemSearchPlugin.ItemTemp;
+
 namespace ItemSearchPlugin.Filters {
     class DyeableSearchFilter : SearchFilter {
         private bool showDyeable = true;
