@@ -42,6 +42,7 @@ namespace ItemSearchPlugin {
 
 
         private int styleCounter;
+
         private void PushStyle(ImGuiStyleVar styleVar, Vector2 val) {
             ImGui.PushStyleVar(styleVar, val);
             styleCounter += 1;
@@ -104,7 +105,7 @@ namespace ItemSearchPlugin {
             Task.Run(async () => {
                 await Task.Delay(delay);
                 try {
-                    return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).ToList();
+                    return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).ToList();
                 } catch (Exception ex) {
                     errorLoadingItems = true;
                     PluginLog.LogError("Failed loading Items");
