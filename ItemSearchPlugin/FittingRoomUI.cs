@@ -24,7 +24,7 @@ namespace ItemSearchPlugin {
         private readonly GetUI2ObjByNameDelegate getUI2ObjByName;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, byte stainColor, uint itemGlamourId, byte unknownByte);
+        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, ulong stainColor, uint itemGlamourId, byte unknownByte);
 
         private readonly TryOnDelegate tryOn;
 
