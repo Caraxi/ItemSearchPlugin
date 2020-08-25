@@ -1,4 +1,5 @@
-# ItemSearchPlugin
+[![Download count](https://img.shields.io/endpoint?url=https%3A%2F%2Fvz32sgcoal.execute-api.us-east-1.amazonaws.com%2FItemSearchPlugin)](https://github.com/Caraxi/ItemSearchPlugin)
+# ItemSearchPlugin 
 Dalamud Plugin for searching for items. Type `/xlitem` in game to open the search window.
 
 Built using the ItemSearchWindow feature of Dalamud, but implemented as a plugin to allow modification easier without rebuilding Dalamud.
