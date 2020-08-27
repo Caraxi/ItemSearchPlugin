@@ -17,6 +17,8 @@ namespace ItemSearchPlugin {
 
         public FittingRoomUI FittingRoomUI { get; private set; }
 
+        public CraftingRecipeFinder CraftingRecipeFinder { get; private set; }
+
         private ItemSearchWindow itemSearchWindow;
         private bool drawItemSearchWindow;
 
@@ -47,6 +49,8 @@ namespace ItemSearchPlugin {
             ReloadLocalization();
 
             FittingRoomUI = new FittingRoomUI(this);
+
+            CraftingRecipeFinder = new CraftingRecipeFinder(this);
 
             PluginInterface.UiBuilder.OnBuildUi += this.BuildUI;
             SetupCommands();
