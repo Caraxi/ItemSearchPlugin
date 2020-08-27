@@ -94,7 +94,8 @@ namespace ItemSearchPlugin {
 
             ActionButtons = new List<IActionButton> {
                 new MarketBoardActionButton(pluginInterface, pluginConfig),
-                new DataSiteActionButton(pluginConfig)
+                new DataSiteActionButton(pluginConfig),
+                new RecipeSearchActionButton(plugin.CraftingRecipeFinder),
             };
         }
 
@@ -442,17 +443,6 @@ namespace ItemSearchPlugin {
                         }
                     } catch (Exception ex) {
                         Log.Error($"Exception in Choose: {ex.Message}");
-                    }
-                }
-
-                ImGui.SameLine();
-                if (ImGui.Button(Loc.Localize("SearchForRecipe", "Search for Recipe"))) {
-                    try {
-                        if (selectedItem != null && selectedItem.Icon < 65000) {
-                            plugin.CraftingRecipeFinder.SearchRecipesByItem(selectedItem);
-                        }
-                    } catch (Exception ex) {
-                        Log.Error($"Exception in Search for Recipe: {ex.Message}");
                     }
                 }
 

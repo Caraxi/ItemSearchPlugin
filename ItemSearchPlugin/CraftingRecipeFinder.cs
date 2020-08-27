@@ -83,6 +83,11 @@ namespace ItemSearchPlugin {
         }
 
         public void SearchRecipesByItem(Item item) {
+            if (item == null) {
+                PluginLog.Log("Tried to find recipe for NULL item.");
+                return;
+            }
+
             searchQueue.Enqueue(item.RowId);
         }
 
