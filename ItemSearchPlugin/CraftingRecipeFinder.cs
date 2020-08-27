@@ -73,8 +73,6 @@ namespace ItemSearchPlugin {
                     return;
                 }
 
-                PluginLog.Log("CraftingRecipeFinder ptr trail: {0:X16} {1:X16} {2:X16}", (ulong)uiObjectPtr, (ulong)uiAgentModulePtr, (ulong)recipeAgentPtr);
-
                 openRecipeLog(recipeAgentPtr);
                 Marshal.WriteInt32(recipeAgentPtr, 0x3A8, 3);
                 Marshal.WriteInt32(recipeAgentPtr, 0x3AC, unchecked((int)itemID));
