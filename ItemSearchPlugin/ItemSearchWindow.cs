@@ -88,6 +88,7 @@ namespace ItemSearchPlugin {
                 new LevelItemSearchFilter(pluginConfig),
                 new EquipAsSearchFilter(pluginConfig, data),
                 new RaceSexSearchFilter(pluginConfig, data),
+                new CraftableSearchFilter(pluginConfig, data),
                 new DyeableSearchFilter(pluginConfig),
                 new StatSearchFilter(pluginConfig, data),
             };
