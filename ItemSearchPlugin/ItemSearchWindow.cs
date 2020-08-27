@@ -94,7 +94,8 @@ namespace ItemSearchPlugin {
 
             ActionButtons = new List<IActionButton> {
                 new MarketBoardActionButton(pluginInterface, pluginConfig),
-                new DataSiteActionButton(pluginConfig)
+                new DataSiteActionButton(pluginConfig),
+                new RecipeSearchActionButton(plugin.CraftingRecipeFinder),
             };
         }
 
