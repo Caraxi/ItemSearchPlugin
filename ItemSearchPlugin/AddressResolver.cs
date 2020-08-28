@@ -11,7 +11,7 @@ namespace ItemSearchPlugin {
 
         public IntPtr GetUIObject { get; private set; }
         public IntPtr GetAgentObject { get; private set; }
-        public IntPtr OpenRecipeLog { get; private set; }
+        public IntPtr SearchItemByCraftingMethod { get; private set; }
 
         protected override void Setup64Bit(SigScanner sig) {
             this.TryOn = sig.ScanText("E8 ?? ?? ?? ?? EB 35 BA ?? ?? ?? ??");
@@ -20,7 +20,7 @@ namespace ItemSearchPlugin {
             this.GetUI2ObjByName = sig.ScanText("e8 ?? ?? ?? ?? 48 8b cf 48 89 87 ?? ?? 00 00 e8 ?? ?? ?? ?? 41 b8 01 00 00 00");
             this.GetUIObject = sig.ScanText("E8 ?? ?? ?? ?? 48 8B C8 48 8B 10 FF 52 40 80 88 ?? ?? ?? ?? 01 E9");
             this.GetAgentObject = sig.ScanText("E8 ?? ?? ?? ?? 8D 56 24");
-            this.OpenRecipeLog = sig.ScanText("E8 ?? ?? ?? ?? 0F B7 CF B8 ?? ?? ?? ??");
+            this.SearchItemByCraftingMethod = sig.ScanText("E8 ?? ?? ?? ?? EB 7A 48 83 F8 05");
         }
     }
 }

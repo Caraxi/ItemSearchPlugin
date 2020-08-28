@@ -29,8 +29,8 @@ namespace ItemSearchPlugin {
         private readonly GetAgentObjectDelegate getAgentObject;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void OpenRecipeLogDelegate(IntPtr RecipeAgentObject);
-        private readonly OpenRecipeLogDelegate openRecipeLog;
+        private delegate void SearchItemByCraftingMethodDelegate(IntPtr RecipeAgentObject, uint itemID);
+        private readonly SearchItemByCraftingMethodDelegate searchItemByCraftingMethod;
 
         private readonly ConcurrentQueue<uint> searchQueue = new ConcurrentQueue<uint>();
 
@@ -43,7 +43,7 @@ namespace ItemSearchPlugin {
 
                 getUIObject = Marshal.GetDelegateForFunctionPointer<GetUIObjectDelegate>(Address.GetUIObject);
                 getAgentObject = Marshal.GetDelegateForFunctionPointer<GetAgentObjectDelegate>(Address.GetAgentObject);
-                openRecipeLog = Marshal.GetDelegateForFunctionPointer<OpenRecipeLogDelegate>(Address.OpenRecipeLog);
+                searchItemByCraftingMethod = Marshal.GetDelegateForFunctionPointer<SearchItemByCraftingMethodDelegate>(Address.SearchItemByCraftingMethod);
 
                 plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
             } catch (Exception ex) {
@@ -73,9 +73,7 @@ namespace ItemSearchPlugin {
                     return;
                 }
 
-                openRecipeLog(recipeAgentPtr);
-                Marshal.WriteInt32(recipeAgentPtr, 0x3A8, 3);
-                Marshal.WriteInt32(recipeAgentPtr, 0x3AC, unchecked((int)itemID));
+                searchItemByCraftingMethod(recipeAgentPtr, itemID);
 
             } catch (NullReferenceException) { }
         }
