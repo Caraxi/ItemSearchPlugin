@@ -18,11 +18,13 @@ namespace ItemSearchPlugin.Filters {
 
         public override void DrawEditor() {
             if (ImGui.Checkbox("Dyeable", ref showDyeable)) {
+                if (!showDyeable) showNotDyeable = true;
                 Modified = true;
             }
 
             ImGui.SameLine();
             if (ImGui.Checkbox("Not Dyeable", ref showNotDyeable)) {
+                if (!showNotDyeable) showDyeable = true;
                 Modified = true;
             }
         }
