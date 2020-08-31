@@ -45,5 +45,9 @@ namespace ItemSearchPlugin.Filters {
             ImGui.Combo("##ItemUiCategorySearchFilterBox", ref this.selectedCategory, uiCategoriesArray, uiCategories.Count);
             ImGui.PopItemWidth();
         }
+
+        public override string ToString() {
+            return uiCategoriesArray[selectedCategory];
+        }
     }
 }

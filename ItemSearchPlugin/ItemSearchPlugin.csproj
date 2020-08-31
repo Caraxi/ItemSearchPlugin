@@ -78,6 +78,7 @@
 		<Reference Include="Lumina.Generated">
 			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Lumina.Generated.dll</HintPath>
 		</Reference>
+		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Localization\de.json" />

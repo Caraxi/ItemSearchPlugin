@@ -74,5 +74,9 @@ namespace ItemSearchPlugin.Filters {
                 Modified = true;
             }
         }
+
+        public override string ToString() {
+            return options[selectedOption].Replace("Craftable: ", "");
+        }
     }
 }

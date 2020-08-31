@@ -173,5 +173,9 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.SetColumnWidth(0, firstColumnWith);
             }
         }
+
+        public override string ToString() {
+            return $"{(selectedMode == 0 ? "Any of" : "All of")} [{string.Join(", ", classJobs.Where(cj => selectedClassJobs.Contains(cj.RowId)).Select(cj => cj.Abbreviation))}]";
+        }
     }
 }

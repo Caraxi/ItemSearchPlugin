@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
@@ -469,8 +470,35 @@ namespace ItemSearchPlugin {
 
                 var configText = Loc.Localize("ItemSearchConfigButton", "Config");
                 var itemCountText = isSearch ? string.Format(Loc.Localize("ItemCount", "{0} Items"), this.searchTask.Result.Count) : $"v{plugin.Version}";
-                ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * 2));
-                ImGui.Text(itemCountText);
+                ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * (isSearch ? 3 : 2)));
+                if (isSearch) {
+                    if (ImGui.Button(itemCountText)) {
+                        PluginLog.Log("Copying results to Clipboard");
+
+                        var sb = new StringBuilder();
+
+                        if (pluginConfig.PrependFilterListWithCopy) {
+                            foreach (var f in SearchFilters.Where(f => f.IsSet)) {
+                                sb.AppendLine($"{f.Name}: {f}");
+                            }
+
+                            sb.AppendLine();
+                        }
+
+                        foreach (var i in this.searchTask.Result) {
+                            sb.AppendLine(i.Name);
+                        }
+
+                        System.Windows.Forms.Clipboard.SetText(sb.ToString());
+                    }
+
+                    if (ImGui.IsItemHovered()) {
+                        ImGui.SetTooltip("Copy results to clipboard");
+                    }
+                } else {
+                    ImGui.Text(itemCountText);
+                }
+
                 ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
                 if (ImGui.Button(configText)) {
                     plugin.ToggleConfigWindow();

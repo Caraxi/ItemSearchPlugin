@@ -68,5 +68,9 @@ namespace ItemSearchPlugin.Filters {
             ImGui.Combo("##RaceSexSearchFilter", ref this.selectedIndex, options.Select(a => a.text).ToArray(), options.Count);
             ImGui.PopItemWidth();
         }
+
+        public override string ToString() {
+            return options[selectedIndex].text;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
@@ -120,6 +121,10 @@ namespace ItemSearchPlugin.Filters {
                     Modified = true;
                 }
             }
+        }
+
+        public override string ToString() {
+            return string.Join(", ", Stats.Select(s => s.BaseParam.Name));
         }
     }
 }

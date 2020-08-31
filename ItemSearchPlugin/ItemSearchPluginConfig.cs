@@ -39,6 +39,7 @@ namespace ItemSearchPlugin {
 
         public byte SelectedLanguage { get; set; }
 
+        public bool PrependFilterListWithCopy { get; set; }
         public List<string> DisabledFilters { get; set; }
         
         [NonSerialized] private DataSite lastDataSite;
@@ -87,6 +88,7 @@ namespace ItemSearchPlugin {
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
             SelectedLanguage = 0;
             DisabledFilters = new List<string>();
+            PrependFilterListWithCopy = false;
 
             if (FittingRoomSaves == null) {
                 FittingRoomSaves = new List<FittingRoomSave>();
@@ -176,6 +178,12 @@ namespace ItemSearchPlugin {
             bool enableFittingRoomSaves = EnableFittingRoomSaves;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableFittingRoomSaves", "Enable Outfit Saving"), ref enableFittingRoomSaves)) {
                 EnableFittingRoomSaves = enableFittingRoomSaves;
+                Save();
+            }
+
+            var prependFilterListWithCopy = PrependFilterListWithCopy;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigPrependFilterListWithCopy", "Add filters when copying results to clipboard"), ref prependFilterListWithCopy)) {
+                PrependFilterListWithCopy = prependFilterListWithCopy;
                 Save();
             }
 

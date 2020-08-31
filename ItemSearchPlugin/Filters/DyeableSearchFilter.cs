@@ -28,5 +28,9 @@ namespace ItemSearchPlugin.Filters {
                 Modified = true;
             }
         }
+
+        public override string ToString() {
+            return showDyeable ? "Yes" : "No";
+        }
     }
 }

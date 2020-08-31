@@ -62,5 +62,9 @@ namespace ItemSearchPlugin.Filters {
             ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
             ImGui.PopItemWidth();
         }
+
+        public override string ToString() {
+            return searchText;
+        }
     }
 }

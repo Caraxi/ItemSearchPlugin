@@ -54,5 +54,9 @@ namespace ItemSearchPlugin.Filters {
 
             ImGui.PopItemWidth();
         }
+
+        public override string ToString() {
+            return $"{minLevel} - {maxLevel}";
+        }
     }
 }
