@@ -44,6 +44,12 @@ namespace ItemSearchPlugin {
 
         private int styleCounter;
 
+        private Stain selectedStain;
+        private readonly List<Stain> stains;
+        private bool showStainSelector;
+        private Vector4 selectedStainColor = Vector4.Zero;
+        private readonly Dictionary<byte, Vector4> stainShadeHeaders;
+
         private void PushStyle(ImGuiStyleVar styleVar, Vector2 val) {
             ImGui.PushStyleVar(styleVar, val);
             styleCounter += 1;
@@ -81,6 +87,31 @@ namespace ItemSearchPlugin {
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
+
+            stains = data.Excel.GetSheet<Stain>().ToList();
+            FixStainsOrder();
+
+            if (pluginConfig.SelectedStain > 0) {
+                selectedStain = stains.FirstOrDefault(s => s.RowId == pluginConfig.SelectedStain);
+                if (selectedStain != null) {
+                    var b = selectedStain.Color & 255;
+                    var g = (selectedStain.Color >> 8) & 255;
+                    var r = (selectedStain.Color >> 16) & 255;
+                    selectedStainColor = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
+                }
+            }
+
+
+            stainShadeHeaders = new Dictionary<byte, Vector4> {
+                {2, new Vector4(1, 1, 1, 1)},
+                {4, new Vector4(1, 0, 0, 1)},
+                {5, new Vector4(0.75f, 0.5f, 0.3f, 1)},
+                {6, new Vector4(1f, 1f, 0.1f, 1)},
+                {7, new Vector4(0.5f, 1f, 0.25f, 1f)},
+                {8, new Vector4(0.3f, 0.5f, 1f, 1f)},
+                {9, new Vector4(0.7f, 0.45f, 0.9f, 1)},
+                {10, new Vector4(1f, 1f, 1f, 1f)}
+            };
 
             SearchFilters = new List<SearchFilter> {
                 new ItemNameSearchFilter(pluginConfig, searchText),
@@ -337,7 +368,7 @@ namespace ItemSearchPlugin {
 
                                     if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                                         if (selectedItem.ClassJobCategory.Row != 0) {
-                                            plugin.FittingRoomUI.TryOnItem(selectedItem);
+                                            plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
                                         }
                                     }
                                 }
@@ -466,6 +497,29 @@ namespace ItemSearchPlugin {
                 if (pluginConfig.ShowTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                     ImGui.SameLine();
                     ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn);
+
+                    ImGui.SameLine();
+
+
+                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Unknown4 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                    PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
+                    if (ImGui.ColorButton("X", selectedStainColor, ImGuiColorEditFlags.NoTooltip)) {
+                        showStainSelector = true;
+                    }
+
+                    if (ImGui.IsItemClicked(1)) {
+                        selectedStainColor = Vector4.Zero;
+                        selectedStain = null;
+                    }
+
+                    PopStyle();
+
+                    ImGui.PopStyleColor();
+
+                    if (ImGui.IsItemHovered()) {
+                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                        ImGui.SetTooltip(selectedStain == null ? "No Dye Selected" : selectedStain.Name);
+                    }
                 }
 
                 var configText = Loc.Localize("ItemSearchConfigButton", "Config");
@@ -504,7 +558,74 @@ namespace ItemSearchPlugin {
                     plugin.ToggleConfigWindow();
                 }
 
+                var mainWindowPos = ImGui.GetWindowPos();
+                var mainWindowSize = ImGui.GetWindowSize();
+
                 ImGui.End();
+
+
+                if (showStainSelector) {
+                    ImGui.SetNextWindowSize(new Vector2(210, 180));
+                    ImGui.SetNextWindowPos(mainWindowPos + mainWindowSize - new Vector2(0, 180));
+                    ImGui.Begin("Select Dye", ref showStainSelector, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove);
+                    
+                    ImGui.BeginTabBar("stainShadeTabs");
+
+                    var unselectedModifier = new Vector4(0, 0, 0, 0.7f);
+
+                    foreach (var shade in stainShadeHeaders) {
+                        ImGui.PushStyleColor(ImGuiCol.TabActive, shade.Value);
+                        ImGui.PushStyleColor(ImGuiCol.TabHovered, shade.Value);
+                        ImGui.PushStyleColor(ImGuiCol.TabUnfocused, shade.Value);
+                        ImGui.PushStyleColor(ImGuiCol.TabUnfocusedActive, shade.Value);
+                        ImGui.PushStyleColor(ImGuiCol.Tab, shade.Value - unselectedModifier);
+                        
+                        if (ImGui.BeginTabItem($"    ###StainShade{shade.Key}")) {
+                            var c = 0;
+
+                            PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
+                            foreach (var stain in stains.Where(s => s.Shade == shade.Key && !string.IsNullOrEmpty(s.Name))) {
+                                var b = stain.Color & 255;
+                                var g = (stain.Color >> 8) & 255;
+                                var r = (stain.Color >> 16) & 255;
+
+                                var stainColor = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
+
+                                ImGui.PushStyleColor(ImGuiCol.Border, stain.Unknown4 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+
+                                if (ImGui.ColorButton($"###stain{stain.RowId}", stainColor, ImGuiColorEditFlags.NoTooltip)) {
+                                    selectedStain = stain;
+                                    selectedStainColor = stainColor;
+                                    showStainSelector = false;
+                                    pluginConfig.SelectedStain = stain.RowId;
+                                }
+
+                                ImGui.PopStyleColor(1);
+
+                                if (ImGui.IsItemHovered()) {
+                                    ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                                    ImGui.SetTooltip(stain.Name);
+                                }
+  
+                                if (c++ < 5) {
+                                    ImGui.SameLine();
+                                } else {
+                                    c = 0;
+                                }
+                            }
+
+                            PopStyle(1);
+                            
+                            ImGui.EndTabItem();
+                        }
+
+                        ImGui.PopStyleColor(5);
+                    }
+
+                    ImGui.EndTabBar();
+                    ImGui.End();
+                }
+
 
                 return isOpen;
             } catch (Exception ex) {
@@ -514,6 +635,12 @@ namespace ItemSearchPlugin {
                 selectedItemIndex = -1;
                 return isOpen;
             }
+        }
+
+        private void FixStainsOrder() {
+            var move = stains.GetRange(92, 3);
+            stains.RemoveRange(92, 3);
+            stains.AddRange(move);
         }
 
         public void Dispose() {

@@ -47,7 +47,7 @@ namespace ItemSearchPlugin {
 
         private bool deletingSelectedSave;
 
-        private readonly Queue<(uint itemid, byte stain)> tryOnQueue = new Queue<(uint itemid, byte stain)>();
+        private readonly Queue<(uint itemid, uint stain)> tryOnQueue = new Queue<(uint itemid, uint stain)>();
 
 
         public FittingRoomUI(ItemSearchPlugin plugin) {
@@ -130,7 +130,7 @@ namespace ItemSearchPlugin {
             return arr.ToArray();
         }
 
-        public void TryOnItem(Item item, byte stain = 0, bool hq = false) {
+        public void TryOnItem(Item item, uint stain = 0, bool hq = false) {
             if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17) {
                 tryOnQueue.Enqueue((item.RowId + (uint) (hq ? 1000000 : 0), stain));
             }
