@@ -444,7 +444,7 @@ namespace ItemSearchPlugin {
                                 this.selectedItem = this.searchTask.Result[selectedItemIndex];
                                 if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                                     if (selectedItem.ClassJobCategory.Row != 0) {
-                                        plugin.FittingRoomUI.TryOnItem(selectedItem);
+                                        plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
                                     }
                                 }
                             }
