@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -10,7 +11,6 @@ using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
-using ImGuiScene;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
 using Serilog;
@@ -24,8 +24,6 @@ namespace ItemSearchPlugin {
         private readonly UiBuilder builder;
         private Item selectedItem;
         private int selectedItemIndex = -1;
-
-        private readonly Dictionary<ushort, TextureWrap> textureDictionary = new Dictionary<ushort, TextureWrap>();
 
         private CancellationTokenSource searchCancelTokenSource;
         private ValueTask<List<Item>> searchTask;
@@ -189,8 +187,8 @@ namespace ItemSearchPlugin {
                     var icon = selectedItem.Icon;
 
                     if (icon < 65000) {
-                        if (textureDictionary.ContainsKey(icon)) {
-                            var tex = textureDictionary[icon];
+                        if (plugin.textureDictionary.ContainsKey(icon)) {
+                            var tex = plugin.textureDictionary[icon];
                             if (tex == null || tex.ImGuiHandle == IntPtr.Zero) {
                                 ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
                                 ImGui.BeginChild("FailedTexture", new Vector2(45, 45), true);
@@ -198,20 +196,20 @@ namespace ItemSearchPlugin {
                                 ImGui.EndChild();
                                 ImGui.PopStyleColor();
                             } else {
-                                ImGui.Image(textureDictionary[icon].ImGuiHandle, new Vector2(45, 45));
+                                ImGui.Image(plugin.textureDictionary[icon].ImGuiHandle, new Vector2(45, 45));
                             }
                         } else {
                             ImGui.BeginChild("WaitingTexture", new Vector2(45, 45), true);
                             ImGui.EndChild();
 
-                            textureDictionary[icon] = null;
+                            plugin.textureDictionary[icon] = null;
 
                             Task.Run(() => {
                                 try {
                                     var iconTex = this.data.GetIcon(icon);
                                     var tex = this.builder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
                                     if (tex != null && tex.ImGuiHandle != IntPtr.Zero) {
-                                        textureDictionary[icon] = tex;
+                                        plugin.textureDictionary[icon] = tex;
                                     }
                                 } catch {
                                     // Ignore
@@ -652,11 +650,6 @@ namespace ItemSearchPlugin {
                 b?.Dispose();
             }
 
-            foreach (var t in textureDictionary) {
-                t.Value?.Dispose();
-            }
-
-            textureDictionary.Clear();
         }
     }
 }

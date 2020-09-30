@@ -6,6 +6,7 @@ using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Game.Chat.SeStringHandling.Payloads;
 using Dalamud.Plugin;
 using ImGuiNET;
+using ImGuiScene;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.GeneratedSheets;
 
@@ -16,6 +17,8 @@ namespace ItemSearchPlugin {
         public ItemSearchPluginConfig PluginConfig { get; private set; }
 
         public FittingRoomUI FittingRoomUI { get; private set; }
+
+        public readonly Dictionary<ushort, TextureWrap> textureDictionary = new Dictionary<ushort, TextureWrap>();
 
         public CraftingRecipeFinder CraftingRecipeFinder { get; private set; }
 
@@ -38,6 +41,12 @@ namespace ItemSearchPlugin {
             itemSearchWindow?.Dispose();
             RemoveCommands();
             PluginInterface.Dispose();
+
+            foreach (var t in textureDictionary) {
+                t.Value?.Dispose();
+            }
+
+            textureDictionary.Clear();
         }
 
         public void Initialize(DalamudPluginInterface pluginInterface) {
