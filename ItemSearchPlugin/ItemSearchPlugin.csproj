@@ -41,40 +41,40 @@
 	<ItemGroup>
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="Dalamud">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Dalamud.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Dalamud.dll</HintPath>
 		</Reference>
 		<Reference Include="ImGui.NET">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\ImGui.NET.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\ImGui.NET.dll</HintPath>
 		</Reference>
 		<Reference Include="ImGuiScene">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\ImGuiScene.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\ImGuiScene.dll</HintPath>
 		</Reference>
 		<Reference Include="EasyHook">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\EasyHook.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\EasyHook.dll</HintPath>
 		</Reference>
 		<Reference Include="Serilog">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Serilog.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Serilog.dll</HintPath>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Newtonsoft.Json.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Newtonsoft.Json.dll</HintPath>
 		</Reference>
 		<Reference Include="JetBrains.Annotations">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\JetBrains.Annotations.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\JetBrains.Annotations.dll</HintPath>
 		</Reference>
 		<Reference Include="SharpDX.Desktop">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\SharpDX.Desktop.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\SharpDX.Desktop.dll</HintPath>
 		</Reference>
 		<Reference Include="Serilog.Sinks.File">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Serilog.Sinks.File.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Serilog.Sinks.File.dll</HintPath>
 		</Reference>
 		<Reference Include="Serilog.Sinks.Async">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Serilog.Sinks.Async.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Serilog.Sinks.Async.dll</HintPath>
 		</Reference>
 		<Reference Include="Lumina">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Lumina.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Lumina.dll</HintPath>
 		</Reference>
 		<Reference Include="Lumina.Generated">
-			<HintPath>..\..\Dalamud\Dalamud\bin\Debug\Lumina.Generated.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Lumina.Generated.dll</HintPath>
 		</Reference>
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
