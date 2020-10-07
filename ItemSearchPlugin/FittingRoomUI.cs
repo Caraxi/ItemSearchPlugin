@@ -8,6 +8,7 @@ using Dalamud.Game.Internal;
 using Dalamud.Hooking;
 using Dalamud.Plugin;
 using ImGuiNET;
+using Addon = Dalamud.Game.Internal.Gui.Addon.Addon;
 
 namespace ItemSearchPlugin {
     public class FittingRoomUI : IDisposable {
@@ -33,7 +34,7 @@ namespace ItemSearchPlugin {
         private readonly Hook<GetFittingRoomArrayLocation> getFittingLocationHook;
         private IntPtr fittingRoomBaseAddress = IntPtr.Zero;
 
-        private UIObject? tryonUIObject;
+        private Addon tryOnUi;
 
         private float lastUiWidth;
 
@@ -72,17 +73,11 @@ namespace ItemSearchPlugin {
 
         private void OnFrameworkUpdate(Framework framework) {
             try {
-                tryonUIObject = null;
+                tryOnUi = null;
                 if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
-                var baseUIObject = getBaseUIObj();
-                if (baseUIObject == IntPtr.Zero) return;
-                var baseUiProperties = Marshal.ReadIntPtr(baseUIObject, 0x20);
-                if (baseUiProperties == IntPtr.Zero) return;
-                var tryonUIPtr = getUI2ObjByName(baseUiProperties, "Tryon", 1);
-                if (tryonUIPtr == IntPtr.Zero) return;
-                tryonUIObject = Marshal.PtrToStructure<UIObject>(tryonUIPtr);
+                tryOnUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("Tryon", 1);
             } catch (NullReferenceException) {
-                tryonUIObject = null;
+                tryOnUi = null;
             }
         }
 
@@ -147,30 +142,27 @@ namespace ItemSearchPlugin {
                 tryOnDelay = 1;
                 try {
                     var (itemid, stain) = tryOnQueue.Dequeue();
-
                     tryOn(0xFF, itemid, stain, 0, 0);
                 } catch {
                     // ignored
                 }
             }
 
-            if (fittingRoomBaseAddress != IntPtr.Zero && tryonUIObject?.Visible == true) {
-                var ui = tryonUIObject.Value;
-
-                var pos = ui.Position;
-                pos.Y += 20 * ui.Scale;
+            if (fittingRoomBaseAddress != IntPtr.Zero && tryOnUi != null) {
+                var pos = new Vector2(tryOnUi.X, tryOnUi.Y);
+                pos.Y += 20 * tryOnUi.Scale;
                 if (pos.X < lastUiWidth + 20) {
-                    pos.X += ui.Scale * 340;
+                    pos.X += tryOnUi.Scale * 340;
                 } else {
                     pos.X -= lastUiWidth;
                 }
 
-                var hiddenPos = ui.Position;
+                var hiddenPos = new Vector2(tryOnUi.X, tryOnUi.Y);
 
                 hiddenPos.Y -= 24;
 
                 ImGui.SetNextWindowPos(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
-                ImGui.SetNextWindowSize(new Vector2(220, ui.Scale * 200 + 160), ImGuiCond.Always);
+                ImGui.SetNextWindowSize(new Vector2(220, tryOnUi.Scale * 200 + 160), ImGuiCond.Always);
 
                 windowCollapsed = !ImGui.Begin(Loc.Localize("FittingRoomUIHeader", "Saved Outfits") + "###ItemSearchPluginFittingRoomUI", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
@@ -205,7 +197,7 @@ namespace ItemSearchPlugin {
                 ImGui.Separator();
                 ImGui.Text(Loc.Localize("FittingRoomUI_SelectOutfit", "Select outfit to load:"));
                 var w = ImGui.GetWindowWidth();
-                ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, 200 * ui.Scale), true, ImGuiWindowFlags.HorizontalScrollbar);
+                ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, 200 * tryOnUi.Scale), true, ImGuiWindowFlags.HorizontalScrollbar);
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
