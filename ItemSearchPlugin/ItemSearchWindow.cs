@@ -134,8 +134,15 @@ namespace ItemSearchPlugin {
             errorLoadingItems = false;
             plugin.LuminaItems = null;
             plugin.LuminaItemsClientLanguage = pluginConfig.SelectedClientLanguage;
+#if DEBUG
+            var sw = new Stopwatch();
+#endif
             Task.Run(async () => {
+
                 await Task.Delay(delay);
+#if DEBUG
+                sw.Start();
+#endif
                 try {
                     return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).ToList();
                 } catch (Exception ex) {
@@ -145,6 +152,10 @@ namespace ItemSearchPlugin {
                     return new List<Item>();
                 }
             }).ContinueWith(t => {
+#if DEBUG
+                sw.Stop();
+                PluginLog.Log($"Loaded Item List in: {sw.ElapsedMilliseconds}ms");
+#endif
                 if (errorLoadingItems) {
                     return plugin.LuminaItems;
                 }
