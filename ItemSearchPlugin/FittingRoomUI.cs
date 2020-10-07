@@ -15,16 +15,6 @@ namespace ItemSearchPlugin {
         private readonly ItemSearchPlugin plugin;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate IntPtr GetBaseUIObjDelegate();
-
-        private readonly GetBaseUIObjDelegate getBaseUIObj;
-
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall, CharSet = CharSet.Ansi)]
-        private delegate IntPtr GetUI2ObjByNameDelegate(IntPtr getBaseUIObj, string uiName, int index);
-
-        private readonly GetUI2ObjByNameDelegate getUI2ObjByName;
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, ulong stainColor, uint itemGlamourId, byte unknownByte);
 
         private readonly TryOnDelegate tryOn;
@@ -58,9 +48,6 @@ namespace ItemSearchPlugin {
                 var address = new AddressResolver();
                 address.Setup(plugin.PluginInterface.TargetModuleScanner);
                 tryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
-
-                getBaseUIObj = Marshal.GetDelegateForFunctionPointer<GetBaseUIObjDelegate>(address.GetBaseUIObject);
-                getUI2ObjByName = Marshal.GetDelegateForFunctionPointer<GetUI2ObjByNameDelegate>(address.GetUI2ObjByName);
 
                 getFittingLocationHook = new Hook<GetFittingRoomArrayLocation>(address.GetTryOnArrayLocation, new GetFittingRoomArrayLocation(GetFittingRoomArrayLocationDetour));
                 getFittingLocationHook.Enable();

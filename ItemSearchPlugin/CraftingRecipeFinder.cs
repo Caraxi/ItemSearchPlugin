@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using System.Runtime.InteropServices;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Internal;
-using Dalamud.Hooking;
 using Dalamud.Plugin;
 using System.Collections.Concurrent;
-using System.Linq.Expressions;
 
 namespace ItemSearchPlugin {
     public class CraftingRecipeFinder : IDisposable {
