@@ -121,6 +121,7 @@ namespace ItemSearchPlugin {
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),
                 new DyeableSearchFilter(pluginConfig),
+                new UniqueSearchFilter(pluginConfig),
                 new StatSearchFilter(pluginConfig, data),
             };
 
