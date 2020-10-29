@@ -119,6 +119,7 @@ namespace ItemSearchPlugin {
                 new EquipAsSearchFilter(pluginConfig, data),
                 new RaceSexSearchFilter(pluginConfig, data),
                 new CraftableSearchFilter(pluginConfig, data),
+                new DesynthableSearchFilter(pluginConfig, data),
                 new DyeableSearchFilter(pluginConfig),
                 new StatSearchFilter(pluginConfig, data),
             };
