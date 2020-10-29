@@ -279,10 +279,19 @@ namespace ItemSearchPlugin {
                 } else {
                     ImGui.BeginChild("NoSelectedItemBox", new Vector2(-1, 45));
                     ImGui.Text(Loc.Localize("ItemSearchSelectItem", "Please select an item."));
-                    ImGui.SameLine(ImGui.GetWindowWidth() - ImGui.CalcTextSize("Support on Ko-Fi").X - ImGui.GetStyle().FramePadding.X * 3);
-                    if (ImGui.Button("Support on Ko-Fi")) {
-                        Process.Start("https://ko-fi.com/Caraxi");
+
+
+                    if (!pluginConfig.HideKofi) {
+                        ImGui.PushStyleColor(ImGuiCol.Button, 0xFF5E5BFF);
+                        ImGui.PushStyleColor(ImGuiCol.ButtonActive, 0xFF5E5BAA);
+                        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xFF5E5BDD);
+                        ImGui.SameLine(ImGui.GetWindowWidth() - ImGui.CalcTextSize("Support on Ko-fi").X - ImGui.GetStyle().FramePadding.X * 3);
+                        if (ImGui.Button("Support on Ko-Fi")) {
+                            Process.Start("https://ko-fi.com/Caraxi");
+                        }
+                        ImGui.PopStyleColor(3);
                     }
+                    
                     ImGui.EndChild();
                 }
 

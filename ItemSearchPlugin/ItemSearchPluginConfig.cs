@@ -75,6 +75,8 @@ namespace ItemSearchPlugin {
             }
         }
 
+        public bool HideKofi { get; set; } = false;
+
         public ItemSearchPluginConfig() {
             LoadDefaults();
         }
@@ -91,7 +93,7 @@ namespace ItemSearchPlugin {
             SelectedLanguage = 0;
             DisabledFilters = new List<string>();
             PrependFilterListWithCopy = false;
-
+            HideKofi = false;
             if (FittingRoomSaves == null) {
                 FittingRoomSaves = new List<FittingRoomSave>();
             }
@@ -195,6 +197,12 @@ namespace ItemSearchPlugin {
                 Save();
             }
 
+            bool hideKofi = HideKofi;
+            if (ImGui.Checkbox(Loc.Localize("HideKofi", "Don't show Ko-fi link"), ref hideKofi)) {
+                HideKofi = hideKofi;
+                Save();
+            }
+
             int dataSiteIndex = Array.IndexOf(ItemSearchPlugin.DataSites, this.SelectedDataSite);
             if (ImGui.Combo(Loc.Localize("ItemSearchConfigExternalDataSite", "External Data Site"), ref dataSiteIndex, ItemSearchPlugin.DataSites.Select(t => Loc.Localize(t.NameTranslationKey, t.Name) + (string.IsNullOrEmpty(t.Note) ? "" : "*")).ToArray(), ItemSearchPlugin.DataSites.Length)) {
                 this.DataSite = ItemSearchPlugin.DataSites[dataSiteIndex].Name;
@@ -227,12 +235,6 @@ namespace ItemSearchPlugin {
 
             ImGui.Columns(1);
             ImGui.EndChild();
-
-            ImGui.TextUnformatted("Help translate: ");
-            ImGui.SameLine();
-            if (ImGui.SmallButton("Open POEditor")) {
-                Process.Start("https://poeditor.com/join/project/RkcNcGm27q");
-            }
 
             ImGui.End();
             return drawConfig;
