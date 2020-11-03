@@ -44,7 +44,7 @@ namespace ItemSearchPlugin {
         
         [NonSerialized] private DataSite lastDataSite;
 
-        [JsonIgnore] public uint SelectedStain { get; set; } = 0;
+        public uint SelectedStain { get; set; } = 0;
 
         [JsonIgnore]
         public DataSite SelectedDataSite {

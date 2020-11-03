@@ -631,6 +631,7 @@ namespace ItemSearchPlugin {
                                     selectedStainColor = stainColor;
                                     showStainSelector = false;
                                     pluginConfig.SelectedStain = stain.RowId;
+                                    pluginConfig.Save();
                                 }
 
                                 ImGui.PopStyleColor(1);
