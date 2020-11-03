@@ -84,6 +84,8 @@ namespace ItemSearchPlugin {
             this.pluginConfig = plugin.PluginConfig;
             this.plugin = plugin;
 
+            autoTryOn = pluginConfig.ShowTryOn && pluginConfig.TryOnEnabled;
+
             while (!data.IsDataReady)
                 Thread.Sleep(1);
 
@@ -524,7 +526,10 @@ namespace ItemSearchPlugin {
 
                 if (pluginConfig.ShowTryOn && pluginInterface.ClientState.LocalPlayer != null) {
                     ImGui.SameLine();
-                    ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn);
+                    if (ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn)) {
+                        pluginConfig.TryOnEnabled = autoTryOn;
+                        pluginConfig.Save();
+                    }
 
                     ImGui.SameLine();
 

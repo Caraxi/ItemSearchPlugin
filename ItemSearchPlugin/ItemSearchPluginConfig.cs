@@ -76,6 +76,7 @@ namespace ItemSearchPlugin {
         }
 
         public bool HideKofi { get; set; } = false;
+        public bool TryOnEnabled { get; set; } = false;
 
         public ItemSearchPluginConfig() {
             LoadDefaults();
