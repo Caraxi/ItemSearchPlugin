@@ -54,7 +54,8 @@ namespace ItemSearchPlugin.Filters {
             return
                 item.Name.ToLower().Contains(searchText.ToLower())
                 || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToLower().Contains(t)))
-                || (int.TryParse(searchText, out var parsedId) && parsedId == item.RowId);
+                || (int.TryParse(searchText, out var parsedId) && parsedId == item.RowId)
+                || searchText.StartsWith("$") && item.Description.ToLower().Contains(searchText.Substring(1).ToLower());
         }
 
         public override void DrawEditor() {
