@@ -133,6 +133,7 @@ namespace ItemSearchPlugin {
                 new MarketBoardActionButton(pluginInterface, pluginConfig),
                 new DataSiteActionButton(pluginConfig),
                 new RecipeSearchActionButton(plugin.CraftingRecipeFinder),
+                new CopyItemAsJson(plugin),
             };
         }
 
