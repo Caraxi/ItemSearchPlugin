@@ -39,6 +39,7 @@ namespace ItemSearchPlugin {
 
         private bool errorLoadingItems;
 
+        private bool triedLoadingItems = false;
 
         private int styleCounter;
 
@@ -134,6 +135,8 @@ namespace ItemSearchPlugin {
         }
 
         private void UpdateItemList(int delay = 100) {
+            PluginLog.Log("Loading Item List");
+            triedLoadingItems = true;
             errorLoadingItems = false;
             plugin.LuminaItems = null;
             plugin.LuminaItemsClientLanguage = pluginConfig.SelectedClientLanguage;
@@ -172,7 +175,7 @@ namespace ItemSearchPlugin {
             var isOpen = true;
             try {
                 var isSearch = false;
-                if (pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage) UpdateItemList(1000);
+                if (triedLoadingItems == false || pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage) UpdateItemList(1000);
 
 
                 if ((selectedItemIndex < 0 && selectedItem != null) || (selectedItemIndex >= 0 && selectedItem == null)) {
