@@ -9,6 +9,7 @@ using System.Text;
 
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : SearchFilter {
+        private readonly DalamudPluginInterface pluginInterface;
         private readonly List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
         private readonly List<ClassJob> classJobs;
@@ -16,7 +17,8 @@ namespace ItemSearchPlugin.Filters {
         private bool selectingClasses;
         private int selectedMode;
 
-        public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
+        public EquipAsSearchFilter(ItemSearchPluginConfig config, DataManager data, DalamudPluginInterface pluginInterface) : base(config) {
+            this.pluginInterface = pluginInterface;
             this.selectedClassJobs = new List<uint>();
             this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().ToList();
             this.classJobs = data.GetExcelSheet<ClassJob>()
@@ -129,6 +131,7 @@ namespace ItemSearchPlugin.Filters {
                     foreach (ClassJob cj in classJobs) {
                         if (cj.RowId != 0 && !selectedClassJobs.Contains(cj.RowId)) {
                             selectedClassJobs.Add(cj.RowId);
+                            changed = true;
                         }
                     }
                 }
@@ -136,6 +139,7 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Select None")) {
                     selectedClassJobs.Clear();
+                    changed = true;
                 }
                 
                 ImGui.Columns(Math.Max(3, (int) (wWidth / (70 * ImGui.GetIO().FontGlobalScale))), "###equipAsClassList", false);
@@ -171,6 +175,13 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
+            } else if(pluginInterface.ClientState?.LocalPlayer != null) {
+                ImGui.SameLine();
+                if (ImGui.SmallButton("Current Class")) {
+                    selectedClassJobs.Clear();
+                    selectedClassJobs.Add(pluginInterface.ClientState.LocalPlayer.ClassJob.Id);
+                    changed = true;
+                }
             }
         }
 
