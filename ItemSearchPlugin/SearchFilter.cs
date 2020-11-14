@@ -78,5 +78,20 @@ namespace ItemSearchPlugin {
                 PluginConfig.FilterNames.Add(a);
             }
         }
+
+        /// <summary>
+        /// Called when the filter is hidden using the config menu.
+        /// </summary>
+        public virtual void Hide() {
+
+        }
+
+        /// <summary>
+        /// Called when the filter is made visible using the config menu.
+        /// </summary>
+        public virtual void Show() {
+
+        }
+
     }
 }

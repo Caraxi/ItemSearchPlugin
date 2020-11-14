@@ -225,8 +225,10 @@ namespace ItemSearchPlugin {
                 if (ImGui.Checkbox(Loc.Localize(localizationKey, englishName) + "##checkboxToggleFilterEnabled", ref enabled)) {
                     if (enabled) {
                         DisabledFilters.RemoveAll(a => a == localizationKey);
+                        plugin.itemSearchWindow.SearchFilters.FirstOrDefault(f => f.NameLocalizationKey == localizationKey)?.Show();
                     } else {
                         DisabledFilters.Add(localizationKey);
+                        plugin.itemSearchWindow.SearchFilters.FirstOrDefault(f => f.NameLocalizationKey == localizationKey)?.Hide();
                     }
 
                     Save();

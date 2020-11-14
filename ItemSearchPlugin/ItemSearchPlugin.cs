@@ -22,7 +22,7 @@ namespace ItemSearchPlugin {
 
         public CraftingRecipeFinder CraftingRecipeFinder { get; private set; }
 
-        private ItemSearchWindow itemSearchWindow;
+        internal ItemSearchWindow itemSearchWindow;
         private bool drawItemSearchWindow;
 
         private bool drawConfigWindow;
