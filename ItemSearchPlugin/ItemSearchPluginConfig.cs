@@ -130,6 +130,7 @@ namespace ItemSearchPlugin {
                 ImGui.EndCombo();
             }
 
+            /*
             string uiLanguage = Language;
             string selectedLanguageString = Loc.Localize("LanguageDefault", "Default");
             if (!string.IsNullOrEmpty(uiLanguage)) {
@@ -155,7 +156,7 @@ namespace ItemSearchPlugin {
 
                 ImGui.EndCombo();
             }
-
+            */
             bool closeOnChoose = CloseOnChoose;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCloseAfterLink", "Close window after linking item"), ref closeOnChoose)) {
                 CloseOnChoose = closeOnChoose;
