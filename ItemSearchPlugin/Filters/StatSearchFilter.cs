@@ -81,7 +81,7 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-            var btnSize = new Vector2(24);
+            var btnSize = new Vector2(24 * ImGui.GetIO().FontGlobalScale);
 
             if (baseParams == null) {
                 // Still loading

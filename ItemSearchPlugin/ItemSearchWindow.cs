@@ -214,15 +214,15 @@ namespace ItemSearchPlugin {
                             var tex = plugin.textureDictionary[icon];
                             if (tex == null || tex.ImGuiHandle == IntPtr.Zero) {
                                 ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
-                                ImGui.BeginChild("FailedTexture", new Vector2(45, 45), true);
+                                ImGui.BeginChild("FailedTexture", new Vector2(45 * ImGui.GetIO().FontGlobalScale), true);
                                 ImGui.Text(icon.ToString());
                                 ImGui.EndChild();
                                 ImGui.PopStyleColor();
                             } else {
-                                ImGui.Image(plugin.textureDictionary[icon].ImGuiHandle, new Vector2(45, 45));
+                                ImGui.Image(plugin.textureDictionary[icon].ImGuiHandle, new Vector2(45 * ImGui.GetIO().FontGlobalScale));
                             }
                         } else {
-                            ImGui.BeginChild("WaitingTexture", new Vector2(45, 45), true);
+                            ImGui.BeginChild("WaitingTexture", new Vector2(45 * ImGui.GetIO().FontGlobalScale), true);
                             ImGui.EndChild();
 
                             plugin.textureDictionary[icon] = null;
@@ -240,7 +240,7 @@ namespace ItemSearchPlugin {
                             });
                         }
                     } else {
-                        ImGui.BeginChild("NoIcon", new Vector2(45, 45), true);
+                        ImGui.BeginChild("NoIcon", new Vector2(45 * ImGui.GetIO().FontGlobalScale), true);
                         if (pluginConfig.ShowItemID) {
                             ImGui.Text(icon.ToString());
                         }
@@ -289,7 +289,7 @@ namespace ItemSearchPlugin {
 
                     ImGui.EndGroup();
                 } else {
-                    ImGui.BeginChild("NoSelectedItemBox", new Vector2(-1, 45));
+                    ImGui.BeginChild("NoSelectedItemBox", new Vector2(-1, 45) * ImGui.GetIO().FontGlobalScale);
                     ImGui.Text(Loc.Localize("ItemSearchSelectItem", "Please select an item."));
 
 
@@ -335,7 +335,7 @@ namespace ItemSearchPlugin {
 
                 ImGui.Columns(1);
                 var windowSize = ImGui.GetWindowSize();
-                var childSize = new Vector2(0, Math.Max(100, windowSize.Y - ImGui.GetCursorPosY() - 40));
+                var childSize = new Vector2(0, Math.Max(100 * ImGui.GetIO().FontGlobalScale, windowSize.Y - ImGui.GetCursorPosY() - 45 * ImGui.GetIO().FontGlobalScale));
                 ImGui.BeginChild("scrolling", childSize, true, ImGuiWindowFlags.HorizontalScrollbar);
 
                 PushStyle(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));

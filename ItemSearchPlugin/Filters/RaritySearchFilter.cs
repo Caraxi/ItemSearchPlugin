@@ -26,7 +26,7 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-            ImGui.SetNextItemWidth(100);
+            ImGui.SetNextItemWidth(100 * ImGui.GetIO().FontGlobalScale);
 
             var setBg = false;
             if (selectedValue != 0 && rarityColorMap.ContainsKey(selectedValue)) {
@@ -39,8 +39,8 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                ImGui.BeginChild($"###colorBoxNone", new Vector2(-1, 20), false);
-                if (ImGui.Selectable($"Any###optionNone", selectedValue == 0, ImGuiSelectableFlags.None, new Vector2(ImGui.GetWindowContentRegionWidth(), 20))) {
+                ImGui.BeginChild($"###colorBoxNone", new Vector2(-1, 20 * ImGui.GetIO().FontGlobalScale), false);
+                if (ImGui.Selectable($"Any###optionNone", selectedValue == 0, ImGuiSelectableFlags.None, new Vector2(ImGui.GetWindowContentRegionWidth(), 20 * ImGui.GetIO().FontGlobalScale))) {
                     selectedValue = 0;
                     Modified = true;
                     ImGui.CloseCurrentPopup();
@@ -50,7 +50,7 @@ namespace ItemSearchPlugin.Filters {
                 foreach (var v in rarityColorMap) {
 
                     var x = ImGui.GetCursorPos();
-                    if (ImGui.Selectable($"###optionRarity{v.Key}", selectedValue == v.Key, ImGuiSelectableFlags.None, new Vector2(100, 20))) {
+                    if (ImGui.Selectable($"###optionRarity{v.Key}", selectedValue == v.Key, ImGuiSelectableFlags.None, new Vector2(100, 20) * ImGui.GetIO().FontGlobalScale)) {
                         selectedValue = v.Key;
                         Modified = true;
                     }
@@ -65,7 +65,7 @@ namespace ItemSearchPlugin.Filters {
                         ImGui.PushStyleColor(ImGuiCol.ChildBg, v.Value);
                     }
                     
-                    ImGui.BeginChild($"###colorBox{v.Key}", new Vector2(100, 20), false, ImGuiWindowFlags.NoMouseInputs);
+                    ImGui.BeginChild($"###colorBox{v.Key}", new Vector2(100, 20) * ImGui.GetIO().FontGlobalScale, false, ImGuiWindowFlags.NoMouseInputs);
                     
                     ImGui.EndChild();
                     ImGui.PopStyleColor();

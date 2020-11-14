@@ -59,7 +59,7 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-            ImGui.PushItemWidth(-1);
+            ImGui.SetNextItemWidth(-20 * ImGui.GetIO().FontGlobalScale);
             if (PluginConfig.AutoFocus && ImGui.IsWindowAppearing()) {
                 ImGui.SetKeyboardFocusHere();
             }

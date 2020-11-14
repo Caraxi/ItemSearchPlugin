@@ -104,7 +104,7 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-            ImGui.SetNextItemWidth(60);
+            ImGui.SetNextItemWidth(60 * ImGui.GetIO().FontGlobalScale);
             if (ImGui.Combo("###equipAsSearchFilterModeCombo", ref selectedMode, new[] {
                 Loc.Localize("SearchFilterAny", "Any"),
                 Loc.Localize("SearchFilterAll", "All"),
@@ -138,7 +138,7 @@ namespace ItemSearchPlugin.Filters {
                     selectedClassJobs.Clear();
                 }
                 
-                ImGui.Columns(Math.Max(3, (int) wWidth / 70), "###equipAsClassList", false);
+                ImGui.Columns(Math.Max(3, (int) (wWidth / (70 * ImGui.GetIO().FontGlobalScale))), "###equipAsClassList", false);
                 ImGui.SetColumnWidth(0, firstColumnWith);
                 try {
                     foreach (ClassJob cj in classJobs) {
