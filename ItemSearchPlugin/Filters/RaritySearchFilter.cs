@@ -15,10 +15,10 @@ namespace ItemSearchPlugin.Filters {
 
         public Dictionary<uint, Vector4> rarityColorMap = new Dictionary<uint, Vector4>() {
             {1, new Vector4(1f, 1f, 1f, 1)},
-            {2, new Vector4(153/255f, 193/255f, 143/255f, 1)},
-            {3, new Vector4(90/255f, 132/255f, 209/255f, 1)},
-            {4, new Vector4(144/255f, 119/255f, 192/255f, 1)},
-            {7, new Vector4(211/255f, 130/255f, 164/255f, 1)},
+            {2, new Vector4(0.6F, 0.76F, 0.56F, 1)},
+            {3, new Vector4(0.36F, 0.52F, 0.82F, 1)},
+            {4, new Vector4(0.56F, 0.47F, 0.75F, 1)},
+            {7, new Vector4(0.83F, 0.51F, 0.64F, 1)},
         };
 
         public override bool CheckFilter(Item item) {
@@ -43,6 +43,7 @@ namespace ItemSearchPlugin.Filters {
                 if (ImGui.Selectable($"Any###optionNone", selectedValue == 0, ImGuiSelectableFlags.None, new Vector2(ImGui.GetWindowContentRegionWidth(), 20))) {
                     selectedValue = 0;
                     Modified = true;
+                    ImGui.CloseCurrentPopup();
                 }
                 ImGui.EndChild();
 
