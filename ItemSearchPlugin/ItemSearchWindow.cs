@@ -124,10 +124,12 @@ namespace ItemSearchPlugin {
                 new RaceSexSearchFilter(pluginConfig, data),
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),
-                new DyeableSearchFilter(pluginConfig),
-                new UniqueSearchFilter(pluginConfig),
+                new BooleanSearchFilter(pluginConfig, "Dyeability", "Dyeable", "Not Dyeable", i => i.IsDyeable),
+                new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", i => i.IsUnique),
                 new StatSearchFilter(pluginConfig, data),
             };
+
+            SearchFilters.ForEach(a => a.ConfigSetup());
 
             ActionButtons = new List<IActionButton> {
                 new MarketBoardActionButton(pluginInterface, pluginConfig),

@@ -35,10 +35,12 @@ namespace ItemSearchPlugin {
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected SearchFilter(ItemSearchPluginConfig config) {
             this.PluginConfig = config;
+        }
+
+        internal void ConfigSetup() {
             (string l, string e) a = (NameLocalizationKey, Name);
-            
             if (CanBeDisabled && !PluginConfig.FilterNames.Contains(a)) {
-                config.FilterNames.Add(a);
+                PluginConfig.FilterNames.Add(a);
             }
         }
     }
