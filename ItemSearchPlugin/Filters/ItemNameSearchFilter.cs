@@ -60,6 +60,9 @@ namespace ItemSearchPlugin.Filters {
 
         public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
+            if (PluginConfig.AutoFocus && ImGui.IsWindowAppearing()) {
+                ImGui.SetKeyboardFocusHere();
+            }
             ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
             ImGui.PopItemWidth();
         }

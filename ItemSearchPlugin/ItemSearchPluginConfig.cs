@@ -77,6 +77,7 @@ namespace ItemSearchPlugin {
 
         public bool HideKofi { get; set; } = false;
         public bool TryOnEnabled { get; set; } = false;
+        public bool AutoFocus { get; set; } = true;
 
         public ItemSearchPluginConfig() {
             LoadDefaults();
@@ -94,6 +95,7 @@ namespace ItemSearchPlugin {
             SelectedLanguage = 0;
             DisabledFilters = new List<string>();
             PrependFilterListWithCopy = false;
+            AutoFocus = true;
             HideKofi = false;
             if (FittingRoomSaves == null) {
                 FittingRoomSaves = new List<FittingRoomSave>();
@@ -160,6 +162,12 @@ namespace ItemSearchPlugin {
             bool closeOnChoose = CloseOnChoose;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCloseAfterLink", "Close window after linking item"), ref closeOnChoose)) {
                 CloseOnChoose = closeOnChoose;
+                Save();
+            }
+
+            bool autoFocus = AutoFocus;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigAutoFocus", "Auto focus search box"), ref autoFocus)) {
+                AutoFocus = autoFocus;
                 Save();
             }
 
