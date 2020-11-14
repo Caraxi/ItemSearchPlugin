@@ -64,7 +64,27 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.SetKeyboardFocusHere();
             }
             ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
-            ImGui.PopItemWidth();
+            ImGui.SameLine();
+            ImGui.TextDisabled("(?)");
+            if (ImGui.IsItemHovered()) {
+                ImGui.BeginTooltip();
+                ImGui.Text("Type an item name to search for items by name.");
+                ImGui.SameLine();
+                ImGui.TextDisabled("\"OMG\"");
+                ImGui.Text("Type an item id to search for item by its ID.");
+                ImGui.SameLine();
+                ImGui.TextDisabled("\"23991\"");
+                ImGui.Text("Start input with '$' to search for an item by its description.");
+                ImGui.SameLine();
+                ImGui.TextDisabled("\"$Weird.\"");
+                ImGui.Text("Start and end with '/' to search using regex.");
+                ImGui.SameLine();
+                ImGui.TextDisabled("\"/^.M.$/\"");
+
+
+                ImGui.EndTooltip();
+            }
+
         }
 
         public override string ToString() {
