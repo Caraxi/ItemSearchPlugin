@@ -4,18 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Dalamud.Data;
+using Dalamud.Game.ClientState.Actors;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using static ItemSearchPlugin.ExcelExtensions;
 
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
+        private readonly DalamudPluginInterface pluginInterface;
         private int selectedIndex;
         private int lastIndex;
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
 
-        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) : base(pluginConfig) {
+        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data, DalamudPluginInterface pluginInterface) : base(pluginConfig) {
+            this.pluginInterface = pluginInterface;
             while (!data.IsDataReady) Thread.Sleep(1);
 
             equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().ToList();
@@ -64,9 +67,31 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-            ImGui.PushItemWidth(-1);
+            if (pluginInterface.ClientState?.LocalPlayer != null) {
+                ImGui.SetNextItemWidth(-80 * ImGui.GetIO().FontGlobalScale);
+            } else {
+                ImGui.SetNextItemWidth(-1);
+            }
+            
             ImGui.Combo("##RaceSexSearchFilter", ref this.selectedIndex, options.Select(a => a.text).ToArray(), options.Count);
-            ImGui.PopItemWidth();
+
+            if (pluginInterface.ClientState?.LocalPlayer != null) {
+                ImGui.SameLine();
+                
+                if (ImGui.SmallButton($"Current")) {
+                    var race = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Race];
+                    var sex = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Gender] == 0 ? CharacterSex.Male : CharacterSex.Female;
+
+                    for (var i = 0; i < options.Count; i++) {
+                        if (options[i].sex == sex && options[i].raceId == race) {
+                            selectedIndex = i;
+                            break;
+                        } 
+                    }
+                }
+            }
+
+            
         }
 
         public override string ToString() {

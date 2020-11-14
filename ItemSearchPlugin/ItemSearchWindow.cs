@@ -121,7 +121,7 @@ namespace ItemSearchPlugin {
                 new LevelItemSearchFilter(pluginConfig),
                 new RaritySearchFilter(pluginConfig),
                 new EquipAsSearchFilter(pluginConfig, data, pluginInterface),
-                new RaceSexSearchFilter(pluginConfig, data),
+                new RaceSexSearchFilter(pluginConfig, data, pluginInterface),
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),
                 new BooleanSearchFilter(pluginConfig, "Dyeability", "Dyeable", "Not Dyeable", i => i.IsDyeable),
