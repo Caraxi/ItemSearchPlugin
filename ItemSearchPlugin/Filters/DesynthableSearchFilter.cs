@@ -61,6 +61,7 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
+            ImGui.SetNextItemWidth(-1);
             if (ImGui.Combo("###desynthableSearchFilter_selection", ref selectedOption, options, options.Length, 14)) {
                 Modified = true;
             }
