@@ -558,10 +558,12 @@ namespace ItemSearchPlugin {
                         ImGui.SetTooltip(selectedStain == null ? "No Dye Selected" : selectedStain.Name);
                     }
                 }
-
-                var configText = Loc.Localize("ItemSearchConfigButton", "Config");
+                ImGui.PushFont(UiBuilder.IconFont);
+                var configText = $"{(char)FontAwesomeIcon.Cog}";
+                var configTextSize = ImGui.CalcTextSize(configText);
+                ImGui.PopFont();
                 var itemCountText = isSearch ? string.Format(Loc.Localize("ItemCount", "{0} Items"), this.searchTask.Result.Count) : $"v{plugin.Version}";
-                ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * (isSearch ? 3 : 2)));
+                ImGui.SameLine(ImGui.GetWindowWidth() - (configTextSize.X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * (isSearch ? 3 : 2)));
                 if (isSearch) {
                     if (ImGui.Button(itemCountText)) {
                         PluginLog.Log("Copying results to Clipboard");
@@ -590,10 +592,12 @@ namespace ItemSearchPlugin {
                     ImGui.Text(itemCountText);
                 }
 
-                ImGui.SameLine(ImGui.GetWindowWidth() - (ImGui.CalcTextSize(configText).X + ImGui.GetStyle().ItemSpacing.X * 2));
+                ImGui.SameLine(ImGui.GetWindowWidth() - (configTextSize.X + ImGui.GetStyle().ItemSpacing.X * 2));
+                ImGui.PushFont(UiBuilder.IconFont);
                 if (ImGui.Button(configText)) {
                     plugin.ToggleConfigWindow();
                 }
+                ImGui.PopFont();
 
                 var mainWindowPos = ImGui.GetWindowPos();
                 var mainWindowSize = ImGui.GetWindowSize();
