@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
+using System.Threading.Tasks;
 using Dalamud;
+using Dalamud.Data.LuminaExtensions;
 using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Game.Chat.SeStringHandling.Payloads;
@@ -8,6 +12,7 @@ using Dalamud.Plugin;
 using ImGuiNET;
 using ImGuiScene;
 using ItemSearchPlugin.DataSites;
+using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
@@ -84,6 +89,13 @@ namespace ItemSearchPlugin {
                 ShowInHelp = true
             });
 
+            PluginInterface.CommandManager.AddHandler("/fittingroom", new Dalamud.Game.Command.CommandInfo((command, arguments) => {
+                this.FittingRoomUI.OpenFittingRoom();
+            }) {
+                HelpMessage = Loc.Localize("ItemSearchFittingRoomCommand", "Open the fitting room."),
+                ShowInHelp = false
+            });
+
 #if DEBUG
             PluginInterface.CommandManager.AddHandler("/itemsearchdumploc", new Dalamud.Game.Command.CommandInfo(((command, arguments) => {
                 Loc.ExportLoadedDictionary();
@@ -99,6 +111,7 @@ namespace ItemSearchPlugin {
 
         public void RemoveCommands() {
             PluginInterface.CommandManager.RemoveHandler("/xlitem");
+            PluginInterface.CommandManager.RemoveHandler("/fittingroom");
 #if DEBUG
             PluginInterface.CommandManager.RemoveHandler("/itemsearchdumploc");
 #endif
@@ -163,6 +176,47 @@ namespace ItemSearchPlugin {
             PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
                 MessageBytes = payload.Encode()
             });
+        }
+
+        internal void DrawIcon(ushort icon, Vector2 size) {
+            if (icon < 65000) {
+                if (textureDictionary.ContainsKey(icon)) {
+                    var tex = textureDictionary[icon];
+                    if (tex == null || tex.ImGuiHandle == IntPtr.Zero) {
+                        ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
+                        ImGui.BeginChild("FailedTexture", size, true);
+                        ImGui.Text(icon.ToString());
+                        ImGui.EndChild();
+                        ImGui.PopStyleColor();
+                    } else {
+                        ImGui.Image(textureDictionary[icon].ImGuiHandle, size);
+                    }
+                } else {
+                    ImGui.BeginChild("WaitingTexture", size, true);
+                    ImGui.EndChild();
+
+                    textureDictionary[icon] = null;
+
+                    Task.Run(() => {
+                        try {
+                            var iconTex = PluginInterface.Data.GetIcon(icon);
+                            var tex = PluginInterface.UiBuilder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
+                            if (tex != null && tex.ImGuiHandle != IntPtr.Zero) {
+                                textureDictionary[icon] = tex;
+                            }
+                        } catch {
+                            // Ignore
+                        }
+                    });
+                }
+            } else {
+                ImGui.BeginChild("NoIcon", size, true);
+                if (PluginConfig.ShowItemID) {
+                    ImGui.Text(icon.ToString());
+                }
+
+                ImGui.EndChild();
+            }
         }
 
         internal void ToggleConfigWindow() {

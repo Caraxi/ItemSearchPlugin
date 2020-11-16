@@ -1,6 +1,6 @@
 ﻿namespace ItemSearchPlugin {
     public class FittingRoomSaveItem {
-        public int ItemID { get; set; } = 0;
+        public uint ItemID { get; set; } = 0;
         public byte Stain { get; set; } = 0;
     }
 

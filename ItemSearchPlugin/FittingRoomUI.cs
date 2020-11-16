@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text;
+using Dalamud;
+using Dalamud.Game.Chat;
+using Dalamud.Game.Chat.SeStringHandling;
+using Dalamud.Game.Chat.SeStringHandling.Payloads;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Internal;
 using Dalamud.Hooking;
@@ -22,9 +27,11 @@ namespace ItemSearchPlugin {
         private delegate IntPtr GetFittingRoomArrayLocation(IntPtr fittingRoomBaseAddress, byte unknownByte1, byte unknownByte2);
 
         private readonly Hook<GetFittingRoomArrayLocation> getFittingLocationHook;
+
         private IntPtr fittingRoomBaseAddress = IntPtr.Zero;
 
         private Addon tryOnUi;
+        private Addon examineUi;
 
         private float lastUiWidth;
 
@@ -41,30 +48,58 @@ namespace ItemSearchPlugin {
         private readonly Queue<(uint itemid, uint stain)> tryOnQueue = new Queue<(uint itemid, uint stain)>();
 
 
+        private readonly AddressResolver address;
+
+        private delegate IntPtr GetInventoryContainer(IntPtr inventoryManager, int inventoryId);
+        private delegate IntPtr GetContainerSlot(IntPtr inventoryContainer, int slotId);
+
+        private GetInventoryContainer getInventoryContainer;
+        private GetContainerSlot getContainerSlot;
+        
+        private enum TryOnControlID : uint {
+            SetSaveDeleteButton = uint.MaxValue - 10,
+            SuppressLog,
+        }
+
+
+
         public FittingRoomUI(ItemSearchPlugin plugin) {
             this.plugin = plugin;
 
             try {
-                var address = new AddressResolver();
+                address = new AddressResolver();
                 address.Setup(plugin.PluginInterface.TargetModuleScanner);
                 tryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
 
+                getInventoryContainer = Marshal.GetDelegateForFunctionPointer<GetInventoryContainer>(address.GetInventoryContainer);
+                getContainerSlot = Marshal.GetDelegateForFunctionPointer<GetContainerSlot>(address.GetContainerSlot);
+
                 getFittingLocationHook = new Hook<GetFittingRoomArrayLocation>(address.GetTryOnArrayLocation, new GetFittingRoomArrayLocation(GetFittingRoomArrayLocationDetour));
                 getFittingLocationHook.Enable();
+
                 CanUseTryOn = true;
                 plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
             } catch (Exception ex) {
                 PluginLog.LogError(ex.ToString());
             }
+
+
         }
 
         private void OnFrameworkUpdate(Framework framework) {
+            tryOnUi = null;
+            examineUi = null;
+            if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
             try {
-                tryOnUi = null;
-                if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
                 tryOnUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("Tryon", 1);
             } catch (NullReferenceException) {
                 tryOnUi = null;
+            }
+
+            try {
+                examineUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("CharacterInspect", 1);
+            } catch (NullReferenceException) {
+                examineUi = null;
             }
         }
 
@@ -83,39 +118,47 @@ namespace ItemSearchPlugin {
                 return null;
             }
 
-            var arr = new List<FittingRoomSaveItem>();
+            var fittingRoom = Marshal.PtrToStructure<FittingRoomStruct>(fittingRoomBaseAddress);
 
-            for (int i = 0; i < 14; i++) {
-                var itemOffset = fittingRoomBaseAddress + 0x0D8 + (0x20 * i);
-                var stainOffset = fittingRoomBaseAddress + 0x2C2 + (0x18 * i);
-
-
-                var itemBase = Marshal.ReadInt32(itemOffset);
-                var itemGlamour = Marshal.ReadInt32(itemOffset, 0x4);
-
-                if (itemBase > 1000000) itemBase -= 1000000;
-                if (itemGlamour > 1000000) itemGlamour -= 1000000;
-
-                if (itemBase == 0 && itemGlamour == 0) {
-                    continue;
-                }
-
-                var stainBase = Marshal.ReadByte(stainOffset);
-                var stainPreview = Marshal.ReadByte(stainOffset, 0x1);
-
-                arr.Add(new FittingRoomSaveItem() {
-                    ItemID = itemGlamour == 0 ? itemBase : itemGlamour,
-                    Stain = stainPreview == 0 ? stainBase : stainPreview
-                });
+            return 
+                fittingRoom.Items
+                    .Where(i => i.BaseItem != 0 && i.Slot != 5 && i.Slot < 14)
+                    .OrderBy(i => i.Slot)
+                    .Select(i => new FittingRoomSaveItem {
+                        ItemID = (i.GlamourItem > 0 ? i.GlamourItem : i.BaseItem) % 500000,
+                        Stain = i.Stain,
+                    })
+                    .ToArray();
+        }
+        
+        public void DebugFittingRoom() {
+            if (fittingRoomBaseAddress == IntPtr.Zero) {
+                return;
             }
+            
+            PluginLog.Log($"FittingRoom: {fittingRoomBaseAddress.ToInt64():X}");
 
-            return arr.ToArray();
+
+            var empty = new byte[0x20];
+
+            var fittingRoom = Marshal.PtrToStructure<FittingRoomStruct>(fittingRoomBaseAddress);
+
+
+            foreach (var i in fittingRoom.Items) {
+                PluginLog.Log($"{i.BaseItem}, {i.GlamourItem}, {i.Stain}");
+            }
         }
 
+
+
         public void TryOnItem(Item item, uint stain = 0, bool hq = false) {
-            if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17) {
+            if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17 && (item.EquipSlotCategory.Value.OffHand == 0 || item.ItemUICategory.Row == 11)) {
                 tryOnQueue.Enqueue((item.RowId + (uint) (hq ? 1000000 : 0), stain));
             }
+        }
+
+        public void OpenFittingRoom() {
+            tryOnQueue.Enqueue((0, 0));
         }
 
         public void SetSaveDeleteButton(bool enabled) {
@@ -123,18 +166,40 @@ namespace ItemSearchPlugin {
                 Marshal.WriteByte(fittingRoomBaseAddress, 0x2BA, enabled ? (byte) 1 : (byte) 0);
             }
         }
-
+        
         public void Draw() {
-            if (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay-- <= 0)) {
-                tryOnDelay = 1;
+            
+            
+            while (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay <= 0 || tryOnDelay-- <= 0)) {
                 try {
                     var (itemid, stain) = tryOnQueue.Dequeue();
-                    tryOn(0xFF, itemid, stain, 0, 0);
+
+                    switch ((TryOnControlID) itemid) {
+                        case TryOnControlID.SetSaveDeleteButton: {
+                            SetSaveDeleteButton(stain == 1);
+                            break;
+                        }
+                        case TryOnControlID.SuppressLog: {
+                            if (stain == 1) {
+                                plugin.PluginInterface.Framework.Gui.Chat.OnChatMessage += ChatOnOnChatMessage;
+                            } else {
+                                plugin.PluginInterface.Framework.Gui.Chat.OnChatMessage -= ChatOnOnChatMessage;
+                            }
+                            break;
+                        }
+                        default: {
+                            tryOnDelay = 1;
+                            tryOn(0xFF, itemid, stain, 0, 0);
+                            break;
+                        }
+                    }
+
                 } catch {
-                    // ignored
+                    tryOnDelay = 5;
+                    break;
                 }
             }
-
+            
             if (fittingRoomBaseAddress != IntPtr.Zero && tryOnUi != null) {
                 var pos = new Vector2(tryOnUi.X, tryOnUi.Y);
                 pos.Y += 20 * tryOnUi.Scale;
@@ -144,19 +209,22 @@ namespace ItemSearchPlugin {
                     pos.X -= lastUiWidth;
                 }
 
+                var buttonSize = new Vector2(-1, 22 * ImGui.GetIO().FontGlobalScale);
+
                 var hiddenPos = new Vector2(tryOnUi.X, tryOnUi.Y);
 
-                hiddenPos.Y -= 24;
+                hiddenPos.Y -= 19 * ImGui.GetIO().FontGlobalScale;
 
                 ImGui.SetNextWindowPos(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
-                ImGui.SetNextWindowSize(new Vector2(220, tryOnUi.Scale * 200 + 160), ImGuiCond.Always);
+                ImGui.SetNextWindowSize(new Vector2(220 * ImGui.GetIO().FontGlobalScale, tryOnUi.Scale * 300 + buttonSize.Y * 3), ImGuiCond.Always);
 
                 windowCollapsed = !ImGui.Begin(Loc.Localize("FittingRoomUIHeader", "Saved Outfits") + "###ItemSearchPluginFittingRoomUI", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
-                ImGui.SetNextItemWidth(150f);
+                ImGui.SetNextItemWidth(-50 * ImGui.GetIO().FontGlobalScale);
                 ImGui.InputText("###FittingRoomUI_SaveNameInput", ref saveNameInput, 32);
                 ImGui.SameLine();
-                if (ImGui.Button(Loc.Localize("SaveButton", "Save") + "##FittingRoomUI_SaveButton")) {
+
+                if (ImGui.Button(Loc.Localize("SaveButton", "Save") + "##FittingRoomUI_SaveButton", buttonSize)) {
                     saveErrorMessage = "";
                     // Check for duplicate names
 
@@ -181,27 +249,79 @@ namespace ItemSearchPlugin {
                     ImGui.TextColored(new Vector4(1, 0, 0, 1), saveErrorMessage);
                 }
 
+#if DEBUG
+                if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_PrintOutButton", "Debug")), buttonSize)) {
+                    DebugFittingRoom();
+                }
+#endif
+
                 ImGui.Separator();
                 ImGui.Text(Loc.Localize("FittingRoomUI_SelectOutfit", "Select outfit to load:"));
-                var w = ImGui.GetWindowWidth();
-                ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, 200 * tryOnUi.Scale), true, ImGuiWindowFlags.HorizontalScrollbar);
+                
+                ImGui.BeginChild("###FittingRoomUI_LoadSelect", new Vector2(0, -buttonSize.Y * 2 - ImGui.GetStyle().ItemSpacing.Y * 3), true, ImGuiWindowFlags.HorizontalScrollbar);
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
                 foreach (var save in plugin.PluginConfig.FittingRoomSaves) {
-                    if (ImGui.Selectable($"{save.Name}##fittingRoomSave", selectedSave == save)) {
+                    if (ImGui.Selectable($"{save.Name}##fittingRoomSave", selectedSave == save, ImGuiSelectableFlags.AllowDoubleClick)) {
                         deletingSelectedSave = false;
                         selectedSave = save;
+                        if (ImGui.IsMouseDoubleClicked(0)) {
+                            LoadSelectedSave(plugin.PluginInterface.ClientState.KeyState[0x10]);
+                        }
                     }
+
+                    if (ImGui.IsItemHovered()) {
+                        
+                        var itemSize = new Vector2(45) * ImGui.GetIO().FontGlobalScale;
+                        var stainDotSize = 4 * ImGui.GetIO().FontGlobalScale;
+                        var stainDotOffset = new Vector2(itemSize.X - stainDotSize, stainDotSize);
+                        ImGui.BeginTooltip();
+                        
+                        ImGui.Text(save.Name);
+                        ImGui.BeginChild("itemsPreview", new Vector2(itemSize.X * 4, itemSize.Y * 3) + ImGui.GetStyle().ItemSpacing * 3 + ImGui.GetStyle().WindowPadding * 2, true);
+                        var dl = ImGui.GetWindowDrawList();
+                        var c = 0;
+                        foreach (var i in save.Items) {
+                            var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(i.ItemID % 500000);
+                            if (item != null) {
+                                var p = ImGui.GetCursorScreenPos();
+                                plugin.DrawIcon(item.Icon, itemSize);
+
+                                if (i.Stain > 0) {
+                                    var stain = plugin.PluginInterface.Data.Excel.GetSheet<Stain>().GetRow(i.Stain);
+
+                                    var b = stain.Color & 255;
+                                    var g = (stain.Color >> 8) & 255;
+                                    var r = (stain.Color >> 16) & 255;
+                                    
+                                    dl.AddCircleFilled(p + stainDotOffset, stainDotSize + 1, stain.Unknown4 ? 0xFF005555 : 0xFF000000);
+                                    dl.AddCircleFilled(p + stainDotOffset,  stainDotSize, ImGui.ColorConvertFloat4ToU32(new Vector4(r / 255F, g / 255F, b / 255F, 1)));
+                                }
+
+                                if (++c < 4) {
+                                    ImGui.SameLine();
+                                } else {
+                                    c = 0;
+                                }
+
+                            }
+                        }
+
+
+                        ImGui.EndChild();
+                        ImGui.EndTooltip();
+
+                    }
+
+
                 }
 
                 ImGui.PopStyleVar();
 
                 ImGui.EndChild();
                 if (selectedSave != null) {
-                    var buttonWidth = w - (ImGui.GetStyle().ItemSpacing.X * 2);
-
-                    var buttonSize = new Vector2(buttonWidth, 26);
+                    
 
                     if (deletingSelectedSave) {
                         if (ImGui.Button(Loc.Localize("FittingRoomUI_ConfirmDelete", "Confirm Delete"), buttonSize)) {
@@ -215,12 +335,23 @@ namespace ItemSearchPlugin {
                             deletingSelectedSave = false;
                         }
                     } else {
-                        if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_LoadButton", "Load '{0}'"), selectedSave.Name), buttonSize)) {
-                            foreach (var item in selectedSave.Items) {
-                                SetSaveDeleteButton(true);
-                                tryOnQueue.Enqueue(((uint) item.ItemID, item.Stain));
+
+
+                        if (plugin.PluginInterface.ClientState.KeyState[0x10]) {
+                            if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_MergeButton", "Merge '{0}'"), selectedSave.Name), buttonSize)) {
+                                LoadSelectedSave(true);
+                            }
+                        } else {
+                            if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_LoadButton", "Load '{0}'"), selectedSave.Name), buttonSize)) {
+                                LoadSelectedSave();
+                            }
+
+                            if (ImGui.IsItemHovered()) {
+                                ImGui.SetTooltip("Hold SHIFT to merge with current outfit.");
                             }
                         }
+                        
+                        
 
                         if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_DeleteButton", "Delete '{0}'"), selectedSave.Name), buttonSize)) {
                             deletingSelectedSave = true;
@@ -231,11 +362,81 @@ namespace ItemSearchPlugin {
                 lastUiWidth = ImGui.GetWindowWidth();
                 ImGui.End();
             }
+
+            unsafe {
+                if (plugin.PluginConfig.ShowTryOn && CanUseTryOn && examineUi != null) {
+                    if (address.ExamineValid == IntPtr.Zero  || *(byte*)(address.ExamineValid + 0x2A8) == 0) return;
+                    var container = getInventoryContainer(address.InventoryManager, 2009);
+                    if (container == IntPtr.Zero) return;
+
+                    ImGui.SetNextWindowPos(new Vector2(examineUi.X + 15, examineUi.Y + 490 * examineUi.Scale));
+                    ImGui.Begin("TryOn###examineTryOn", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground);
+                    ImGui.SetWindowFontScale(examineUi.Scale * (1 / ImGui.GetIO().FontGlobalScale));
+                    if (ImGui.Button("Try On Outfit")) {
+                        tryOnQueue.Enqueue(((uint) TryOnControlID.SetSaveDeleteButton, 0));
+                        tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 1));
+                        for (var i = 0; i < 13; i++) {
+                            var slot = getContainerSlot(container, i);
+
+                            if (slot == IntPtr.Zero) continue;
+                            var itemid = *(uint*) (slot + 0x08);
+                            var glamourId = *(uint*) (slot + 0x30);
+                            var stain = *(byte*) (slot + 0x2F);
+                            #if DEBUG
+                            PluginLog.Log($"{slot.ToInt64():X}: {itemid}, {glamourId} {stain}");
+                            #endif
+                            var id = glamourId == 0 ? itemid : glamourId;
+                            
+                            if (id != 0) {
+
+                                var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(id);
+                                if (item.EquipSlotCategory.Value.OffHand != 1 || item.ItemUICategory.Row == 11) {
+                                    tryOnQueue.Enqueue((id, stain));
+                                    tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
+                                }
+                            }
+                        }
+                        tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
+                    }
+                    ImGui.End();
+
+                }
+
+            }
+        }
+
+        private void ChatOnOnChatMessage(XivChatType type, uint senderid, ref SeString sender, ref SeString message, ref bool ishandled) {
+            if (type == XivChatType.SystemMessage && message.Payloads.Count > 1 && (plugin.PluginInterface.ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Payloads[message.Payloads.Count - 1] : message.Payloads[0]) is TextPayload a) {
+
+                bool handle = plugin.PluginInterface.ClientState.ClientLanguage switch {
+                    ClientLanguage.English => a.Text.StartsWith("You try on "),
+                    ClientLanguage.German => a.Text.StartsWith("Da hast "),
+                    ClientLanguage.French => a.Text.StartsWith("Vous essayez "),
+                    ClientLanguage.Japanese => a.Text.EndsWith("を試着した。"),
+                    _ => false,
+                };
+
+                if (handle) {
+                    ishandled = true;
+                }
+            }
+        }
+
+        private void LoadSelectedSave(bool merge = false) {
+            tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 1));
+            tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, merge ? 1U : 0U));
+            foreach (var item in selectedSave.Items) {
+                tryOnQueue.Enqueue((item.ItemID, item.Stain));
+                SetSaveDeleteButton(true);
+                tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
+            }
+            tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
         }
 
         public void Dispose() {
             plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
             getFittingLocationHook?.Disable();
         }
+
     }
 }
