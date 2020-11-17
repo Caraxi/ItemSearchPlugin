@@ -13,6 +13,7 @@ namespace ItemSearchPlugin {
         public IntPtr ExamineValid { get; set; }
         public IntPtr GetContainerSlot { get; set; }
         public IntPtr GetInventoryContainer { get; set; }
+        public IntPtr UpdateCharacterPreview { get; set; }
 
         protected override void Setup64Bit(SigScanner sig) {
             this.TryOn = sig.ScanText("E8 ?? ?? ?? ?? EB 35 BA ?? ?? ?? ??");
@@ -24,6 +25,7 @@ namespace ItemSearchPlugin {
             this.GetInventoryContainer = sig.ScanText("E8 ?? ?? ?? ?? 8B 55 BB");
             this.GetContainerSlot = sig.ScanText("E8 ?? ?? ?? ?? 8B 5B 0C");
             this.ExamineValid = sig.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 C7 43 ?? ?? ?? ?? ??");
+            this.UpdateCharacterPreview = sig.ScanText("E8 ?? ?? ?? ?? 83 7B 08 05");
         }
     }
 }

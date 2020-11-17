@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using Dalamud;
 using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
@@ -25,8 +26,10 @@ namespace ItemSearchPlugin {
         private readonly TryOnDelegate tryOn;
 
         private delegate IntPtr GetFittingRoomArrayLocation(IntPtr fittingRoomBaseAddress, byte unknownByte1, byte unknownByte2);
+        private delegate void UpdateCharacterPreview(IntPtr a1, uint a2);
 
         private readonly Hook<GetFittingRoomArrayLocation> getFittingLocationHook;
+        private Hook<UpdateCharacterPreview> updateCharacterPreviewHook;
 
         private IntPtr fittingRoomBaseAddress = IntPtr.Zero;
 
@@ -77,6 +80,32 @@ namespace ItemSearchPlugin {
                 getFittingLocationHook = new Hook<GetFittingRoomArrayLocation>(address.GetTryOnArrayLocation, new GetFittingRoomArrayLocation(GetFittingRoomArrayLocationDetour));
                 getFittingLocationHook.Enable();
 
+
+                byte previewHookCounter = 0;
+                updateCharacterPreviewHook = new Hook<UpdateCharacterPreview>(address.UpdateCharacterPreview, new UpdateCharacterPreview((a1, a2) => {
+                    unsafe {
+                        var visibleFlag = *(uint*) (a1 + 8);
+                        var previewId = *(uint*) (a1 + 16);
+                        if (visibleFlag == 5 && previewId == 2) {
+                            // Visible and Fitting Room
+                            fittingRoomBaseAddress = a1;
+                            updateCharacterPreviewHook?.Original(a1, a2);
+                            updateCharacterPreviewHook?.Disable();
+                            updateCharacterPreviewHook?.Dispose();
+                            updateCharacterPreviewHook = null;
+                            return;
+                        }
+                    }
+                    updateCharacterPreviewHook?.Original(a1, a2);
+                    if (previewHookCounter++ <= 10) return;
+                    // Fitting room probably isn't open, so can stop checking
+                    updateCharacterPreviewHook?.Disable();
+                    updateCharacterPreviewHook?.Dispose();
+                    updateCharacterPreviewHook = null;
+                }));
+
+                updateCharacterPreviewHook.Enable();
+
                 CanUseTryOn = true;
                 plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
             } catch (Exception ex) {
@@ -106,6 +135,9 @@ namespace ItemSearchPlugin {
         private IntPtr GetFittingRoomArrayLocationDetour(IntPtr fittingRoomBaseAddress, byte unknownByte1, byte unknownByte2) {
             if (unknownByte1 == 0 && unknownByte2 == 1) {
                 this.fittingRoomBaseAddress = fittingRoomBaseAddress;
+                updateCharacterPreviewHook?.Disable();
+                updateCharacterPreviewHook?.Dispose();
+                updateCharacterPreviewHook = null;
             }
 
             return getFittingLocationHook.Original(fittingRoomBaseAddress, unknownByte1, unknownByte2);
@@ -436,6 +468,7 @@ namespace ItemSearchPlugin {
         public void Dispose() {
             plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
             getFittingLocationHook?.Disable();
+            updateCharacterPreviewHook?.Disable();
         }
 
     }
