@@ -84,6 +84,7 @@ namespace ItemSearchPlugin {
                 byte previewHookCounter = 0;
                 updateCharacterPreviewHook = new Hook<UpdateCharacterPreview>(address.UpdateCharacterPreview, new UpdateCharacterPreview((a1, a2) => {
                     unsafe {
+                        PluginLog.Log($"{a1.ToInt64():X}");
                         var visibleFlag = *(uint*) (a1 + 8);
                         var previewId = *(uint*) (a1 + 16);
                         if (visibleFlag == 5 && previewId == 2) {
@@ -353,41 +354,50 @@ namespace ItemSearchPlugin {
 
                 ImGui.EndChild();
                 if (selectedSave != null) {
-                    
 
-                    if (deletingSelectedSave) {
-                        if (ImGui.Button(Loc.Localize("FittingRoomUI_ConfirmDelete", "Confirm Delete"), buttonSize)) {
-                            deletingSelectedSave = false;
+                    if (plugin.PluginInterface.ClientState.KeyState[0x10]) {
+                        if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_MergeButton", "Merge '{0}'"), selectedSave.Name), buttonSize)) {
+                            LoadSelectedSave(true);
+                        }
+
+                        if (plugin.PluginConfig.DeletedFittingRoomSaves.Count > 0) {
+                            if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_UndoDelete", "Undelete '{0}'"), plugin.PluginConfig.DeletedFittingRoomSaves.Peek().Name), buttonSize)) {
+                                selectedSave = plugin.PluginConfig.DeletedFittingRoomSaves.Pop();
+                                plugin.PluginConfig.FittingRoomSaves.Add(selectedSave);
+                                plugin.PluginConfig.Save();
+                            }
+                        } else {
+                            ImGui.PushStyleColor(ImGuiCol.Button, 0x44444444);
+                            ImGui.PushStyleColor(ImGuiCol.ButtonActive, 0x44444444);
+                            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0x44444444);
+                            ImGui.PushStyleColor(ImGuiCol.Text, 0x88888888);
+                            ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_UndoDeleteNone", "Undelete")), buttonSize);
+                            ImGui.PopStyleColor(4);
+                        }
+
+                    } else {
+                        if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_LoadButton", "Load '{0}'"), selectedSave.Name), buttonSize)) {
+                            LoadSelectedSave();
+                        }
+
+                        if (ImGui.IsItemHovered()) {
+                            ImGui.SetTooltip("Hold SHIFT to merge with current outfit.");
+                        }
+
+                        if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_DeleteButton", "Delete '{0}'"), selectedSave.Name), buttonSize)) {
                             plugin.PluginConfig.FittingRoomSaves.Remove(selectedSave);
+                            plugin.PluginConfig.DeletedFittingRoomSaves.Push(selectedSave);
                             selectedSave = null;
                             plugin.PluginConfig.Save();
                         }
 
-                        if (ImGui.Button(Loc.Localize("FittingRoomUI_CancelDelete", "Don't Delete"), buttonSize)) {
-                            deletingSelectedSave = false;
-                        }
-                    } else {
+                    }
 
-
-                        if (plugin.PluginInterface.ClientState.KeyState[0x10]) {
-                            if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_MergeButton", "Merge '{0}'"), selectedSave.Name), buttonSize)) {
-                                LoadSelectedSave(true);
-                            }
-                        } else {
-                            if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_LoadButton", "Load '{0}'"), selectedSave.Name), buttonSize)) {
-                                LoadSelectedSave();
-                            }
-
-                            if (ImGui.IsItemHovered()) {
-                                ImGui.SetTooltip("Hold SHIFT to merge with current outfit.");
-                            }
-                        }
-                        
-                        
-
-                        if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_DeleteButton", "Delete '{0}'"), selectedSave.Name), buttonSize)) {
-                            deletingSelectedSave = true;
-                        }
+                } else if (plugin.PluginConfig.DeletedFittingRoomSaves.Count > 0) {
+                    if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_UndoDelete", "Undelete '{0}'"), plugin.PluginConfig.DeletedFittingRoomSaves.Peek().Name), buttonSize)) {
+                        selectedSave = plugin.PluginConfig.DeletedFittingRoomSaves.Pop();
+                        plugin.PluginConfig.FittingRoomSaves.Add(selectedSave);
+                        plugin.PluginConfig.Save();
                     }
                 }
 

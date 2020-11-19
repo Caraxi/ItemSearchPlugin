@@ -29,7 +29,11 @@ namespace ItemSearchPlugin {
 
         public string DataSite { get; set; }
 
+        [JsonProperty(ItemTypeNameHandling = TypeNameHandling.None)]
         public List<FittingRoomSave> FittingRoomSaves { get; set; }
+
+        [JsonIgnore]
+        public Stack<FittingRoomSave> DeletedFittingRoomSaves { get; set; } = new Stack<FittingRoomSave>();
 
         public bool MarketBoardPluginIntegration { get; set; }
 
