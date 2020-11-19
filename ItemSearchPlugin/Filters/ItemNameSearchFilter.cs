@@ -1,8 +1,10 @@
 ﻿using Lumina.Excel.GeneratedSheets;
 using ImGuiNET;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Dalamud.Plugin;
 
 namespace ItemSearchPlugin.Filters {
     class ItemNameSearchFilter : SearchFilter {
@@ -12,9 +14,13 @@ namespace ItemSearchPlugin.Filters {
 
         private Regex searchRegex;
 
-        public ItemNameSearchFilter(ItemSearchPluginConfig config, string startingValue = "") : base(config) {
+        private string parsedSearchText = string.Empty;
+        private ItemSearchWindow window;
+
+        public ItemNameSearchFilter(ItemSearchPluginConfig config, ItemSearchWindow window, string startingValue = "") : base(config) {
             searchText = startingValue;
             lastSearchText = string.Empty;
+            this.window = window;
         }
         
         public override string Name => "Search";
@@ -25,19 +31,14 @@ namespace ItemSearchPlugin.Filters {
 
         public override bool CanBeDisabled => false;
 
+        private const char BeginTag = '[';
+        private const char EndTag = ']';
+
+
         public override bool HasChanged {
             get {
                 if (searchText != lastSearchText) {
-                    searchRegex = null;
-                    if (searchText.Length >= 3 && searchText.StartsWith("/") && searchText.EndsWith("/")) {
-                        try {
-                            searchRegex = new Regex(searchText.Substring(1, searchText.Length - 2), RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                        } catch (Exception) {
-                            searchRegex = null;
-                        }
-                    }
-
-                    searchTokens = searchText.Trim().ToLower().Split(' ').Where(t => !string.IsNullOrEmpty(t)).ToArray();
+                    ParseInputText(); 
                     lastSearchText = searchText;
                     return true;
                 }
@@ -52,10 +53,10 @@ namespace ItemSearchPlugin.Filters {
             }
 
             return
-                item.Name.ToLower().Contains(searchText.ToLower())
+                item.Name.ToLower().Contains(parsedSearchText.ToLower())
                 || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToLower().Contains(t)))
-                || (int.TryParse(searchText, out var parsedId) && parsedId == item.RowId)
-                || searchText.StartsWith("$") && item.Description.ToLower().Contains(searchText.Substring(1).ToLower());
+                || (int.TryParse(parsedSearchText, out var parsedId) && parsedId == item.RowId)
+                || searchText.StartsWith("$") && item.Description.ToLower().Contains(parsedSearchText.Substring(1).ToLower());
         }
 
         public override void DrawEditor() {
@@ -90,5 +91,80 @@ namespace ItemSearchPlugin.Filters {
         public override string ToString() {
             return searchText;
         }
+
+        public void ParseInputText() {
+            window.SearchFilters.ForEach(f => f.ClearTags());
+            
+            searchRegex = null;
+            if (searchText.Length >= 3 && searchText.StartsWith("/") && searchText.EndsWith("/")) {
+                try {
+                    searchRegex = new Regex(searchText.Substring(1, searchText.Length - 2), RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    return;
+                } catch (Exception) {
+                    searchRegex = null;
+                }
+            }
+
+            searchTokens = searchText.Trim().ToLower().Split(' ').Where(t => !string.IsNullOrEmpty(t)).ToArray();
+
+            parsedSearchText = string.Empty;
+            string currentTag = null;
+            var tags = new List<string>();
+
+            foreach (var c in searchText) {
+                switch (c) {
+                    case BeginTag: {
+                        if (currentTag == null) {
+                            currentTag = "";
+                        } else {
+                            if (currentTag == "") {
+                                parsedSearchText += BeginTag;
+                            } else {
+                                parsedSearchText += $"{BeginTag}{currentTag}{BeginTag}";
+                            }
+                            currentTag = null;
+                        }
+
+                        break;
+                    }
+                    case EndTag: {
+                        if (currentTag == null) {
+                            parsedSearchText += EndTag;
+                        } else {
+                            if (currentTag.Length > 0) {
+                                tags.Add(currentTag.Trim());
+                            } else {
+                                parsedSearchText += $"{BeginTag}{EndTag}";
+                            }
+                            currentTag = null;
+                        }
+                        break;
+                    }
+                    default: {
+                        if (currentTag == null) {
+                            parsedSearchText += c;
+                        } else {
+                            currentTag += c;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (currentTag != null) {
+                parsedSearchText += $"{BeginTag}{currentTag}";
+            }
+
+            PluginLog.Log($"Parsed Text: '{parsedSearchText}'");
+            PluginLog.Log($"Tags: {tags.Count}");
+            foreach (var t in tags) {
+                PluginLog.Log($"    '{t}'");
+                window.SearchFilters.ForEach(f => f.ParseTag(t));
+            }
+
+            parsedSearchText = parsedSearchText.Trim();
+        }
+
+
     }
 }

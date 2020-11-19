@@ -6,6 +6,7 @@ namespace ItemSearchPlugin {
         // Temp Variables
         internal string _LocalizedName = "";
         internal float _LocalizedNameWidth = 0;
+        internal bool _ForceVisible = false;
 
         protected bool Modified;
 
@@ -78,6 +79,13 @@ namespace ItemSearchPlugin {
                 PluginConfig.FilterNames.Add(a);
             }
         }
+
+        public virtual bool IsFromTag => false;
+        public virtual bool GreyWithTags => true;
+
+        public virtual bool ParseTag(string tag) => false;
+
+        public virtual void ClearTags() { }
 
         /// <summary>
         /// Called when the filter is hidden using the config menu.

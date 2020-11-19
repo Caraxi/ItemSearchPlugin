@@ -10,6 +10,7 @@ using System.Numerics;
 using Dalamud;
 
 namespace ItemSearchPlugin {
+
     public class ItemSearchPluginConfig : IPluginConfiguration {
         [NonSerialized] private DalamudPluginInterface pluginInterface;
         [NonSerialized] private ItemSearchPlugin plugin;
@@ -49,6 +50,8 @@ namespace ItemSearchPlugin {
         [NonSerialized] private DataSite lastDataSite;
 
         public uint SelectedStain { get; set; } = 0;
+
+        public bool ExpandedFilters { get; set; } = false;
 
         [JsonIgnore]
         public DataSite SelectedDataSite {

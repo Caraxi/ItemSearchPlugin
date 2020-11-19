@@ -1,16 +1,18 @@
-﻿using Dalamud.Data;
+﻿using System;
+using Dalamud.Data;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Plugin;
 
 namespace ItemSearchPlugin.Filters {
     internal class ItemUICategorySearchFilter : SearchFilter {
         public override string Name => "Category";
         public override string NameLocalizationKey => "DalamudItemSelectCategory";
 
-        public override bool IsSet => selectedCategory != 0;
+        public override bool IsSet => (usingTag ? taggedCategory : selectedCategory) != 0;
 
         public override bool HasChanged {
             get {
@@ -41,12 +43,21 @@ namespace ItemSearchPlugin.Filters {
 
 
         public override bool CheckFilter(Item item) {
-            return item.ItemUICategory.Row == uiCategories[selectedCategory].RowId;
+            return item.ItemUICategory.Row == uiCategories[usingTag ? taggedCategory : selectedCategory].RowId;
         }
 
         public override void DrawEditor() {
             ImGui.PushItemWidth(-1);
-            if (ImGui.BeginCombo("##ItemUiCategorySearchFilterBox", uiCategoriesArray[this.selectedCategory])) {
+            if (usingTag) {
+                var str = uiCategoriesArray[taggedCategory];
+                ImGui.InputText("##ItemUiCategorySearchFilterBox", ref str, 100, ImGuiInputTextFlags.ReadOnly);
+                ImGui.PopItemWidth();
+                return;
+            }
+
+
+            
+            if (ImGui.BeginCombo("##ItemUiCategorySearchFilterBox", uiCategoriesArray[usingTag ? this.taggedCategory : this.selectedCategory])) {
                 ImGui.SetNextItemWidth(-1);
                 ImGui.InputTextWithHint("###ItemUiCategorySearchFilterFilter", "Filter", ref categorySearchInput,  60);
                 var isFocused = ImGui.IsItemActive();
@@ -90,8 +101,35 @@ namespace ItemSearchPlugin.Filters {
             ImGui.PopItemWidth();
         }
 
+        private bool usingTag = false;
+
+        public override bool IsFromTag => usingTag;
+
+        private int taggedCategory = 0;
+
+        public override void ClearTags() {
+            usingTag = false;
+            taggedCategory = 0;
+        }
+
+        public override bool ParseTag(string tag) {
+            var t = tag.Trim().ToLower();
+
+            for (var i = 1; i < uiCategoriesArray.Length; i++) {
+                var c = uiCategoriesArray[i];
+                if (c.ToLower() == t) {
+                    taggedCategory = i;
+                    usingTag = true;
+                    Modified = true;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public override string ToString() {
-            return uiCategoriesArray[selectedCategory];
+            return uiCategoriesArray[usingTag ? taggedCategory : selectedCategory];
         }
     }
 }

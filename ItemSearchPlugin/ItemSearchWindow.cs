@@ -49,6 +49,8 @@ namespace ItemSearchPlugin {
         private Vector4 selectedStainColor = Vector4.Zero;
         private readonly Dictionary<byte, Vector4> stainShadeHeaders;
 
+        private bool extraFiltersExpanded;
+        
         private void PushStyle(ImGuiStyleVar styleVar, Vector2 val) {
             ImGui.PushStyleVar(styleVar, val);
             styleCounter += 1;
@@ -83,7 +85,7 @@ namespace ItemSearchPlugin {
             this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = plugin.PluginConfig;
             this.plugin = plugin;
-
+            extraFiltersExpanded = pluginConfig.ExpandedFilters;
             autoTryOn = pluginConfig.ShowTryOn && pluginConfig.TryOnEnabled;
 
             while (!data.IsDataReady)
@@ -113,9 +115,9 @@ namespace ItemSearchPlugin {
                 {9, new Vector4(0.7f, 0.45f, 0.9f, 1)},
                 {10, new Vector4(1f, 1f, 1f, 1f)}
             };
-
+            
             SearchFilters = new List<SearchFilter> {
-                new ItemNameSearchFilter(pluginConfig, searchText),
+                new ItemNameSearchFilter(pluginConfig, this, searchText),
                 new ItemUICategorySearchFilter(pluginConfig, data),
                 new LevelEquipSearchFilter(pluginConfig),
                 new LevelItemSearchFilter(pluginConfig),
@@ -124,9 +126,9 @@ namespace ItemSearchPlugin {
                 new RaceSexSearchFilter(pluginConfig, data, pluginInterface),
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),
-                new BooleanSearchFilter(pluginConfig, "Dyeability", "Dyeable", "Not Dyeable", i => i.IsDyeable),
-                new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", i => i.IsUnique),
-                new BooleanSearchFilter(pluginConfig, "Tradable", "Tradable", "Not Tradable", i => !i.IsUntradable),
+                new BooleanSearchFilter(pluginConfig, "Dyeable", "Dyeable", "Not Dyeable", BooleanSearchFilter.CheckFunc("IsDyeable")),
+                new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", BooleanSearchFilter.CheckFunc("IsUnique")),
+                new BooleanSearchFilter(pluginConfig, "Tradable", "Tradable", "Not Tradable", BooleanSearchFilter.CheckFunc("IsUntradable", true)),
                 new StatSearchFilter(pluginConfig, data),
             };
 
@@ -177,12 +179,18 @@ namespace ItemSearchPlugin {
             });
         }
 
+        public Vector4 HSVtoRGB(Vector4 hsv) {
+            
+            ImGui.ColorConvertHSVtoRGB(hsv.X, hsv.Y, hsv.Z, out var r, out var g, out var b);
+            return new Vector4(r, g, b, hsv.W);
+        }
+        
         public bool Draw() {
             var isOpen = true;
+
             try {
                 var isSearch = false;
                 if (triedLoadingItems == false || pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage) UpdateItemList(1000);
-
 
                 if ((selectedItemIndex < 0 && selectedItem != null) || (selectedItemIndex >= 0 && selectedItem == null)) {
                     // Should never happen, but just incase
@@ -195,10 +203,14 @@ namespace ItemSearchPlugin {
                 
                 PushStyle(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
 
-                if (!ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", "Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.NoCollapse)) {
+                if (!ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", $"Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.NoCollapse)) {
                     ResetStyle();
                     ImGui.End();
                     return false;
+                }
+
+                if (ImGui.IsWindowAppearing()) {
+                    SearchFilters.ForEach(f => f._ForceVisible = false);
                 }
 
                 PopStyle();
@@ -281,22 +293,41 @@ namespace ItemSearchPlugin {
 
                 ImGui.SetColumnWidth(0, filterNameMax + ImGui.GetStyle().ItemSpacing.X * 2);
                 var filterInUseColour = new Vector4(0, 1, 0, 1);
+                var filterUsingTagColour = new Vector4(0.4f, 0.7f, 1, 1);
                 foreach (var filter in SearchFilters.Where(x => x.IsEnabled && x.ShowFilter)) {
+                    if (!extraFiltersExpanded && filter.CanBeDisabled && !filter.IsSet && !filter._ForceVisible) continue;
                     ImGui.SetCursorPosX((filterNameMax + ImGui.GetStyle().ItemSpacing.X) - filter._LocalizedNameWidth);
                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3);
                     if (filter.IsSet) {
-                        ImGui.TextColored(filterInUseColour, $"{filter._LocalizedName}: ");
+                        ImGui.TextColored(filter.IsFromTag ? filterUsingTagColour : filterInUseColour, $"{filter._LocalizedName}: ");
                     } else {
                         ImGui.Text($"{filter._LocalizedName}: ");
                     }
 
                     ImGui.NextColumn();
+                    ImGui.BeginGroup();
+                    if (filter.IsFromTag && filter.GreyWithTags) ImGui.PushStyleColor(ImGuiCol.Text, 0xFF888888);
                     filter.DrawEditor();
+                    if (filter.IsFromTag && filter.GreyWithTags) ImGui.PopStyleColor();
+                    ImGui.EndGroup();
                     while (ImGui.GetColumnIndex() != 0)
                         ImGui.NextColumn();
                 }
-
+                
                 ImGui.Columns(1);
+
+                ImGui.PushFont(UiBuilder.IconFont);
+                ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(0, -5 * ImGui.GetIO().FontGlobalScale));
+                ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                if (ImGui.Button($"{(extraFiltersExpanded ? (char) FontAwesomeIcon.CaretUp : (char) FontAwesomeIcon.CaretDown)}", new Vector2(-1, 10 * ImGui.GetIO().FontGlobalScale))) {
+                    extraFiltersExpanded = !extraFiltersExpanded;
+                    SearchFilters.ForEach(f => f._ForceVisible = f.IsEnabled && f.ShowFilter && f.IsSet);
+                    pluginConfig.ExpandedFilters = extraFiltersExpanded;
+                    pluginConfig.Save();
+                }
+                ImGui.PopStyleVar(2);
+                ImGui.PopFont();
+
                 var windowSize = ImGui.GetWindowSize();
                 var childSize = new Vector2(0, Math.Max(100 * ImGui.GetIO().FontGlobalScale, windowSize.Y - ImGui.GetCursorPosY() - 45 * ImGui.GetIO().FontGlobalScale));
                 ImGui.BeginChild("scrolling", childSize, true, ImGuiWindowFlags.HorizontalScrollbar);

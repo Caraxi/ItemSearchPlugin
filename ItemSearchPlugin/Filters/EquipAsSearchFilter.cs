@@ -10,7 +10,7 @@ using System.Text;
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : SearchFilter {
         private readonly DalamudPluginInterface pluginInterface;
-        private readonly List<uint> selectedClassJobs;
+        private List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
         private readonly List<ClassJob> classJobs;
         private bool changed;
@@ -115,12 +115,18 @@ namespace ItemSearchPlugin.Filters {
             }
 
             ImGui.SameLine();
-            if (ImGui.SmallButton($"{(selectingClasses ? Loc.Localize("EquipAsSearchFilterFinishedSelectingClasses", "Done") : SelectedClassString())}###equipAsChangeClassButton")) {
+
+            if (usingTags) {
+                ImGui.Text(SelectedClassString());
+            }
+
+
+            if (usingTags == false && ImGui.SmallButton($"{(selectingClasses ? Loc.Localize("EquipAsSearchFilterFinishedSelectingClasses", "Done") : SelectedClassString())}###equipAsChangeClassButton")) {
                 selectingClasses = !selectingClasses;
                 changed = true;
             }
 
-            if (selectingClasses) {
+            if (usingTags == false && selectingClasses) {
                 float wWidth = ImGui.GetWindowWidth();
 
                 float firstColumnWith = ImGui.GetColumnWidth(0);
@@ -175,7 +181,7 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
-            } else if(pluginInterface.ClientState?.LocalPlayer != null) {
+            } else if(usingTags == false && pluginInterface.ClientState?.LocalPlayer != null) {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Current Class")) {
                     selectedClassJobs.Clear();
@@ -184,6 +190,41 @@ namespace ItemSearchPlugin.Filters {
                 }
             }
         }
+
+
+        private bool usingTags = false;
+
+        private List<uint> nonTagSelection;
+
+        public override void ClearTags() {
+            if (usingTags) {
+                selectedClassJobs = nonTagSelection;
+                usingTags = false;
+            }
+        }
+
+        public override bool IsFromTag => usingTags;
+
+        public override bool ParseTag(string tag) {
+            var t = tag.ToLower().Trim();
+
+            foreach (var bp in classJobs) {
+                if (bp.Abbreviation.ToLower() == t) {
+
+                    if (!usingTags) {
+                        nonTagSelection = selectedClassJobs;
+                        usingTags = true;
+                        selectedClassJobs = new List<uint>();
+                    }
+
+                    selectedClassJobs.Add(bp.RowId);
+                }
+            }
+
+            return false;
+        }
+
+        public override bool GreyWithTags => false;
 
         public override string ToString() {
             return $"{(selectedMode == 0 ? "Any of" : "All of")} [{string.Join(", ", classJobs.Where(cj => selectedClassJobs.Contains(cj.RowId)).Select(cj => cj.Abbreviation))}]";

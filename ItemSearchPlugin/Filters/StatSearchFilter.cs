@@ -22,6 +22,21 @@ namespace ItemSearchPlugin.Filters {
 
         public List<Stat> Stats = new List<Stat>();
 
+        private Dictionary<string, string> StatAlias = new Dictionary<string, string>() {
+            { "str", "strength" },
+            { "dex", "dexterity" },
+            { "vit", "vitality" },
+            { "int", "intelligence" },
+            { "crit", "critical hit" },
+            { "det", "determination" },
+            { "dh", "direct hit rate" },
+            { "def", "defence" },
+            { "mdef", "magic defence" },
+            { "sks", "skill speed" },
+            { "sps", "spell speed" },
+            { "ten", "tenacity" },
+        };
+
         public StatSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             while (!data.IsDataReady) {
                 Thread.Sleep(1);
@@ -93,14 +108,20 @@ namespace ItemSearchPlugin.Filters {
             Stat doRemove = null;
             var i = 0;
             foreach (var stat in Stats) {
-                if (ImGui.Button($"-###statSearchFilterRemove{i++}", btnSize)) doRemove = stat;
-                ImGui.SameLine();
+                if (!usingTags && ImGui.Button($"-###statSearchFilterRemove{i++}", btnSize)) doRemove = stat;
                 var selectedParam = stat.BaseParamIndex;
                 ImGui.SetNextItemWidth(200);
-                if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name).ToArray(), baseParams.Length, 20)) {
-                    stat.BaseParamIndex = selectedParam;
-                    stat.BaseParam = baseParams[selectedParam];
-                    Modified = true;
+
+                if (usingTags) {
+
+                    ImGui.InputText($"###statSearchFilterSelectStat{i++}", ref stat.BaseParam.Name, 50, ImGuiInputTextFlags.ReadOnly);
+                } else {
+                    ImGui.SameLine();
+                    if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name).ToArray(), baseParams.Length, 20)) {
+                        stat.BaseParamIndex = selectedParam;
+                        stat.BaseParam = baseParams[selectedParam];
+                        Modified = true;
+                    }
                 }
             }
 
@@ -109,7 +130,7 @@ namespace ItemSearchPlugin.Filters {
                 Modified = true;
             }
 
-            if (ImGui.Button("+", btnSize)) {
+            if (!usingTags && ImGui.Button("+", btnSize)) {
                 var stat = new Stat();
                 Stats.Add(stat);
                 Modified = true;
@@ -121,6 +142,39 @@ namespace ItemSearchPlugin.Filters {
                     Modified = true;
                 }
             }
+        }
+
+        private bool usingTags = false;
+
+        private List<Stat> nonTagStats;
+
+        public override void ClearTags() {
+            if (usingTags) {
+                Stats = nonTagStats;
+                usingTags = false;
+            }
+        }
+
+        public override bool IsFromTag => usingTags;
+
+        public override bool ParseTag(string tag) {
+            var t = tag.ToLower().Trim();
+            if (StatAlias.ContainsKey(t)) t = StatAlias[t];
+            foreach (var bp in baseParams) {
+                if (bp.Name.ToLower() == t) {
+                    var stat = new Stat() { BaseParam = bp };
+
+                    if (!usingTags) {
+                        nonTagStats = Stats;
+                        usingTags = true;
+                        Stats = new List<Stat>();
+                    }
+
+                    Stats.Add(stat);
+                }
+            }
+
+            return false;
         }
 
         public override string ToString() {

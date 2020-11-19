@@ -12,13 +12,14 @@ using static ItemSearchPlugin.ExcelExtensions;
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
         private readonly DalamudPluginInterface pluginInterface;
-        private int selectedIndex;
+        private int selectedOption;
         private int lastIndex;
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
-
+        private DataManager data;
         public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data, DalamudPluginInterface pluginInterface) : base(pluginConfig) {
             this.pluginInterface = pluginInterface;
+            this.data = data;
             while (!data.IsDataReady) Thread.Sleep(1);
 
             equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().ToList();
@@ -45,19 +46,19 @@ namespace ItemSearchPlugin.Filters {
 
         public override string NameLocalizationKey => "RaceSexSearchFilter";
 
-        public override bool IsSet => selectedIndex > 0;
+        public override bool IsSet => selectedOption > 0;
 
         public override bool HasChanged {
             get {
-                if (lastIndex == selectedIndex) return false;
-                lastIndex = selectedIndex;
+                if (lastIndex == selectedOption) return false;
+                lastIndex = selectedOption;
                 return true;
             }
         }
 
         public override bool CheckFilter(Item item) {
             try {
-                var (_, raceId, sex) = options[selectedIndex];
+                var (_, raceId, sex) = options[selectedOption];
                 var erc = equipRaceCategories[item.EquipRestriction];
                 return erc.AllowsRaceSex(raceId, sex);
             } catch (Exception ex) {
@@ -73,7 +74,7 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.SetNextItemWidth(-1);
             }
             
-            ImGui.Combo("##RaceSexSearchFilter", ref this.selectedIndex, options.Select(a => a.text).ToArray(), options.Count);
+            ImGui.Combo("##RaceSexSearchFilter", ref this.selectedOption, options.Select(a => a.text).ToArray(), options.Count);
 
             if (pluginInterface.ClientState?.LocalPlayer != null) {
                 ImGui.SameLine();
@@ -84,7 +85,7 @@ namespace ItemSearchPlugin.Filters {
 
                     for (var i = 0; i < options.Count; i++) {
                         if (options[i].sex == sex && options[i].raceId == race) {
-                            selectedIndex = i;
+                            selectedOption = i;
                             break;
                         } 
                     }
@@ -94,8 +95,41 @@ namespace ItemSearchPlugin.Filters {
             
         }
 
+
+        private bool usingTags = false;
+
+        private int nonTagSelection;
+
+        public override void ClearTags() {
+            if (usingTags) {
+                selectedOption = nonTagSelection;
+                usingTags = false;
+                Modified = true;
+            }
+        }
+
+        public override bool IsFromTag => usingTags;
+
+        public override bool ParseTag(string tag) {
+            var t = tag.ToLower().Trim().Replace(" ", "").Replace("'","");
+
+            for (var i = 1; i < options.Count; i++) {
+                if (t == options[i].text.ToLower().Replace(" ", "").Replace("'", "")) {
+                    if (!usingTags) {
+                        nonTagSelection = selectedOption;
+                        usingTags = true;
+                        selectedOption = i;
+                        return true;
+                    }
+                }
+            }
+                 
+
+            return false;
+        }
+
         public override string ToString() {
-            return options[selectedIndex].text;
+            return options[selectedOption].text;
         }
     }
 }
