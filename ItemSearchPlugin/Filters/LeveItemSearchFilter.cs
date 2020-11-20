@@ -105,13 +105,18 @@ namespace ItemSearchPlugin.Filters {
                     var s = t.Split('-');
 
                     if (s.Length > 0) {
+                        var plus = false;
+                        if (s.Length == 1 && s[0].EndsWith("+")) {
+                            plus = true;
+                            s[0] = s[0].Substring(0, s[0].Length - 1);
+                        }
                         if (!int.TryParse(s[0], out var min)) {
                             return false;
                         }
 
                         int max;
                         if (s.Length == 1) {
-                            max = min;
+                            max = plus ? MaxLevel : min;
                         } else {
                             if (!int.TryParse(s[1], out max)) {
                                 return false;

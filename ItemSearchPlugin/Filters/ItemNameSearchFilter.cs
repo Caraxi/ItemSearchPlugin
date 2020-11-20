@@ -155,10 +155,7 @@ namespace ItemSearchPlugin.Filters {
                 parsedSearchText += $"{BeginTag}{currentTag}";
             }
 
-            PluginLog.Log($"Parsed Text: '{parsedSearchText}'");
-            PluginLog.Log($"Tags: {tags.Count}");
             foreach (var t in tags) {
-                PluginLog.Log($"    '{t}'");
                 window.SearchFilters.ForEach(f => f.ParseTag(t));
             }
 

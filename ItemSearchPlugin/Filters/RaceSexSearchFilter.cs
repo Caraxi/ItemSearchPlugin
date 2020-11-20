@@ -1,12 +1,13 @@
-﻿using Dalamud.Plugin;
+﻿using Dalamud.Data;
+using Dalamud.Game.ClientState.Actors;
+using Dalamud.Plugin;
+using ImGuiNET;
+using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
-using Dalamud.Data;
-using Dalamud.Game.ClientState.Actors;
-using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
 using static ItemSearchPlugin.ExcelExtensions;
 
 namespace ItemSearchPlugin.Filters {
@@ -68,7 +69,8 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override void DrawEditor() {
-            if (pluginInterface.ClientState?.LocalPlayer != null) {
+            ImGui.BeginChild($"{this.NameLocalizationKey}Child", new Vector2(-1, 23 * ImGui.GetIO().FontGlobalScale), false, usingTags ? ImGuiWindowFlags.NoInputs : ImGuiWindowFlags.None);
+            if (pluginInterface.ClientState?.LocalPlayer != null && !usingTags) {
                 ImGui.SetNextItemWidth(-80 * ImGui.GetIO().FontGlobalScale);
             } else {
                 ImGui.SetNextItemWidth(-1);
@@ -76,7 +78,7 @@ namespace ItemSearchPlugin.Filters {
             
             ImGui.Combo("##RaceSexSearchFilter", ref this.selectedOption, options.Select(a => a.text).ToArray(), options.Count);
 
-            if (pluginInterface.ClientState?.LocalPlayer != null) {
+            if (pluginInterface.ClientState?.LocalPlayer != null && !usingTags) {
                 ImGui.SameLine();
                 
                 if (ImGui.SmallButton($"Current")) {
@@ -87,14 +89,14 @@ namespace ItemSearchPlugin.Filters {
                         if (options[i].sex == sex && options[i].raceId == race) {
                             selectedOption = i;
                             break;
-                        } 
+                        }
                     }
                 }
             }
-
+            ImGui.EndChild();
             
         }
-
+        
 
         private bool usingTags = false;
 
@@ -111,20 +113,34 @@ namespace ItemSearchPlugin.Filters {
         public override bool IsFromTag => usingTags;
 
         public override bool ParseTag(string tag) {
-            var t = tag.ToLower().Trim().Replace(" ", "").Replace("'","");
+            var t = tag.ToLower().Trim();
+            var selfTag = false;
+            if (t == "self") {
+                var race = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Race];
+                var sex = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Gender] == 0 ? CharacterSex.Male : CharacterSex.Female;
 
+                for (var i = 0; i < options.Count; i++) {
+                    if (options[i].sex == sex && options[i].raceId == race) {
+                        t = options[i].text.ToLower();
+                        selfTag = true;
+                        break;
+                    }
+                }
+            }
+
+            t = t.Replace(" ", "").Replace("'", "");
+            
             for (var i = 1; i < options.Count; i++) {
                 if (t == options[i].text.ToLower().Replace(" ", "").Replace("'", "")) {
                     if (!usingTags) {
                         nonTagSelection = selectedOption;
-                        usingTags = true;
-                        selectedOption = i;
-                        return true;
                     }
+                    usingTags = true;
+                    selectedOption = i;
+                    return !selfTag;
                 }
             }
-                 
-
+            
             return false;
         }
 

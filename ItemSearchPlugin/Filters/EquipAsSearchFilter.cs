@@ -207,17 +207,23 @@ namespace ItemSearchPlugin.Filters {
 
         public override bool ParseTag(string tag) {
             var t = tag.ToLower().Trim();
+            var selfTag = false;
+            if (t == "self" && pluginInterface.ClientState?.LocalPlayer != null) {
+                t = pluginInterface.ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToLower();
+                selfTag = true;
+            }
 
             foreach (var bp in classJobs) {
                 if (bp.Abbreviation.ToLower() == t) {
 
                     if (!usingTags) {
                         nonTagSelection = selectedClassJobs;
-                        usingTags = true;
                         selectedClassJobs = new List<uint>();
                     }
 
+                    usingTags = true;
                     selectedClassJobs.Add(bp.RowId);
+                    return !selfTag;
                 }
             }
 
