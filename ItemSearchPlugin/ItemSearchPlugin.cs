@@ -93,7 +93,7 @@ namespace ItemSearchPlugin {
                 this.FittingRoomUI.OpenFittingRoom();
             }) {
                 HelpMessage = Loc.Localize("ItemSearchFittingRoomCommand", "Open the fitting room."),
-                ShowInHelp = false
+                ShowInHelp = true
             });
 
 #if DEBUG
