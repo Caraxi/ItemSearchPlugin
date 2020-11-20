@@ -44,7 +44,9 @@ namespace ItemSearchPlugin {
         internal static void LoadDefaultLanguage() {
             try {
                 var currentUiLang = CultureInfo.CurrentUICulture;
+                #if DEBUG
                 PluginLog.Log("Trying to set up Loc for culture {0}", currentUiLang.TwoLetterISOLanguageName);
+                #endif
                 LoadLanguage(ApplicableLangCodes.Any(x => currentUiLang.TwoLetterISOLanguageName == x) ? currentUiLang.TwoLetterISOLanguageName : "en");
             } catch (Exception ex) {
                 PluginLog.LogError("Could not get language information. Setting up fallbacks. {0}", ex.ToString());

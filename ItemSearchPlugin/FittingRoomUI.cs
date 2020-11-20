@@ -84,7 +84,6 @@ namespace ItemSearchPlugin {
                 byte previewHookCounter = 0;
                 updateCharacterPreviewHook = new Hook<UpdateCharacterPreview>(address.UpdateCharacterPreview, new UpdateCharacterPreview((a1, a2) => {
                     unsafe {
-                        PluginLog.Log($"{a1.ToInt64():X}");
                         var visibleFlag = *(uint*) (a1 + 8);
                         var previewId = *(uint*) (a1 + 16);
                         if (visibleFlag == 5 && previewId == 2) {
