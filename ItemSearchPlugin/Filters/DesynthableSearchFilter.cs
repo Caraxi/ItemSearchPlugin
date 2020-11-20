@@ -94,7 +94,7 @@ namespace ItemSearchPlugin.Filters {
             var split = t.Split(':');
             split[0] = split[0].Trim();
 
-            if (split[0] == "desynthable" || split[0] == "not desynthable") {
+            if (split[0].StartsWith("desy")  || split[0].StartsWith("not desy")) {
                 Modified = true;
                 if (!usingTags) {
                     nonTagSelection = selectedOption;
