@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Dalamud;
 using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
@@ -12,6 +10,7 @@ using Dalamud.Game.Chat.SeStringHandling.Payloads;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Internal;
 using Dalamud.Hooking;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Addon = Dalamud.Game.Internal.Gui.Addon.Addon;
@@ -294,7 +293,11 @@ namespace ItemSearchPlugin {
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
+                string moveAction = null;
+                
                 foreach (var save in plugin.PluginConfig.FittingRoomSaves) {
+                    var p1 = ImGui.GetCursorPos();
+
                     if (ImGui.Selectable($"{save.Name}##fittingRoomSave", selectedSave == save, ImGuiSelectableFlags.AllowDoubleClick)) {
                         deletingSelectedSave = false;
                         selectedSave = save;
@@ -347,7 +350,68 @@ namespace ItemSearchPlugin {
                     }
 
 
+                    if (selectedSave == save && plugin.PluginConfig.FittingRoomSaves.Count > 1) {
+                        var p2 = ImGui.GetCursorPos();
+                        ImGui.PushFont(UiBuilder.IconFont);
+                        var white = new Vector4(1, 1, 1, 1);
+                        var other = new Vector4(1, 1, 0, 1);
+                        var up = $"{(char) FontAwesomeIcon.SortUp}";
+                        var down = $"{(char) FontAwesomeIcon.SortDown}";
+                        var s = ImGui.CalcTextSize(up);
+                        ImGui.SetCursorPos(p1 + new Vector2(ImGui.GetWindowContentRegionWidth(), 0) - new Vector2(s.X, 0));
+                        ImGui.BeginGroup();
+                        var p3 = ImGui.GetCursorPos();
+                        var p4 = ImGui.GetCursorScreenPos();
+                        var hoveringUp = ImGui.IsMouseHoveringRect(p4, p4 + new Vector2(s.X, s.Y / 2));
+                        var hoveringDown = !hoveringUp && ImGui.IsMouseHoveringRect(p4 + new Vector2(0, s.Y / 2), p4 + s);
+
+                        if (selectedSave != plugin.PluginConfig.FittingRoomSaves.FirstOrDefault()) {
+                            ImGui.TextColored(hoveringUp ? other : white, up);
+                            if (hoveringUp && ImGui.IsMouseClicked(0)) {
+                                moveAction = "up";
+                            }
+                        }
+                        
+                        ImGui.SetCursorPos(p3);
+                        if (selectedSave != plugin.PluginConfig.FittingRoomSaves.LastOrDefault()) {
+                            ImGui.TextColored(hoveringDown ? other : white, down);
+                            if (hoveringDown && ImGui.IsMouseClicked(0)) {
+                                moveAction = "down";
+                            }
+                        }
+                        ImGui.EndGroup();
+                        ImGui.SetCursorPos(p2);
+                        ImGui.PopFont();
+                    }
                 }
+
+                if (moveAction != null) {
+                    var cIndex = plugin.PluginConfig.FittingRoomSaves.IndexOf(selectedSave);
+                    var newIndex = cIndex;
+                    switch (moveAction) {
+                        case "up": {
+                            if (cIndex <= 0) {
+                                goto EndOfMove;
+                            }
+                            newIndex -= 1;
+                            break;
+                        }
+                        case "down": {
+                            if (cIndex >= plugin.PluginConfig.FittingRoomSaves.Count - 1) {
+                                goto EndOfMove;
+                            }
+                            newIndex += 1;
+                            break;
+                        }
+                        default: {
+                            goto EndOfMove;
+                        }
+                    }
+                    PluginLog.Log($"Move: {cIndex} -> {newIndex}");
+                    plugin.PluginConfig.FittingRoomSaves.Remove(selectedSave);
+                    plugin.PluginConfig.FittingRoomSaves.Insert(newIndex, selectedSave);
+                }
+                EndOfMove:
 
                 ImGui.PopStyleVar();
 
