@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.7.0.1</Version>
+		<Version>1.7.0.2</Version>
 	</PropertyGroup>
 	<ItemGroup Label="Resources">
 		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />

@@ -184,7 +184,7 @@ namespace ItemSearchPlugin {
 
 
         public void TryOnItem(Item item, uint stain = 0, bool hq = false) {
-            if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17 && (item.EquipSlotCategory.Value.OffHand == 0 || item.ItemUICategory.Row == 11)) {
+            if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17 && (item.EquipSlotCategory.Value.OffHand == -1 || item.ItemUICategory.Row == 11)) {
                 tryOnQueue.Enqueue((item.RowId + (uint) (hq ? 1000000 : 0), stain));
             }
         }
