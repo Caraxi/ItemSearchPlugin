@@ -85,6 +85,7 @@ namespace ItemSearchPlugin {
         public bool HideKofi { get; set; } = false;
         public bool TryOnEnabled { get; set; } = false;
         public bool AutoFocus { get; set; } = true;
+        public bool SuppressTryOnMessage { get; set; } = true;
 
         public ItemSearchPluginConfig() {
             LoadDefaults();
@@ -96,6 +97,7 @@ namespace ItemSearchPlugin {
             MarketBoardPluginIntegration = false;
             MaxItemLevel = 505;
             ShowTryOn = false;
+            SuppressTryOnMessage = true;
             EnableFittingRoomSaves = true;
             ShowLegacyItems = false;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
@@ -193,6 +195,12 @@ namespace ItemSearchPlugin {
             bool showTryOn = ShowTryOn;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableTryOn", "Enable Try On Feature"), ref showTryOn)) {
                 ShowTryOn = showTryOn;
+                Save();
+            }
+
+            bool suppressTryOnMessage = SuppressTryOnMessage;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigSuppressTryOnMessage", "Surppress Try On Message"), ref suppressTryOnMessage)) {
+                SuppressTryOnMessage = !suppressTryOnMessage;
                 Save();
             }
 

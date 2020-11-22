@@ -195,7 +195,9 @@ namespace ItemSearchPlugin {
             PluginLog.Log($"Try On: {item.Name}");
             #endif
             if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17 && (item.EquipSlotCategory.Value.OffHand <=0 || item.ItemUICategory.Row == 11)) {
+                if (!plugin.PluginConfig.ShowTryOnMessage) tryOnQueue.Enqueue(((uint) TryOnControlID.SuppressLog, 1));
                 tryOnQueue.Enqueue((item.RowId + (uint) (hq ? 1000000 : 0), stain));
+                if (!plugin.PluginConfig.ShowTryOnMessage) tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
             }
 #if DEBUG
             else {
