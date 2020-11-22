@@ -34,6 +34,7 @@ namespace ItemSearchPlugin {
 
         private Addon tryOnUi;
         private Addon examineUi;
+        private Addon itemDetail;
 
         private float lastUiWidth;
 
@@ -117,6 +118,7 @@ namespace ItemSearchPlugin {
         private void OnFrameworkUpdate(Framework framework) {
             tryOnUi = null;
             examineUi = null;
+            itemDetail = null;
             if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
             try {
                 tryOnUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("Tryon", 1);
@@ -128,6 +130,12 @@ namespace ItemSearchPlugin {
                 examineUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("CharacterInspect", 1);
             } catch (NullReferenceException) {
                 examineUi = null;
+            }
+
+            try {
+                itemDetail = plugin.PluginInterface.Framework.Gui.GetAddonByName("ItemDetail", 1);
+            } catch (NullReferenceException) {
+                itemDetail = null;
             }
         }
 
@@ -474,39 +482,62 @@ namespace ItemSearchPlugin {
                     var container = getInventoryContainer(address.InventoryManager, 2009);
                     if (container == IntPtr.Zero) return;
 
-                    ImGui.SetNextWindowPos(new Vector2(examineUi.X + 15, examineUi.Y + 490 * examineUi.Scale));
-                    ImGui.Begin("TryOn###examineTryOn", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground);
-                    ImGui.SetWindowFontScale(examineUi.Scale * (1 / ImGui.GetIO().FontGlobalScale));
-                    if (ImGui.Button("Try On Outfit")) {
-                        tryOnQueue.Enqueue(((uint) TryOnControlID.SetSaveDeleteButton, 0));
-                        tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 1));
-                        for (var i = 0; i < 13; i++) {
-                            var slot = getContainerSlot(container, i);
+                    var covered = false;
+                    var buttonPos = new Vector2(examineUi.X + 25, examineUi.Y + 490 * examineUi.Scale);
+                    var buttonSize = new Vector2((examineUi.Width * examineUi.Scale) / 3f, 40 * examineUi.Scale);
+                    if (itemDetail != null && itemDetail.Visible) {
+                        var itemDetailPos = new Vector2(itemDetail.X, itemDetail.Y);
+                        var itemDetailSize = new Vector2(itemDetail.Width * itemDetail.Scale, itemDetail.Height * itemDetail.Scale);
+                        #if DEBUG
+                        if (ImGui.GetIO().KeyShift) {
+                            var dl = ImGui.GetForegroundDrawList();
+                            dl.AddRect(buttonPos, buttonPos + buttonSize, 0xFF0000FF);
+                            dl.AddRect(itemDetailPos, itemDetailPos + itemDetailSize, 0xFFFF0000);
+                        }
+#endif
+                        covered = !(
+                            buttonPos.X + buttonSize.X < itemDetailPos.X || 
+                            buttonPos.Y + buttonSize.Y < itemDetailPos.Y || 
+                            buttonPos.X > itemDetailPos.X + itemDetailSize.X || 
+                            buttonPos.Y > itemDetailPos.Y + itemDetailSize.Y
+                            );
+                    }
 
-                            if (slot == IntPtr.Zero) continue;
-                            var itemid = *(uint*) (slot + 0x08);
-                            var glamourId = *(uint*) (slot + 0x30);
-                            var stain = *(byte*) (slot + 0x2F);
-                            #if DEBUG
-                            PluginLog.Log($"{slot.ToInt64():X}: {itemid}, {glamourId} {stain}");
-                            #endif
-                            var id = glamourId == 0 ? itemid : glamourId;
-                            
-                            if (id != 0) {
+                    if (!covered) {
+                        ImGui.SetNextWindowPos(buttonPos);
+                        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                        ImGui.Begin("TryOn###examineTryOn", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground);
+                        ImGui.PopStyleVar();
+                        ImGui.SetWindowFontScale(examineUi.Scale * (1 / ImGui.GetIO().FontGlobalScale));
+                        if (ImGui.Button("Try On Outfit")) {
+                            tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 0));
+                            tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 1));
+                            for (var i = 0; i < 13; i++) {
+                                var slot = getContainerSlot(container, i);
 
-                                var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(id);
-                                if (item.EquipSlotCategory.Value.OffHand != 1 || item.ItemUICategory.Row == 11) {
-                                    tryOnQueue.Enqueue((id, stain));
-                                    tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
+                                if (slot == IntPtr.Zero) continue;
+                                var itemid = *(uint*)(slot + 0x08);
+                                var glamourId = *(uint*)(slot + 0x30);
+                                var stain = *(byte*)(slot + 0x2F);
+#if DEBUG
+                                PluginLog.Log($"{slot.ToInt64():X}: {itemid}, {glamourId} {stain}");
+#endif
+                                var id = glamourId == 0 ? itemid : glamourId;
+
+                                if (id != 0) {
+
+                                    var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(id);
+                                    if (item.EquipSlotCategory.Value.OffHand != 1 || item.ItemUICategory.Row == 11) {
+                                        tryOnQueue.Enqueue((id, stain));
+                                        tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
+                                    }
                                 }
                             }
+                            tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
                         }
-                        tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
+                        ImGui.End();
                     }
-                    ImGui.End();
-
                 }
-
             }
         }
 
