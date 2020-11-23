@@ -209,12 +209,12 @@ namespace ItemSearchPlugin.Filters {
             var t = tag.ToLower().Trim();
             var selfTag = false;
             if (t == "self" && pluginInterface.ClientState?.LocalPlayer != null) {
-                t = pluginInterface.ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToLower();
+                t = pluginInterface.ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToString().ToLower();
                 selfTag = true;
             }
 
             foreach (var bp in classJobs) {
-                if (bp.Abbreviation.ToLower() == t) {
+                if (bp.Abbreviation.ToString().ToLower() == t) {
 
                     if (!usingTags) {
                         nonTagSelection = selectedClassJobs;

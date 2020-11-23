@@ -8,6 +8,6 @@ namespace ItemSearchPlugin.DataSites {
 
         public override string Note => "Some items may link to incorrect pages due to using names.";
 
-        public override string GetItemUrl(Item item) => $"https://ffxiv.gamerescape.com/wiki/{item.Name.Replace(' ', '_')}";
+        public override string GetItemUrl(Item item) => $"https://ffxiv.gamerescape.com/wiki/{item.Name.ToString().Replace(' ', '_')}";
     }
 }

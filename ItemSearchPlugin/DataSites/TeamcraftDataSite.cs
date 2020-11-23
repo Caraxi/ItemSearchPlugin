@@ -6,6 +6,6 @@ namespace ItemSearchPlugin.DataSites {
 
         public override string NameTranslationKey => "TeamcraftDataSite";
 
-        public override string GetItemUrl(Item item) => $"https://ffxivteamcraft.com/db/en/item/{item.RowId}/{item.Name.Replace(' ', '-')}";
+        public override string GetItemUrl(Item item) => $"https://ffxivteamcraft.com/db/en/item/{item.RowId}/{item.Name.ToString().Replace(' ', '-')}";
     }
 }

@@ -119,7 +119,7 @@ namespace ItemSearchPlugin.Filters {
 
                     for (uint i = 0; i < 8; i++) {
                         var job = cj.GetRow(i + 8);
-                        if (job.Abbreviation.ToLower() == split[1] || job.Name.ToLower() == split[1]) {
+                        if (job.Abbreviation.ToString().ToLower() == split[1] || job.Name.ToString().ToLower() == split[1]) {
                             selectedOption = (int) (3 + i);
                             return true;
                         }

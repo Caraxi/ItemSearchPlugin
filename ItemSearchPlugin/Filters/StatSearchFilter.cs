@@ -113,8 +113,8 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.SetNextItemWidth(200);
 
                 if (usingTags) {
-
-                    ImGui.InputText($"###statSearchFilterSelectStat{i++}", ref stat.BaseParam.Name, 50, ImGuiInputTextFlags.ReadOnly);
+                    string str = stat.BaseParam.Name;
+                    ImGui.InputText($"###statSearchFilterSelectStat{i++}", ref str, 50, ImGuiInputTextFlags.ReadOnly);
                 } else {
                     ImGui.SameLine();
                     if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name).ToArray(), baseParams.Length, 20)) {
@@ -161,7 +161,7 @@ namespace ItemSearchPlugin.Filters {
             var t = tag.ToLower().Trim();
             if (StatAlias.ContainsKey(t)) t = StatAlias[t];
             foreach (var bp in baseParams) {
-                if (bp.Name.ToLower() == t) {
+                if (bp.Name.ToString().ToLower() == t) {
                     var stat = new Stat() { BaseParam = bp };
 
                     if (!usingTags) {

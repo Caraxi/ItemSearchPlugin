@@ -36,9 +36,9 @@ namespace ItemSearchPlugin.Filters {
 
         public ItemUICategorySearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
             uiCategories = new List<ItemUICategory> {null};
-            uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().ToList().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name));
+            uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().ToList().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name.ToString()));
             string nullName = Loc.Localize("ItemUiCategorySearchFilterAll", "All");
-            uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Name.Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
+            uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Name.ToString().Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
         }
 
 

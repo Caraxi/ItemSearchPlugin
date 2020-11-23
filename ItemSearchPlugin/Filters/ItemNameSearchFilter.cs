@@ -53,10 +53,10 @@ namespace ItemSearchPlugin.Filters {
             }
 
             return
-                item.Name.ToLower().Contains(parsedSearchText.ToLower())
-                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToLower().Contains(t)))
+                item.Name.ToString().ToLower().Contains(parsedSearchText.ToLower())
+                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToString().ToLower().Contains(t)))
                 || (int.TryParse(parsedSearchText, out var parsedId) && parsedId == item.RowId)
-                || searchText.StartsWith("$") && item.Description.ToLower().Contains(parsedSearchText.Substring(1).ToLower());
+                || searchText.StartsWith("$") && item.Description.ToString().ToLower().Contains(parsedSearchText.Substring(1).ToLower());
         }
 
         public override void DrawEditor() {
