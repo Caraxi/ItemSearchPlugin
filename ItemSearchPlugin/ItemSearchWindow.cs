@@ -551,7 +551,12 @@ namespace ItemSearchPlugin {
 
                     if (ImGui.IsItemHovered()) {
                         ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-                        ImGui.SetTooltip(selectedStain == null ? "No Dye Selected" : selectedStain.Name);
+                        ImGui.BeginTooltip();
+                        ImGui.Text(selectedStain == null ? "No Dye Selected" : selectedStain.Name);
+                        if (selectedStain != null) {
+                            ImGui.TextDisabled("Right click to clear selection.");
+                        }
+                        ImGui.EndTooltip();
                     }
                 }
                 ImGui.PushFont(UiBuilder.IconFont);
