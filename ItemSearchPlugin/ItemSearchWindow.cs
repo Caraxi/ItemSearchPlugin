@@ -541,6 +541,8 @@ namespace ItemSearchPlugin {
                     if (ImGui.IsItemClicked(1)) {
                         selectedStainColor = Vector4.Zero;
                         selectedStain = null;
+                        pluginConfig.SelectedStain = 0;
+                        pluginConfig.Save();
                     }
 
                     PopStyle();
