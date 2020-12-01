@@ -40,6 +40,9 @@ namespace ItemSearchPlugin {
         };
         public string Version { get; private set; }
 
+        private SpecialShopTestUi specialShopTestUi;
+        private bool drawDebug = false;
+
         public void Dispose() {
             PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
             FittingRoomUI?.Dispose();
@@ -104,6 +107,10 @@ namespace ItemSearchPlugin {
         }
 
         public void OnItemSearchCommand(string command, string args) {
+            if (args == "DEBUG") {
+                drawDebug = !drawDebug;
+                return;
+            }
             itemSearchWindow?.Dispose();
             itemSearchWindow = new ItemSearchWindow(this, args);
             drawItemSearchWindow = true;
@@ -137,6 +144,11 @@ namespace ItemSearchPlugin {
                         FittingRoomUI?.Draw();
                     }
                 }
+            }
+
+            if (drawDebug) {
+                specialShopTestUi ??= new SpecialShopTestUi(this);
+                specialShopTestUi?.Draw();
             }
 
 #if DEBUG
