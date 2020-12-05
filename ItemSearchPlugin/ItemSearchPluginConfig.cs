@@ -200,7 +200,7 @@ namespace ItemSearchPlugin {
 
             bool suppressTryOnMessage = SuppressTryOnMessage;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigSuppressTryOnMessage", "Surppress Try On Message"), ref suppressTryOnMessage)) {
-                SuppressTryOnMessage = !suppressTryOnMessage;
+                SuppressTryOnMessage = suppressTryOnMessage;
                 Save();
             }
 
