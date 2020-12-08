@@ -76,7 +76,6 @@ namespace ItemSearchPlugin.Filters {
             });
 
             availableOptions.Add(GetCurrencyOption(28, "poetics"));
-            availableOptions.Add(GetCurrencyOption(39, "phantasmagoria"));
             availableOptions.Add(GetCurrencyOption(40, "allegory"));
             availableOptions.Add(GetCurrencyOption(41, "revelation"));
 
