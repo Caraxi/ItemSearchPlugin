@@ -7,8 +7,7 @@ using ImGuiNET;
 namespace ItemSearchPlugin.Filters {
     class LevelItemSearchFilter : SearchFilter {
         private int MinLevel = 1;
-        private int MaxLevel = 511;
-
+        private int MaxLevel = 600;
 
         private int minLevel;
         private int maxLevel;
@@ -20,7 +19,6 @@ namespace ItemSearchPlugin.Filters {
             minLevel = lastMinLevel = MinLevel;
             maxLevel = lastMaxLevel = MaxLevel;
         }
-
 
         public override string Name => "Item Level";
 
@@ -42,13 +40,6 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override bool CheckFilter(Item item) {
-            if (item.LevelItem.Row > MaxLevel) {
-                if (maxLevel == MaxLevel) {
-                    maxLevel = MaxLevel = (int) item.LevelItem.Row;
-                } else {
-                    MaxLevel = (int) item.LevelItem.Row;
-                }
-            }
             return item.LevelItem.Row >= (usingTag ? taggedMin : minLevel) && item.LevelItem.Row <= (usingTag ? taggedMax : maxLevel);
         }
 
