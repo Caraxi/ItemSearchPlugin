@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Dalamud.Data;
 using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
@@ -50,7 +51,10 @@ namespace ItemSearchPlugin {
         private readonly Dictionary<byte, Vector4> stainShadeHeaders;
 
         private bool extraFiltersExpanded;
-        
+        private bool showingFavourites = false;
+
+        private List<Item> favouritesList = new List<Item>();
+
         private void PushStyle(ImGuiStyleVar styleVar, Vector2 val) {
             ImGui.PushStyleVar(styleVar, val);
             styleCounter += 1;
@@ -342,6 +346,7 @@ namespace ItemSearchPlugin {
                     }
                 } else if (plugin.LuminaItems != null) {
                     if (SearchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.IsSet)) {
+                        showingFavourites = false;
                         isSearch = true;
                         if (SearchFilters.Any(x => x.IsEnabled && x.ShowFilter && x.HasChanged) || forceReload) {
                             forceReload = false;
@@ -360,129 +365,25 @@ namespace ItemSearchPlugin {
                         }
 
                         if (this.searchTask.IsCompletedSuccessfully) {
-                            var itemSize = Vector2.Zero;
-                            float cursorPosY = 0;
-                            var scrollY = ImGui.GetScrollY();
-                            var style = ImGui.GetStyle();
-                            for (var i = 0; i < this.searchTask.Result.Count; i++) {
-                                if (i == 0 && itemSize == Vector2.Zero) {
-                                    itemSize = ImGui.CalcTextSize(this.searchTask.Result[i].Name);
-                                    if (!doSearchScroll) {
-                                        var sizePerItem = itemSize.Y + style.ItemSpacing.Y;
-                                        var skipItems = (int) Math.Floor(scrollY / sizePerItem);
-                                        cursorPosY = skipItems * sizePerItem;
-                                        ImGui.SetCursorPosY(cursorPosY + style.ItemSpacing.X);
-                                        i = skipItems;
-                                    }
-                                }
-
-                                if (!(doSearchScroll && selectedItemIndex == i) && (cursorPosY < scrollY - itemSize.Y || cursorPosY > scrollY + childSize.Y)) {
-                                    ImGui.SetCursorPosY(cursorPosY + itemSize.Y + style.ItemSpacing.Y);
-                                } else if (ImGui.Selectable(this.searchTask.Result[i].Name, this.selectedItemIndex == i, ImGuiSelectableFlags.AllowDoubleClick)) {
-                                    this.selectedItem = this.searchTask.Result[i];
-                                    this.selectedItemIndex = i;
-
-                                    if (ImGui.IsMouseDoubleClicked(0)) {
-                                        if (this.selectedItem != null && selectedItem.Icon < 65000) {
-                                            try {
-                                                plugin.LinkItem(selectedItem);
-                                                if (pluginConfig.CloseOnChoose) {
-                                                    isOpen = false;
-                                                }
-                                            } catch (Exception ex) {
-                                                PluginLog.LogError(ex.ToString());
-                                            }
-                                        }
-                                    }
-
-                                    if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
-                                        if (selectedItem.ClassJobCategory.Row != 0) {
-                                            plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
-                                        }
-                                    }
-                                }
-
-                                if (doSearchScroll && selectedItemIndex == i) {
-                                    doSearchScroll = false;
-                                    ImGui.SetScrollHereY(0.5f);
-                                }
-
-                                cursorPosY = ImGui.GetCursorPosY();
-
-                                if (cursorPosY > scrollY + childSize.Y && !doSearchScroll) {
-                                    var c = this.searchTask.Result.Count - i;
-                                    ImGui.BeginChild("###scrollFillerBottom", new Vector2(0, c * (itemSize.Y + style.ItemSpacing.Y)), false);
-                                    ImGui.EndChild();
-                                    break;
-                                }
-                            }
-
-                            var keyStateDown = ImGui.GetIO().KeysDown[0x28] || pluginInterface.ClientState.KeyState[0x28];
-                            var keyStateUp = ImGui.GetIO().KeysDown[0x26] || pluginInterface.ClientState.KeyState[0x26];
-
-#if DEBUG
-                            // Random up/down if both are pressed
-                            if (keyStateUp && keyStateDown) {
-                                debounceKeyPress = 0;
-
-                                var r = new Random().Next(0, 5);
-
-                                switch (r) {
-                                    case 1:
-                                        keyStateUp = true;
-                                        keyStateDown = false;
-                                        break;
-                                    case 0:
-                                        keyStateUp = false;
-                                        keyStateDown = false;
-                                        break;
-                                    default:
-                                        keyStateUp = false;
-                                        keyStateDown = true;
-                                        break;
-                                }
-                            }
-#endif
-
-                            var hotkeyUsed = false;
-                            if (keyStateUp && !keyStateDown) {
-                                if (debounceKeyPress == 0) {
-                                    debounceKeyPress = 5;
-                                    if (selectedItemIndex > 0) {
-                                        hotkeyUsed = true;
-                                        selectedItemIndex -= 1;
-                                    }
-                                }
-                            } else if (keyStateDown && !keyStateUp) {
-                                if (debounceKeyPress == 0) {
-                                    debounceKeyPress = 5;
-                                    if (selectedItemIndex < searchTask.Result.Count - 1) {
-                                        selectedItemIndex += 1;
-                                        hotkeyUsed = true;
-                                    }
-                                }
-                            } else if (debounceKeyPress > 0) {
-                                debounceKeyPress -= 1;
-                                if (debounceKeyPress < 0) {
-                                    debounceKeyPress = 5;
-                                }
-                            }
-
-                            if (hotkeyUsed) {
-                                doSearchScroll = true;
-                                this.selectedItem = this.searchTask.Result[selectedItemIndex];
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
-                                    if (selectedItem.ClassJobCategory.Row != 0) {
-                                        plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
-                                    }
-                                }
-                            }
+                            DrawItemList(this.searchTask.Result, childSize, ref isOpen);
                         }
-                    } else {
-                        ImGui.TextColored(new Vector4(0.86f, 0.86f, 0.86f, 1.00f), Loc.Localize("DalamudItemSelectHint", "Type to start searching..."));
 
-                        this.selectedItemIndex = -1;
-                        selectedItem = null;
+                        
+                    } else {
+
+
+                        if (pluginConfig.Favorites.Count > 0) {
+                            if (!showingFavourites || favouritesList.Count != pluginConfig.Favorites.Count) {
+                                showingFavourites = true;
+                                this.selectedItemIndex = -1;
+                                selectedItem = null;
+                                favouritesList = plugin.LuminaItems.Where(i => pluginConfig.Favorites.Contains(i.RowId)).ToList();
+                            }
+                            
+                            DrawItemList(favouritesList, childSize, ref isOpen);
+                        } else {
+                            ImGui.TextColored(new Vector4(0.86f, 0.86f, 0.86f, 1.00f), Loc.Localize("DalamudItemSelectHint", "Type to start searching..."));
+                        }
                     }
                 } else {
                     ImGui.TextColored(new Vector4(0.86f, 0.86f, 0.86f, 1.00f), Loc.Localize("DalamudItemSelectLoading", "Loading item list..."));
@@ -680,6 +581,184 @@ namespace ItemSearchPlugin {
                 return isOpen;
             }
         }
+
+
+        private int itemHovered = -1;
+
+        private void DrawItemList(List<Item> itemList, Vector2 listSize, ref bool isOpen) {
+            var itemSize = Vector2.Zero;
+            float cursorPosY = 0;
+            var scrollY = ImGui.GetScrollY();
+            var style = ImGui.GetStyle();
+            var j = 0;
+
+            var rowSize = Vector2.Zero;
+
+            for (var i = 0; i < itemList.Count; i++) {
+                if (i == 0 && itemSize == Vector2.Zero) {
+                    itemSize = ImGui.CalcTextSize(itemList[i].Name);
+                    rowSize = new Vector2(ImGui.GetWindowContentRegionWidth() - 20 * ImGui.GetIO().FontGlobalScale, itemSize.Y);
+                    if (!doSearchScroll) {
+                        var sizePerItem = itemSize.Y + style.ItemSpacing.Y;
+                        var skipItems = (int)Math.Floor(scrollY / sizePerItem);
+                        cursorPosY = skipItems * sizePerItem;
+                        ImGui.SetCursorPosY(5 + cursorPosY + style.ItemSpacing.X);
+                        i = skipItems;
+                    }
+                }
+
+                if (!(doSearchScroll && selectedItemIndex == i) && (cursorPosY < scrollY - itemSize.Y || cursorPosY > scrollY + listSize.Y)) {
+                    ImGui.SetCursorPosY(cursorPosY + itemSize.Y + style.ItemSpacing.Y);
+                } else {
+
+                    ImGui.PushFont(UiBuilder.IconFont);
+
+                    var starText = $"{(char)FontAwesomeIcon.Heart}";
+                    var starTextSize = ImGui.CalcTextSize(starText);
+                    var starTextHovered = ImGui.IsMouseHoveringRect(ImGui.GetCursorScreenPos(), ImGui.GetCursorScreenPos() + starTextSize);
+
+                    uint starTextCol = pluginConfig.Favorites.Contains(itemList[i].RowId) ? 0xCC0000AA : 0U; ;
+
+                    if (starTextHovered) {
+                        starTextCol = pluginConfig.Favorites.Contains(itemList[i].RowId) ? 0xAA777777 : 0xAA0000AAU;
+                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                    }
+
+                    ImGui.PushStyleColor(ImGuiCol.Text, starTextCol);
+                    ImGui.Text(starText);
+                    if (ImGui.IsItemClicked()) {
+                        if (pluginConfig.Favorites.Contains(itemList[i].RowId)) {
+                            pluginConfig.Favorites.Remove(itemList[i].RowId);
+                        } else {
+                            pluginConfig.Favorites.Add(itemList[i].RowId);
+                        }
+                        pluginConfig.Save();
+                    }
+
+                    ImGui.PopStyleColor();
+
+                    ImGui.PopFont();
+                    ImGui.SameLine();
+                    
+                    var hovered = ImGui.IsMouseHoveringRect(ImGui.GetCursorScreenPos(), ImGui.GetCursorScreenPos() + rowSize);
+                    var bgCol = selectedItem == itemList[i] ? (hovered ? 0x88888888 : 0x88444444) : (hovered ? 0x66666666 : 0U);
+                    ImGui.PushStyleColor(ImGuiCol.ChildBg, bgCol);
+                    ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                    ImGui.BeginGroup();
+                    ImGui.BeginChild($"###ItemContainer{j++}", rowSize, false);
+                    ImGui.Text($" {itemList[i].Name}");
+                    ImGui.EndChild();
+                    ImGui.EndGroup();
+                    ImGui.PopStyleColor();
+
+                    if (ImGui.IsItemClicked()) {
+                        this.selectedItem = itemList[i];
+                        this.selectedItemIndex = i;
+
+                        if (ImGui.IsMouseDoubleClicked(0)) {
+                            if (this.selectedItem != null && selectedItem.Icon < 65000) {
+                                try {
+                                    plugin.LinkItem(selectedItem);
+                                    if (pluginConfig.CloseOnChoose) {
+                                        isOpen = false;
+                                    }
+                                } catch (Exception ex) {
+                                    PluginLog.LogError(ex.ToString());
+                                }
+                            }
+                        }
+
+                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                            if (selectedItem.ClassJobCategory.Row != 0) {
+                                plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
+                            }
+                        }
+                    }
+
+                    ImGui.PopStyleVar();
+                }
+
+                
+
+                if (doSearchScroll && selectedItemIndex == i) {
+                    doSearchScroll = false;
+                    ImGui.SetScrollHereY(0.5f);
+                }
+
+                cursorPosY = ImGui.GetCursorPosY();
+
+                if (cursorPosY > scrollY + listSize.Y && !doSearchScroll) {
+                    var c = itemList.Count - i;
+                    ImGui.BeginChild("###scrollFillerBottom", new Vector2(0, c * (itemSize.Y + style.ItemSpacing.Y)), false);
+                    ImGui.EndChild();
+                    break;
+                }
+            }
+
+            var keyStateDown = ImGui.GetIO().KeysDown[0x28] || pluginInterface.ClientState.KeyState[0x28];
+            var keyStateUp = ImGui.GetIO().KeysDown[0x26] || pluginInterface.ClientState.KeyState[0x26];
+
+#if DEBUG
+            // Random up/down if both are pressed
+            if (keyStateUp && keyStateDown) {
+                debounceKeyPress = 0;
+
+                var r = new Random().Next(0, 5);
+
+                switch (r) {
+                    case 1:
+                        keyStateUp = true;
+                        keyStateDown = false;
+                        break;
+                    case 0:
+                        keyStateUp = false;
+                        keyStateDown = false;
+                        break;
+                    default:
+                        keyStateUp = false;
+                        keyStateDown = true;
+                        break;
+                }
+            }
+#endif
+
+            var hotkeyUsed = false;
+            if (keyStateUp && !keyStateDown) {
+                if (debounceKeyPress == 0) {
+                    debounceKeyPress = 5;
+                    if (selectedItemIndex > 0) {
+                        hotkeyUsed = true;
+                        selectedItemIndex -= 1;
+                    }
+                }
+            } else if (keyStateDown && !keyStateUp) {
+                if (debounceKeyPress == 0) {
+                    debounceKeyPress = 5;
+                    if (selectedItemIndex < itemList.Count - 1) {
+                        selectedItemIndex += 1;
+                        hotkeyUsed = true;
+                    }
+                }
+            } else if (debounceKeyPress > 0) {
+                debounceKeyPress -= 1;
+                if (debounceKeyPress < 0) {
+                    debounceKeyPress = 5;
+                }
+            }
+
+            if (hotkeyUsed) {
+                doSearchScroll = true;
+                this.selectedItem = itemList[selectedItemIndex];
+                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                    if (selectedItem.ClassJobCategory.Row != 0) {
+                        plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
+                    }
+                }
+            }
+            
+        }
+
+
 
         private void FixStainsOrder() {
             var move = stains.GetRange(92, 3);

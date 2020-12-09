@@ -33,6 +33,8 @@ namespace ItemSearchPlugin {
         [JsonProperty(ItemTypeNameHandling = TypeNameHandling.None)]
         public List<FittingRoomSave> FittingRoomSaves { get; set; }
 
+        public SortedSet<uint> Favorites { get; set; } = new SortedSet<uint>();
+
         [JsonIgnore]
         public Stack<FittingRoomSave> DeletedFittingRoomSaves { get; set; } = new Stack<FittingRoomSave>();
 
