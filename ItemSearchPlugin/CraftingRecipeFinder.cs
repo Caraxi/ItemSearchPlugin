@@ -24,7 +24,7 @@ namespace ItemSearchPlugin {
         private readonly GetAgentObjectDelegate getAgentObject;
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void SearchItemByCraftingMethodDelegate(IntPtr RecipeAgentObject, uint itemID);
+        private delegate IntPtr SearchItemByCraftingMethodDelegate(IntPtr RecipeAgentObject, ushort itemID);
         private readonly SearchItemByCraftingMethodDelegate searchItemByCraftingMethod;
 
         private readonly ConcurrentQueue<uint> searchQueue = new ConcurrentQueue<uint>();
@@ -49,8 +49,7 @@ namespace ItemSearchPlugin {
         private void OnFrameworkUpdate(Framework framework) {
             try {
                 if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
-                uint itemID;
-                if (!searchQueue.TryDequeue(out itemID)) return;
+                if (!searchQueue.TryDequeue(out var itemID)) return;
                 var uiObjectPtr = getUIObject();
                 if (uiObjectPtr.Equals(IntPtr.Zero)) {
                     PluginLog.LogError("CraftingRecipeFinder: Null pointer returned from GetUIObject()");
@@ -62,13 +61,13 @@ namespace ItemSearchPlugin {
                     PluginLog.LogError("CraftingRecipeFinder: Null pointer returned from GetUIAgentModule()");
                     return;
                 }
-                var recipeAgentPtr = getAgentObject(uiAgentModulePtr, 22);
+                var recipeAgentPtr = getAgentObject(uiAgentModulePtr, 23);
                 if (recipeAgentPtr.Equals(IntPtr.Zero)) {
                     PluginLog.LogError("CraftingRecipeFinder: Null pointer returned from GetAgentObject()");
                     return;
                 }
 
-                searchItemByCraftingMethod(recipeAgentPtr, itemID);
+                searchItemByCraftingMethod(recipeAgentPtr, (ushort) itemID);
 
             } catch (NullReferenceException) { }
         }
