@@ -88,6 +88,7 @@ namespace ItemSearchPlugin {
         public bool TryOnEnabled { get; set; } = false;
         public bool AutoFocus { get; set; } = true;
         public bool SuppressTryOnMessage { get; set; } = true;
+        public bool TeamcraftForceBrowser { get; set; } = false;
 
         public ItemSearchPluginConfig() {
             LoadDefaults();
@@ -108,6 +109,7 @@ namespace ItemSearchPlugin {
             PrependFilterListWithCopy = false;
             AutoFocus = true;
             HideKofi = false;
+            TeamcraftForceBrowser = false;
             if (FittingRoomSaves == null) {
                 FittingRoomSaves = new List<FittingRoomSave>();
             }
@@ -234,6 +236,14 @@ namespace ItemSearchPlugin {
             if (ImGui.Combo(Loc.Localize("ItemSearchConfigExternalDataSite", "External Data Site"), ref dataSiteIndex, ItemSearchPlugin.DataSites.Select(t => Loc.Localize(t.NameTranslationKey, t.Name) + (string.IsNullOrEmpty(t.Note) ? "" : "*")).ToArray(), ItemSearchPlugin.DataSites.Length)) {
                 this.DataSite = ItemSearchPlugin.DataSites[dataSiteIndex].Name;
                 Save();
+            }
+
+            if (this.DataSite == "Teamcraft") {
+                var teamcraftBroswer = TeamcraftForceBrowser;
+                if (ImGui.Checkbox(Loc.Localize("ItemSearchTeamcraftForceBrowser", "Only use browser for Teamcraft"), ref teamcraftBroswer)) {
+                    TeamcraftForceBrowser = teamcraftBroswer;
+                    Save();
+                }
             }
 
             if (!string.IsNullOrEmpty(SelectedDataSite.Note)) {

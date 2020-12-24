@@ -10,7 +10,7 @@ namespace ItemSearchPlugin {
 
         public virtual string Note { get; } = null;
 
-        public void OpenItem(Item item) {
+        public virtual void OpenItem(Item item) {
             System.Diagnostics.Process.Start(GetItemUrl(item));
         }
     }
