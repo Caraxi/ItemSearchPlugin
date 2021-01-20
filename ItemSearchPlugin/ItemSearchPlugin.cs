@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Dalamud;
 using Dalamud.Data.LuminaExtensions;
@@ -38,15 +40,14 @@ namespace ItemSearchPlugin {
         public static DataSite[] DataSites { get; private set; } = new DataSite[] { new GarlandToolsDataSite() }; 
         public string Version { get; private set; }
 
-        private SpecialShopTestUi specialShopTestUi;
-        private bool drawDebug = false;
-
         public void Dispose() {
             PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
             FittingRoomUI?.Dispose();
+            CraftingRecipeFinder?.Dispose();
             itemSearchWindow?.Dispose();
             RemoveCommands();
             PluginInterface.Dispose();
+            
 
             foreach (var t in textureDictionary) {
                 t.Value?.Dispose();
@@ -67,6 +68,9 @@ namespace ItemSearchPlugin {
             };
 
             this.PluginConfig.Init(pluginInterface, this);
+
+
+            SetupGameFunctions();
 
             ReloadLocalization();
 
@@ -112,10 +116,6 @@ namespace ItemSearchPlugin {
         }
 
         public void OnItemSearchCommand(string command, string args) {
-            if (args == "DEBUG") {
-                drawDebug = !drawDebug;
-                return;
-            }
             itemSearchWindow?.Dispose();
             itemSearchWindow = new ItemSearchWindow(this, args);
             drawItemSearchWindow = true;
@@ -128,9 +128,14 @@ namespace ItemSearchPlugin {
             PluginInterface.CommandManager.RemoveHandler("/itemsearchdumploc");
 #endif
         }
-
+        
+        private Stopwatch debugStopwatch = new Stopwatch();
         private void BuildUI() {
+            
+
+            
             if (drawItemSearchWindow) {
+
                 drawItemSearchWindow = itemSearchWindow != null && itemSearchWindow.Draw();
                 drawConfigWindow = drawItemSearchWindow && drawConfigWindow && PluginConfig.DrawConfigUI();
 
@@ -141,6 +146,8 @@ namespace ItemSearchPlugin {
                 }
             }
 
+
+            debugStopwatch.Restart();
             if (PluginConfig.EnableFittingRoomSaves || PluginConfig.ShowItemID) {
                 if (FittingRoomUI == null) {
                     FittingRoomUI = new FittingRoomUI(this);
@@ -150,12 +157,7 @@ namespace ItemSearchPlugin {
                     }
                 }
             }
-
-            if (drawDebug) {
-                specialShopTestUi ??= new SpecialShopTestUi(this);
-                specialShopTestUi?.Draw();
-            }
-
+            
 #if DEBUG
             ImGui.BeginMainMenuBar();
             if (ImGui.MenuItem("ItemSearch")) {
@@ -166,6 +168,7 @@ namespace ItemSearchPlugin {
 
             ImGui.EndMainMenuBar();
 #endif
+
         }
 
         internal void LinkItem(Item item) {
@@ -238,6 +241,32 @@ namespace ItemSearchPlugin {
 
         internal void ToggleConfigWindow() {
             drawConfigWindow = !drawConfigWindow;
+        }
+
+
+        private void SetupGameFunctions() {
+            cardUnlockedStatic = PluginInterface.TargetModuleScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? 45 33 C0 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 0F B6 93");
+            var cardUnlockedAddress = PluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 8D 7B 78");
+            cardUnlocked = Marshal.GetDelegateForFunctionPointer<CardUnlockedDelegate>(cardUnlockedAddress);
+
+            var itemActionUnlockedAddress = PluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A5");
+            itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockledDelegate>(itemActionUnlockedAddress);
+        }
+
+
+        private delegate bool ItemActionUnlockledDelegate(long itemActionId);
+        private delegate bool CardUnlockedDelegate(IntPtr a1, ushort card);
+
+        private ItemActionUnlockledDelegate itemActionUnlocked;
+        private CardUnlockedDelegate cardUnlocked;
+        private IntPtr cardUnlockedStatic;
+
+        internal bool IsCardOwned(ushort cardId) {
+            return cardUnlocked(cardUnlockedStatic, cardId);
+        }
+
+        internal bool IsCollectableOwned(uint actionId) {
+            return itemActionUnlocked(actionId);
         }
     }
 }

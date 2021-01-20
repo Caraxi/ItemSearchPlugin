@@ -8,19 +8,18 @@ using Dalamud.Game.Chat;
 using Dalamud.Game.Chat.SeStringHandling;
 using Dalamud.Game.Chat.SeStringHandling.Payloads;
 using Lumina.Excel.GeneratedSheets;
-using Dalamud.Game.Internal;
 using Dalamud.Hooking;
 using Dalamud.Interface;
 using Dalamud.Plugin;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
-using Addon = Dalamud.Game.Internal.Gui.Addon.Addon;
 
 namespace ItemSearchPlugin {
-    public class FittingRoomUI : IDisposable {
+    public unsafe class FittingRoomUI : IDisposable {
         private readonly ItemSearchPlugin plugin;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate byte TryOnDelegate(uint unknownSomethingToDoWithBeingEquipable, uint itemBaseId, ulong stainColor, uint itemGlamourId, byte unknownByte);
+        private delegate byte TryOnDelegate(uint unknownCanEquip, uint itemBaseId, ulong stainColor, uint itemGlamourId, byte unknownByte);
 
         private readonly TryOnDelegate tryOn;
 
@@ -31,11 +30,7 @@ namespace ItemSearchPlugin {
         private Hook<UpdateCharacterPreview> updateCharacterPreviewHook;
 
         private IntPtr fittingRoomBaseAddress = IntPtr.Zero;
-
-        private Addon tryOnUi;
-        private Addon examineUi;
-        private Addon itemDetail;
-
+        
         private float lastUiWidth;
 
 
@@ -46,8 +41,6 @@ namespace ItemSearchPlugin {
         private int tryOnDelay = 10;
         private bool windowCollapsed;
 
-        private bool deletingSelectedSave;
-
         private readonly Queue<(uint itemid, uint stain)> tryOnQueue = new Queue<(uint itemid, uint stain)>();
 
 
@@ -56,8 +49,8 @@ namespace ItemSearchPlugin {
         private delegate IntPtr GetInventoryContainer(IntPtr inventoryManager, int inventoryId);
         private delegate IntPtr GetContainerSlot(IntPtr inventoryContainer, int slotId);
 
-        private GetInventoryContainer getInventoryContainer;
-        private GetContainerSlot getContainerSlot;
+        private readonly GetInventoryContainer getInventoryContainer;
+        private readonly GetContainerSlot getContainerSlot;
         
         private enum TryOnControlID : uint {
             SetSaveDeleteButton = uint.MaxValue - 10,
@@ -83,19 +76,18 @@ namespace ItemSearchPlugin {
 
                 byte previewHookCounter = 0;
                 updateCharacterPreviewHook = new Hook<UpdateCharacterPreview>(address.UpdateCharacterPreview, new UpdateCharacterPreview((a1, a2) => {
-                    unsafe {
-                        var visibleFlag = *(uint*) (a1 + 8);
-                        var previewId = *(uint*) (a1 + 16);
-                        if (visibleFlag == 5 && previewId == 2) {
-                            // Visible and Fitting Room
-                            fittingRoomBaseAddress = a1;
-                            updateCharacterPreviewHook?.Original(a1, a2);
-                            updateCharacterPreviewHook?.Disable();
-                            updateCharacterPreviewHook?.Dispose();
-                            updateCharacterPreviewHook = null;
-                            return;
-                        }
+                    var visibleFlag = *(uint*) (a1 + 8);
+                    var previewId = *(uint*) (a1 + 16);
+                    if (visibleFlag == 5 && previewId == 2) {
+                        // Visible and Fitting Room
+                        fittingRoomBaseAddress = a1;
+                        updateCharacterPreviewHook?.Original(a1, a2);
+                        updateCharacterPreviewHook?.Disable();
+                        updateCharacterPreviewHook?.Dispose();
+                        updateCharacterPreviewHook = null;
+                        return;
                     }
+
                     updateCharacterPreviewHook?.Original(a1, a2);
                     if (previewHookCounter++ <= 10) return;
                     // Fitting room probably isn't open, so can stop checking
@@ -107,35 +99,8 @@ namespace ItemSearchPlugin {
                 updateCharacterPreviewHook.Enable();
 
                 CanUseTryOn = true;
-                plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
             } catch (Exception ex) {
                 PluginLog.LogError(ex.ToString());
-            }
-
-
-        }
-
-        private void OnFrameworkUpdate(Framework framework) {
-            tryOnUi = null;
-            examineUi = null;
-            itemDetail = null;
-            if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
-            try {
-                tryOnUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("Tryon", 1);
-            } catch (NullReferenceException) {
-                tryOnUi = null;
-            }
-
-            try {
-                examineUi = plugin.PluginInterface.Framework.Gui.GetAddonByName("CharacterInspect", 1);
-            } catch (NullReferenceException) {
-                examineUi = null;
-            }
-
-            try {
-                itemDetail = plugin.PluginInterface.Framework.Gui.GetAddonByName("ItemDetail", 1);
-            } catch (NullReferenceException) {
-                itemDetail = null;
             }
         }
 
@@ -176,13 +141,7 @@ namespace ItemSearchPlugin {
             }
             
             PluginLog.Log($"FittingRoom: {fittingRoomBaseAddress.ToInt64():X}");
-
-
-            var empty = new byte[0x20];
-
             var fittingRoom = Marshal.PtrToStructure<FittingRoomStruct>(fittingRoomBaseAddress);
-
-
             foreach (var i in fittingRoom.Items) {
                 PluginLog.Log($"{i.BaseItem}, {i.GlamourItem}, {i.Stain}");
             }
@@ -218,12 +177,11 @@ namespace ItemSearchPlugin {
         
         public void Draw() {
             
-            
             while (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay <= 0 || tryOnDelay-- <= 0)) {
                 try {
-                    var (itemid, stain) = tryOnQueue.Dequeue();
+                    var (itemId, stain) = tryOnQueue.Dequeue();
 
-                    switch ((TryOnControlID) itemid) {
+                    switch ((TryOnControlID) itemId) {
                         case TryOnControlID.SetSaveDeleteButton: {
                             SetSaveDeleteButton(stain == 1);
                             break;
@@ -238,7 +196,7 @@ namespace ItemSearchPlugin {
                         }
                         default: {
                             tryOnDelay = 1;
-                            tryOn(0xFF, itemid, stain, 0, 0);
+                            tryOn(0xFF, itemId, stain, 0, 0);
                             break;
                         }
                     }
@@ -248,24 +206,27 @@ namespace ItemSearchPlugin {
                     break;
                 }
             }
-            
+            if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
+            var tryOnUi = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("Tryon", 1);
+            var examineUi = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("CharacterInspect", 1);
+            var itemDetail = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("ItemDetail", 1);
             if (fittingRoomBaseAddress != IntPtr.Zero && tryOnUi != null) {
-                var pos = new Vector2(tryOnUi.X, tryOnUi.Y);
-                pos.Y += 20 * tryOnUi.Scale;
+                var pos = new Vector2(tryOnUi->X, tryOnUi->Y);
+                pos.Y += 20 * tryOnUi->Scale;
                 if (pos.X < lastUiWidth + 20) {
-                    pos.X += tryOnUi.Scale * 340;
+                    pos.X += tryOnUi->Scale * 340;
                 } else {
                     pos.X -= lastUiWidth;
                 }
 
                 var buttonSize = new Vector2(-1, 22 * ImGui.GetIO().FontGlobalScale);
 
-                var hiddenPos = new Vector2(tryOnUi.X, tryOnUi.Y);
+                var hiddenPos = new Vector2(tryOnUi->X, tryOnUi->Y);
 
                 hiddenPos.Y -= 19 * ImGui.GetIO().FontGlobalScale;
 
                 ImGui.SetNextWindowPos(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
-                ImGui.SetNextWindowSize(new Vector2(220 * ImGui.GetIO().FontGlobalScale, tryOnUi.Scale * 300 + buttonSize.Y * 3), ImGuiCond.Always);
+                ImGui.SetNextWindowSize(new Vector2(220 * ImGui.GetIO().FontGlobalScale, tryOnUi->Scale * 300 + buttonSize.Y * 3), ImGuiCond.Always);
 
                 windowCollapsed = !ImGui.Begin(Loc.Localize("FittingRoomUIHeader", "Saved Outfits") + "###ItemSearchPluginFittingRoomUI", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
@@ -317,7 +278,6 @@ namespace ItemSearchPlugin {
                     var p1 = ImGui.GetCursorPos();
 
                     if (ImGui.Selectable($"{save.Name}##fittingRoomSave", selectedSave == save, ImGuiSelectableFlags.AllowDoubleClick)) {
-                        deletingSelectedSave = false;
                         selectedSave = save;
                         if (ImGui.IsMouseDoubleClicked(0)) {
                             LoadSelectedSave(plugin.PluginInterface.ClientState.KeyState[0x10]);
@@ -485,73 +445,72 @@ namespace ItemSearchPlugin {
                 lastUiWidth = ImGui.GetWindowWidth();
                 ImGui.End();
             }
+            
+            if (plugin.PluginConfig.ShowTryOn && CanUseTryOn && examineUi != null) {
+                if (address.ExamineValid == IntPtr.Zero  || *(byte*)(address.ExamineValid + 0x2A8) == 0) return;
+                var container = getInventoryContainer(address.InventoryManager, 2009);
+                if (container == IntPtr.Zero) return;
 
-            unsafe {
-                if (plugin.PluginConfig.ShowTryOn && CanUseTryOn && examineUi != null) {
-                    if (address.ExamineValid == IntPtr.Zero  || *(byte*)(address.ExamineValid + 0x2A8) == 0) return;
-                    var container = getInventoryContainer(address.InventoryManager, 2009);
-                    if (container == IntPtr.Zero) return;
-
-                    var covered = false;
-                    var buttonPos = new Vector2(examineUi.X + 25, examineUi.Y + 490 * examineUi.Scale);
-                    var buttonSize = new Vector2((examineUi.Width * examineUi.Scale) / 3f, 40 * examineUi.Scale);
-                    if (itemDetail != null && itemDetail.Visible) {
-                        var itemDetailPos = new Vector2(itemDetail.X, itemDetail.Y);
-                        var itemDetailSize = new Vector2(itemDetail.Width * itemDetail.Scale, itemDetail.Height * itemDetail.Scale);
-                        #if DEBUG
-                        if (ImGui.GetIO().KeyShift) {
-                            var dl = ImGui.GetForegroundDrawList();
-                            dl.AddRect(buttonPos, buttonPos + buttonSize, 0xFF0000FF);
-                            dl.AddRect(itemDetailPos, itemDetailPos + itemDetailSize, 0xFFFF0000);
-                        }
-#endif
-                        covered = !(
-                            buttonPos.X + buttonSize.X < itemDetailPos.X || 
-                            buttonPos.Y + buttonSize.Y < itemDetailPos.Y || 
-                            buttonPos.X > itemDetailPos.X + itemDetailSize.X || 
-                            buttonPos.Y > itemDetailPos.Y + itemDetailSize.Y
-                            );
+                var covered = false;
+                var buttonPos = new Vector2(examineUi->X + 25, examineUi->Y + 490 * examineUi->Scale);
+                var buttonSize = new Vector2((examineUi->RootNode->Width * examineUi->Scale) / 3f, 40 * examineUi->Scale);
+                if (itemDetail != null && itemDetail->IsVisible) {
+                    var itemDetailPos = new Vector2(itemDetail->X, itemDetail->Y);
+                    var itemDetailSize = new Vector2(itemDetail->RootNode->Width * itemDetail->Scale, itemDetail->RootNode->Height * itemDetail->Scale);
+                    #if DEBUG
+                    if (ImGui.GetIO().KeyShift) {
+                        var dl = ImGui.GetForegroundDrawList();
+                        dl.AddRect(buttonPos, buttonPos + buttonSize, 0xFF0000FF);
+                        dl.AddRect(itemDetailPos, itemDetailPos + itemDetailSize, 0xFFFF0000);
                     }
-
-                    if (!covered) {
-                        ImGui.SetNextWindowPos(buttonPos);
-                        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
-                        ImGui.Begin("TryOn###examineTryOn", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground);
-                        ImGui.PopStyleVar();
-                        ImGui.SetWindowFontScale(examineUi.Scale * (1 / ImGui.GetIO().FontGlobalScale));
-                        if (ImGui.Button("Try On Outfit")) {
-                            tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 0));
-                            tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 1));
-                            for (var i = 0; i < 13; i++) {
-                                var slot = getContainerSlot(container, i);
-
-                                if (slot == IntPtr.Zero) continue;
-                                var itemid = *(uint*)(slot + 0x08);
-                                var glamourId = *(uint*)(slot + 0x30);
-                                var stain = *(byte*)(slot + 0x2F);
-#if DEBUG
-                                PluginLog.Log($"{slot.ToInt64():X}: {itemid}, {glamourId} {stain}");
 #endif
-                                var id = glamourId == 0 ? itemid : glamourId;
+                    covered = !(
+                        buttonPos.X + buttonSize.X < itemDetailPos.X || 
+                        buttonPos.Y + buttonSize.Y < itemDetailPos.Y || 
+                        buttonPos.X > itemDetailPos.X + itemDetailSize.X || 
+                        buttonPos.Y > itemDetailPos.Y + itemDetailSize.Y
+                        );
+                }
 
-                                if (id != 0) {
+                if (!covered) {
+                    ImGui.SetNextWindowPos(buttonPos);
+                    ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                    ImGui.Begin("TryOn###examineTryOn", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground);
+                    ImGui.PopStyleVar();
+                    ImGui.SetWindowFontScale(examineUi->Scale * (1 / ImGui.GetIO().FontGlobalScale));
+                    if (ImGui.Button("Try On Outfit")) {
+                        tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 0));
+                        tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 1));
+                        for (var i = 0; i < 13; i++) {
+                            var slot = getContainerSlot(container, i);
 
-                                    var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(id);
-                                    if (item.EquipSlotCategory.Value.OffHand != 1 || item.ItemUICategory.Row == 11) {
-                                        tryOnQueue.Enqueue((id, stain));
-                                        tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
-                                    }
+                            if (slot == IntPtr.Zero) continue;
+                            var itemId = *(uint*)(slot + 0x08);
+                            var glamourId = *(uint*)(slot + 0x30);
+                            var stain = *(byte*)(slot + 0x2F);
+#if DEBUG
+                            PluginLog.Log($"{slot.ToInt64():X}: {itemId}, {glamourId} {stain}");
+#endif
+                            var id = glamourId == 0 ? itemId : glamourId;
+
+                            if (id != 0) {
+
+                                var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(id);
+                                if (item.EquipSlotCategory.Value.OffHand != 1 || item.ItemUICategory.Row == 11) {
+                                    tryOnQueue.Enqueue((id, stain));
+                                    tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
                                 }
                             }
-                            tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
                         }
-                        ImGui.End();
+                        tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0));
                     }
+                    ImGui.End();
                 }
             }
+            
         }
 
-        private void ChatOnOnChatMessage(XivChatType type, uint senderid, ref SeString sender, ref SeString message, ref bool ishandled) {
+        private void ChatOnOnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled) {
             if (type == XivChatType.SystemMessage && message.Payloads.Count > 1 && (plugin.PluginInterface.ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Payloads[message.Payloads.Count - 1] : message.Payloads[0]) is TextPayload a) {
 
                 bool handle = plugin.PluginInterface.ClientState.ClientLanguage switch {
@@ -563,7 +522,7 @@ namespace ItemSearchPlugin {
                 };
 
                 if (handle) {
-                    ishandled = true;
+                    isHandled = true;
                 }
             }
         }
@@ -580,7 +539,6 @@ namespace ItemSearchPlugin {
         }
 
         public void Dispose() {
-            plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
             getFittingLocationHook?.Disable();
             updateCharacterPreviewHook?.Disable();
         }

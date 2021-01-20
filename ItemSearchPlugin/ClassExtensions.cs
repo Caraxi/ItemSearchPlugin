@@ -1,7 +1,9 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using System.ComponentModel;
+using System.Reflection;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
-    public static class ExcelExtensions {
+    public static class ClassExtensions {
         public static bool HasClass(this ClassJobCategory cjc, uint classJobRowId) {
             return classJobRowId switch {
                 0 => cjc.ADV,
@@ -74,5 +76,17 @@ namespace ItemSearchPlugin {
                 }
             };
         }
+
+        public static string DescriptionAttr<T>(this T source) {
+            FieldInfo fi = source.GetType().GetField(source.ToString());
+
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
+                typeof(DescriptionAttribute), false);
+
+            if (attributes != null && attributes.Length > 0) return attributes[0].Description;
+            else return source.ToString();
+        }
+
+
     }
 }

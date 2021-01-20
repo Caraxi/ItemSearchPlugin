@@ -29,6 +29,8 @@ namespace ItemSearchPlugin {
 
         private readonly ConcurrentQueue<uint> searchQueue = new ConcurrentQueue<uint>();
 
+        private bool disposed;
+        
         public CraftingRecipeFinder(ItemSearchPlugin plugin) {
             this.plugin = plugin;
 
@@ -39,8 +41,6 @@ namespace ItemSearchPlugin {
                 getUIObject = Marshal.GetDelegateForFunctionPointer<GetUIObjectDelegate>(Address.GetUIObject);
                 getAgentObject = Marshal.GetDelegateForFunctionPointer<GetAgentObjectDelegate>(Address.GetAgentObject);
                 searchItemByCraftingMethod = Marshal.GetDelegateForFunctionPointer<SearchItemByCraftingMethodDelegate>(Address.SearchItemByCraftingMethod);
-
-                plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
             } catch (Exception ex) {
                 PluginLog.LogError(ex.ToString());
             }
@@ -48,8 +48,12 @@ namespace ItemSearchPlugin {
 
         private void OnFrameworkUpdate(Framework framework) {
             try {
+                if (disposed) return;
                 if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
-                if (!searchQueue.TryDequeue(out var itemID)) return;
+                if (!searchQueue.TryDequeue(out var itemID)) {
+                    plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
+                    return;
+                }
                 var uiObjectPtr = getUIObject();
                 if (uiObjectPtr.Equals(IntPtr.Zero)) {
                     PluginLog.LogError("CraftingRecipeFinder: Null pointer returned from GetUIObject()");
@@ -73,15 +77,19 @@ namespace ItemSearchPlugin {
         }
 
         public void SearchRecipesByItem(Item item) {
+            if (disposed) return;
             if (item == null) {
                 PluginLog.Log("Tried to find recipe for NULL item.");
                 return;
             }
 
             searchQueue.Enqueue(item.RowId);
+            plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
+            plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
         }
 
         public void Dispose() {
+            disposed = true;
             plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
         }
     }
