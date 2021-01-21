@@ -206,7 +206,7 @@ namespace ItemSearchPlugin {
                     break;
                 }
             }
-            if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
+            if (plugin.PluginInterface.ClientState.LocalContentId == 0) return;
             var tryOnUi = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("Tryon", 1);
             var examineUi = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("CharacterInspect", 1);
             var itemDetail = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("ItemDetail", 1);

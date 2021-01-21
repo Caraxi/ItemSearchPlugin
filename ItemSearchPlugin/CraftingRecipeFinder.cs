@@ -49,7 +49,7 @@ namespace ItemSearchPlugin {
         private void OnFrameworkUpdate(Framework framework) {
             try {
                 if (disposed) return;
-                if (plugin.PluginInterface.ClientState.LocalPlayer == null) return;
+                if (plugin.PluginInterface.ClientState.LocalContentId == 0) return;
                 if (!searchQueue.TryDequeue(out var itemID)) {
                     plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
                     return;

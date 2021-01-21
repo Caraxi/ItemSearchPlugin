@@ -6,6 +6,5 @@
   "AssemblyVersion": "VERSION",
   "RepoUrl": "https://github.com/Caraxi/ItemSearchPlugin",
   "ApplicableVersion": "any",
-  "Tags": [ "Item", "Search", "Lookup", "Tool", "Try On", "Link", "Fitting Room" ],
   "DalamudApiLevel": 2 
 }

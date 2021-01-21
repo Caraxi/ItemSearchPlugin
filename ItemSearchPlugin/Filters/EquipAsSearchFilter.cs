@@ -181,12 +181,14 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
-            } else if(usingTags == false && pluginInterface.ClientState?.LocalPlayer != null) {
+            } else if(usingTags == false && pluginInterface.ClientState.LocalContentId != 0) {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Current Class")) {
-                    selectedClassJobs.Clear();
-                    selectedClassJobs.Add(pluginInterface.ClientState.LocalPlayer.ClassJob.Id);
-                    changed = true;
+                    if (pluginInterface.ClientState?.LocalPlayer != null) {
+                        selectedClassJobs.Clear();
+                        selectedClassJobs.Add(pluginInterface.ClientState.LocalPlayer.ClassJob.Id);
+                        changed = true;
+                    }
                 }
             }
         }

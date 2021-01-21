@@ -426,7 +426,7 @@ namespace ItemSearchPlugin {
                     ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
                 }
 
-                if (pluginConfig.ShowTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                if (pluginConfig.ShowTryOn && pluginInterface.ClientState?.LocalContentId != 0) {
                     ImGui.SameLine();
                     if (ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn)) {
                         pluginConfig.TryOnEnabled = autoTryOn;
@@ -685,7 +685,7 @@ namespace ItemSearchPlugin {
                                 }
                             }
 
-                            if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                            if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
                                 if (selectedItem.ClassJobCategory.Row != 0) {
                                     plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
                                 }
@@ -766,7 +766,7 @@ namespace ItemSearchPlugin {
                 if (hotkeyUsed) {
                     doSearchScroll = true;
                     this.selectedItem = itemList[selectedItemIndex];
-                    if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalPlayer != null) {
+                    if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
                         if (selectedItem.ClassJobCategory.Row != 0) {
                             plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
                         }
