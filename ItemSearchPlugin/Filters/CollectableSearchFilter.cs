@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ImGuiNET;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.Filters {
     class CollectableSearchFilter : SearchFilter {

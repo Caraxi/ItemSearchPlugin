@@ -7,9 +7,9 @@ using Lumina.Text;
 namespace ItemSearchPlugin {
 
     [Sheet("SpecialShop")]
-    internal class SpecialShopCustom : IExcelRow {
+    internal class SpecialShopCustom : ExcelRow {
         
-        public void PopulateData(RowParser parser, Lumina.Lumina lumina, Language language) {
+        public void PopulateData(RowParser parser, Lumina.GameData lumina, Language language) {
             
             RowId = parser.Row;
             SubRowId = parser.SubRow;

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.DataSites {
     public class TeamcraftDataSite : DataSite {

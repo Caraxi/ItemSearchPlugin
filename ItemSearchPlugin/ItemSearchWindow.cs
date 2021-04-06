@@ -664,15 +664,20 @@ namespace ItemSearchPlugin {
                         ImGui.BeginGroup();
                         ImGui.BeginChild($"###ItemContainer{j++}", rowSize, false);
                         ImGui.Text($" {itemList[i].Name}");
+                        var textClick = ImGui.IsItemClicked();
                         ImGui.EndChild();
+                        var childClicked = ImGui.IsItemClicked();
                         ImGui.EndGroup();
+                        var groupHovered = ImGui.IsItemHovered();
+                        var groupClicked = ImGui.IsItemClicked();
                         ImGui.PopStyleColor(); colorsPushed--;
 
-                        if (ImGui.IsItemClicked()) {
+
+                        if (textClick || childClicked || groupClicked) {
                             this.selectedItem = itemList[i];
                             this.selectedItemIndex = i;
 
-                            if (ImGui.IsMouseDoubleClicked(0)) {
+                            if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) {
                                 if (this.selectedItem != null && selectedItem.Icon < 65000) {
                                     try {
                                         plugin.LinkItem(selectedItem);

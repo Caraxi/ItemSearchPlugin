@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.7.4.1</Version>
+		<Version>1.7.4.2</Version>
 	</PropertyGroup>
 	<ItemGroup Label="Resources">
 		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
@@ -49,31 +49,31 @@
 		<Reference Include="Microsoft.CSharp" />
 		<Reference Include="Dalamud">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Dalamud.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
 		</Reference>
 		<Reference Include="ImGui.NET">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\ImGui.NET.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGui.NET.dll</HintPath>
 		</Reference>
 		<Reference Include="ImGuiScene">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\ImGuiScene.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll</HintPath>
 		</Reference>
 		<Reference Include="Serilog">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Serilog.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Serilog.dll</HintPath>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Newtonsoft.Json.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Newtonsoft.Json.dll</HintPath>
 		</Reference>
 		<Reference Include="Lumina">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Lumina.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.dll</HintPath>
 		</Reference>
 		<Reference Include="Lumina.Excel">
 			<Private>false</Private>
-			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\Lumina.Excel.dll</HintPath>
+			<HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.Excel.dll</HintPath>
 		</Reference>
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
@@ -87,7 +87,7 @@
 	</ItemGroup>
 	<Target Name="ILMerge" AfterTargets="PostBuildEvent">
 		<!-- Merge and rename -->
-		<Exec Command="$(ILMergeConsolePath) /target:library /out:$(TargetDir)/../ItemSearchPlugin.dll /log /lib:$(APPDATA)\XIVLauncher\addon\Hooks $(TargetDir)ItemSearchPluginNoDeps.dll $(TargetDir)FFXIVClientStructs.dll $(TargetDir)System.Linq.Async.dll&#xD;&#xA;powershell -Command &quot;Remove-Item '$(TargetDir)\*.*';Move-Item '$(TargetDir)\..\ItemSearchPlugin.*' -Destination '$(TargetDir)';&quot;" />
+		<Exec Command="$(ILMergeConsolePath) /target:library /out:$(TargetDir)/../ItemSearchPlugin.dll /log /lib:$(APPDATA)\XIVLauncher\addon\Hooks\dev $(TargetDir)ItemSearchPluginNoDeps.dll $(TargetDir)FFXIVClientStructs.dll $(TargetDir)System.Linq.Async.dll&#xD;&#xA;powershell -Command &quot;Remove-Item '$(TargetDir)\*.*';Move-Item '$(TargetDir)\..\ItemSearchPlugin.*' -Destination '$(TargetDir)';&quot;" />
 	</Target>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Release'">
 		<Exec Command="powershell -Command &quot;New-Item -ItemType Directory -Force -Path '$(ProjectDir)Publish'; $a=Get-Item '$(TargetDir)ItemSearchPlugin.dll'; $jsonTemplate=Get-Content '$(ProjectDir)\$(ProjectName).template.json' | ConvertFrom-Json; $jsonTemplate.AssemblyVersion=$a.VersionInfo.FileVersion; $jsonTemplate.Description = $jsonTemplate.Description -join '\n'; ($jsonTemplate | ConvertTo-Json).Replace('\\n','\n') | Out-File '$(ProjectDir)\Publish\$(ProjectName).json' -Encoding utf8;Compress-Archive -Path '$(ProjectDir)\Publish\$(ProjectName).json','$(TargetDir)\*' -DestinationPath '$(ProjectDir)Publish\latest.zip' -Force&quot;" />

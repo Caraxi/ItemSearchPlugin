@@ -45,7 +45,7 @@ namespace ItemSearchPlugin.Filters {
             Task.Run(() => {
                 var baseParamCounts = new Dictionary<byte, int>();
 
-                foreach (var p in data.GetExcelSheet<Item>().ToList().SelectMany(i => i.UnkStruct59)) {
+                foreach (var p in data.GetExcelSheet<Item>().ToList().SelectMany(i => i.UnkStruct60)) {
                     if (!baseParamCounts.ContainsKey(p.BaseParam)) {
                         baseParamCounts.Add(p.BaseParam, 0);
                     }
@@ -67,7 +67,7 @@ namespace ItemSearchPlugin.Filters {
             if (modeAny) {
                 // Match Any
                 foreach (var s in Stats.Where(s => s.BaseParam != null && s.BaseParam.RowId != 0)) {
-                    foreach (var p in item.UnkStruct59) {
+                    foreach (var p in item.UnkStruct60) {
                         if (p.BaseParam == s.BaseParam.RowId) {
                             return true;
                         }
@@ -80,7 +80,7 @@ namespace ItemSearchPlugin.Filters {
 
                 foreach (var s in Stats.Where(s => s.BaseParam != null && s.BaseParam.RowId != 0)) {
                     bool foundMatch = false;
-                    foreach (var p in item.UnkStruct59) {
+                    foreach (var p in item.UnkStruct60) {
                         if (p.BaseParam == s.BaseParam.RowId) {
                             foundMatch = true;
                         }
