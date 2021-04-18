@@ -225,7 +225,7 @@ namespace ItemSearchPlugin {
 
                 hiddenPos.Y -= 19 * ImGui.GetIO().FontGlobalScale;
 
-                ImGui.SetNextWindowPos(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
+                ImGuiHelpers.SetNextWindowPosRelativeMainViewport(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
                 ImGui.SetNextWindowSize(new Vector2(220 * ImGui.GetIO().FontGlobalScale, tryOnUi->Scale * 300 + buttonSize.Y * 3), ImGuiCond.Always);
 
                 windowCollapsed = !ImGui.Begin(Loc.Localize("FittingRoomUIHeader", "Saved Outfits") + "###ItemSearchPluginFittingRoomUI", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
@@ -473,7 +473,8 @@ namespace ItemSearchPlugin {
                 }
 
                 if (!covered) {
-                    ImGui.SetNextWindowPos(buttonPos);
+                    ImGuiHelpers.ForceNextWindowMainViewport();
+                    ImGuiHelpers.SetNextWindowPosRelativeMainViewport(buttonPos, ImGuiCond.Always);
                     ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                     ImGui.Begin("TryOn###examineTryOn", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground);
                     ImGui.PopStyleVar();

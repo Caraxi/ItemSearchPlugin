@@ -7,14 +7,9 @@ using Lumina.Text;
 namespace ItemSearchPlugin {
 
     [Sheet("SpecialShop")]
-    internal class SpecialShopCustom : ExcelRow {
-        
-        public void PopulateData(RowParser parser, Lumina.GameData lumina, Language language) {
-            
-            RowId = parser.Row;
-            SubRowId = parser.SubRow;
-
-            Name = parser.ReadColumn<SeString>(0);
+    internal class SpecialShopCustom : SpecialShop {
+        public override void PopulateData(RowParser parser, Lumina.GameData lumina, Language language) {
+            base.PopulateData(parser, lumina, language);
 
             Entries = new Entry[60];
             
@@ -61,7 +56,7 @@ namespace ItemSearchPlugin {
                     PatchNumber = parser.ReadColumn<ushort>(1441 + i)
                 };
             }
-            UseCurrencyType = parser.ReadColumn<bool>(1501);
+            UseCurrencyType = parser.ReadColumn<byte>(1501);
             QuestUnlock = new LazyRow<Quest>(lumina, parser.ReadColumn<uint>(1502), language);
             CompleteText = new LazyRow<DefaultTalk>(lumina, parser.ReadColumn<int>(1503), language);
             NotCompleteText = new LazyRow<DefaultTalk>(lumina, parser.ReadColumn<int>(1504), language);
@@ -94,15 +89,6 @@ namespace ItemSearchPlugin {
             public ushort Collectability;
         }
 
-        public SeString Name { get; set; }
-        public uint RowId { get; set; }
-        public uint SubRowId { get; set; }
         public Entry[] Entries;
-        public bool UseCurrencyType;
-        public LazyRow<Quest> QuestUnlock;
-        public LazyRow<DefaultTalk> CompleteText;
-        public LazyRow<DefaultTalk> NotCompleteText;
-        public uint Unknown1505;
-        public bool Unknown1506;
     }
 }

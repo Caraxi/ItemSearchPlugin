@@ -8,7 +8,7 @@ namespace ItemSearchPlugin.Filters {
     class BooleanSearchFilter : SearchFilter {
 
         public static Func<Item, bool, bool, bool> CheckFunc(string n, bool invert = false) {
-            var p = typeof(Item).GetField(n);
+            var p = typeof(Item).GetProperty(n);
             if (p == null) {
                 PluginLog.LogError($"Invalid Check Function for BooleanSearchFilter: {n}");
             }
