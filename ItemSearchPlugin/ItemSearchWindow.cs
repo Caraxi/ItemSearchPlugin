@@ -23,11 +23,11 @@ namespace ItemSearchPlugin {
         private readonly DalamudPluginInterface pluginInterface;
         private readonly DataManager data;
         private readonly UiBuilder builder;
-        private Item selectedItem;
+        private GenericItem selectedItem;
         private int selectedItemIndex = -1;
 
         private CancellationTokenSource searchCancelTokenSource;
-        private ValueTask<List<Item>> searchTask;
+        private ValueTask<List<GenericItem>> searchTask;
 
         private readonly ItemSearchPluginConfig pluginConfig;
         public List<SearchFilter> SearchFilters;
@@ -53,7 +53,7 @@ namespace ItemSearchPlugin {
         private bool extraFiltersExpanded;
         private bool showingFavourites = false;
 
-        private List<Item> favouritesList = new List<Item>();
+        private List<GenericItem> favouritesList = new List<GenericItem>();
 
         private void PushStyle(ImGuiStyleVar styleVar, Vector2 val) {
             ImGui.PushStyleVar(styleVar, val);
@@ -134,6 +134,8 @@ namespace ItemSearchPlugin {
                 new BooleanSearchFilter(pluginConfig, "Dyeable", "Dyeable", "Not Dyeable", BooleanSearchFilter.CheckFunc("IsDyeable")),
                 new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", BooleanSearchFilter.CheckFunc("IsUnique")),
                 new BooleanSearchFilter(pluginConfig, "Tradable", "Tradable", "Not Tradable", BooleanSearchFilter.CheckFunc("IsUntradable", true)),
+                new BooleanSearchFilter(pluginConfig, "Key Item", "Key Item", "Normal Item", ((item, t, f) => !t), ((item, t, f) => !f)),
+                
                 new StatSearchFilter(pluginConfig, data),
                 new CollectableSearchFilter(pluginConfig, plugin),
             };
@@ -164,12 +166,17 @@ namespace ItemSearchPlugin {
                 sw.Start();
 #endif
                 try {
-                    return this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).ToList();
+                    var list = new List<GenericItem>();
+                    
+                    list.AddRange(this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
+                    list.AddRange(this.data.GetExcelSheet<EventItem>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
+                    
+                    return list;
                 } catch (Exception ex) {
                     errorLoadingItems = true;
                     PluginLog.LogError("Failed loading Items");
                     PluginLog.LogError(ex.ToString());
-                    return new List<Item>();
+                    return new List<GenericItem>();
                 }
             }).ContinueWith(t => {
 #if DEBUG
@@ -233,6 +240,11 @@ namespace ItemSearchPlugin {
                     ImGui.SameLine();
                     ImGui.BeginGroup();
 
+                    if (selectedItem.GenericItemType == GenericItem.ItemType.EventItem) {
+                        ImGui.TextDisabled("[Key Item]");
+                        ImGui.SameLine();
+                    }
+                    
                     ImGui.Text(selectedItem.Name);
 
                     if (pluginConfig.ShowItemID) {
@@ -589,7 +601,7 @@ namespace ItemSearchPlugin {
 
 
 
-        private void DrawItemList(List<Item> itemList, Vector2 listSize, ref bool isOpen) {
+        private void DrawItemList(List<GenericItem> itemList, Vector2 listSize, ref bool isOpen) {
             var fontPushed = false;
             var stylesPushed = 0;
             var colorsPushed = 0;
@@ -663,7 +675,13 @@ namespace ItemSearchPlugin {
                         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero); stylesPushed++;
                         ImGui.BeginGroup();
                         ImGui.BeginChild($"###ItemContainer{j++}", rowSize, false);
+                        
+                        
                         ImGui.Text($" {itemList[i].Name}");
+                        if (itemList[i].GenericItemType == GenericItem.ItemType.EventItem) {
+                            ImGui.SameLine();
+                            ImGui.TextDisabled(" [Key Item]");
+                        }
                         var textClick = ImGui.IsItemClicked();
                         ImGui.EndChild();
                         var childClicked = ImGui.IsItemClicked();
@@ -690,11 +708,14 @@ namespace ItemSearchPlugin {
                                 }
                             }
 
-                            if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
-                                if (selectedItem.ClassJobCategory.Row != 0) {
-                                    plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
+                            if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
+                                    if (selectedItem.ClassJobCategory.Row != 0) {
+                                        plugin.FittingRoomUI.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
+                                    }
                                 }
                             }
+                            
                         }
 
                         ImGui.PopStyleVar(); stylesPushed--;
@@ -771,11 +792,14 @@ namespace ItemSearchPlugin {
                 if (hotkeyUsed) {
                     doSearchScroll = true;
                     this.selectedItem = itemList[selectedItemIndex];
-                    if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
-                        if (selectedItem.ClassJobCategory.Row != 0) {
-                            plugin.FittingRoomUI.TryOnItem(selectedItem, selectedStain?.RowId ?? 0);
+                    if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
+                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
+                            if (selectedItem.ClassJobCategory.Row != 0) {
+                                plugin.FittingRoomUI.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
+                            }
                         }
                     }
+                    
                 }
             } catch (Exception ex) {
                 PluginLog.LogError($"{ex}");

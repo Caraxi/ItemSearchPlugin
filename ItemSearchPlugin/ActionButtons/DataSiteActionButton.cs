@@ -8,22 +8,22 @@ namespace ItemSearchPlugin.ActionButtons {
             this.pluginConfig = pluginConfig;
         }
 
-        public ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
+        public override ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
 
-        public void Dispose() { }
+        public override void Dispose() { }
 
-        public string GetButtonText(Item selectedItem) {
+        public override string GetButtonText(Item selectedItem) {
             return string.Format(
                 Loc.Localize("ItemSearchDataSiteViewButton", "View on {0}"),
                 Loc.Localize(pluginConfig.SelectedDataSite.NameTranslationKey, pluginConfig.SelectedDataSite.Name)
             );
         }
 
-        public bool GetShowButton(Item selectedItem) {
+        public override bool GetShowButton(Item selectedItem) {
             return this.pluginConfig.SelectedDataSite != null;
         }
 
-        public void OnButtonClicked(Item selectedItem) {
+        public override void OnButtonClicked(Item selectedItem) {
             pluginConfig.SelectedDataSite.OpenItem(selectedItem);
         }
     }

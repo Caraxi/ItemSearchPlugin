@@ -27,6 +27,8 @@ namespace ItemSearchPlugin {
         /// </summary>
         public virtual bool ShowFilter => true;
 
+        public virtual bool SupportsEventItem => false;
+
         /// <summary>
         ///	True if the filter should be used when building item list
         /// </summary>
@@ -49,8 +51,22 @@ namespace ItemSearchPlugin {
         /// </summary>
         /// <param name="item">The item being checked</param>
         /// <returns>true if the item should be displayed</returns>
-        public abstract bool CheckFilter(Item item);
+        public virtual bool CheckFilter(Item item) {
+            return true;
+        }
 
+        public virtual bool CheckFilter(EventItem item) {
+            return false;
+        }
+
+        public bool CheckFilter(GenericItem genericItem) {
+            return genericItem.GenericItemType switch {
+                GenericItem.ItemType.EventItem => CheckFilter((EventItem) genericItem),
+                GenericItem.ItemType.Item => CheckFilter((Item) genericItem),
+                _ => false
+            };
+        }
+        
         /// <summary>
         /// Draw the ImGui widgets for the filter.
         /// </summary>

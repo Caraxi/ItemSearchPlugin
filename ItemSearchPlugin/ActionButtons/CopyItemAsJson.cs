@@ -11,15 +11,15 @@ namespace ItemSearchPlugin.ActionButtons {
             this.plugin = plugin;
         }
 
-        public ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
+        public override ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
 
-        public void Dispose() { }
+        public override void Dispose() { }
 
-        public string GetButtonText(Item selectedItem) {
+        public override string GetButtonText(Item selectedItem) {
             return Loc.Localize("ItemSearchCopyAsJson", "Copy Information");
         }
 
-        public bool GetShowButton(Item selectedItem) {
+        public override bool GetShowButton(Item selectedItem) {
             #if DEBUG
             return true;
             #else
@@ -27,7 +27,7 @@ namespace ItemSearchPlugin.ActionButtons {
             #endif
         }
 
-        public void OnButtonClicked(Item selectedItem) {
+        public override void OnButtonClicked(Item selectedItem) {
             
             var sb = new StringBuilder();
 

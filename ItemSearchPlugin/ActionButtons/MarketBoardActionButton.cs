@@ -11,7 +11,7 @@ namespace ItemSearchPlugin.ActionButtons {
         private bool marketBoardResponsed = false;
 
 
-        public ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
+        public override ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
 
         public MarketBoardActionButton(Dalamud.Plugin.DalamudPluginInterface pluginInterface, ItemSearchPluginConfig pluginConfig) {
             this.pluginInterface = pluginInterface;
@@ -35,15 +35,15 @@ namespace ItemSearchPlugin.ActionButtons {
             pluginInterface.SendMessage(areYouThereMarketBoard);
         }
 
-        public string GetButtonText(Item selectedItem) {
+        public override string GetButtonText(Item selectedItem) {
             return Loc.Localize("ItemSearchMarketButton", "Market");
         }
 
-        public bool GetShowButton(Item selectedItem) {
+        public override bool GetShowButton(Item selectedItem) {
             return this.pluginConfig.MarketBoardPluginIntegration && marketBoardResponsed && selectedItem.ItemSearchCategory.Row > 0;
         }
 
-        public void OnButtonClicked(Item selectedItem) {
+        public override void OnButtonClicked(Item selectedItem) {
             dynamic itemMessage = new ExpandoObject();
             itemMessage.Target = "MarketBoardPlugin";
             itemMessage.Action = "OpenMarketBoard";
@@ -51,7 +51,7 @@ namespace ItemSearchPlugin.ActionButtons {
             pluginInterface.SendMessage(itemMessage);
         }
 
-        public void Dispose() {
+        public override void Dispose() {
             pluginInterface.Unsubscribe("MarketBoardPlugin");
         }
     }

@@ -58,7 +58,19 @@ namespace ItemSearchPlugin.Filters {
                 || (int.TryParse(parsedSearchText, out var parsedId) && parsedId == item.RowId)
                 || searchText.StartsWith("$") && item.Description.ToString().ToLower().Contains(parsedSearchText.Substring(1).ToLower());
         }
+        
+        public override bool CheckFilter(EventItem item) {
+            if (searchRegex != null) {
+                return searchRegex.IsMatch(item.Name);
+            }
 
+            return
+                item.Name.ToString().ToLower().Contains(parsedSearchText.ToLower())
+                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToString().ToLower().Contains(t)))
+                || (int.TryParse(parsedSearchText, out var parsedId) && parsedId == item.RowId);
+                //|| searchText.StartsWith("$") && item.Description.ToString().ToLower().Contains(parsedSearchText.Substring(1).ToLower());
+        }
+        
         public override void DrawEditor() {
             ImGui.SetNextItemWidth(-20 * ImGui.GetIO().FontGlobalScale);
             if (PluginConfig.AutoFocus && ImGui.IsWindowAppearing()) {

@@ -34,7 +34,7 @@ namespace ItemSearchPlugin {
 
         private bool drawConfigWindow;
 
-        internal List<Item> LuminaItems { get; set; }
+        internal List<GenericItem> LuminaItems { get; set; }
         internal ClientLanguage LuminaItemsClientLanguage { get; set; }
         
         public static DataSite[] DataSites { get; private set; } = new DataSite[] { new GarlandToolsDataSite() }; 
@@ -58,7 +58,7 @@ namespace ItemSearchPlugin {
 
         public void Initialize(DalamudPluginInterface pluginInterface) {
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            this.PluginInterface = pluginInterface;
+            PluginInterface = pluginInterface;
             this.PluginConfig = (ItemSearchPluginConfig) pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
 
             ItemSearchPlugin.DataSites = new DataSite[] {
@@ -171,7 +171,7 @@ namespace ItemSearchPlugin {
 
         }
 
-        internal void LinkItem(Item item) {
+        internal void LinkItem(GenericItem item) {
             if (item == null) {
                 PluginLog.Log("Tried to link NULL item.");
                 return;

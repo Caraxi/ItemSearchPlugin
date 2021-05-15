@@ -23,6 +23,7 @@ namespace ItemSearchPlugin.Filters {
         private readonly string trueString;
         private readonly string falseString;
         private readonly Func<Item, bool, bool, bool> checkFunction;
+        private readonly Func<EventItem, bool, bool, bool> keyCheckFunction;
         private bool showTrue = true;
         private bool showFalse = true;
 
@@ -32,11 +33,12 @@ namespace ItemSearchPlugin.Filters {
 
         private static float _trueWidth;
 
-        public BooleanSearchFilter(ItemSearchPluginConfig pluginConfig, string name, string trueString, string falseString, Func<Item, bool, bool, bool> checkFunction) : base(pluginConfig) {
+        public BooleanSearchFilter(ItemSearchPluginConfig pluginConfig, string name, string trueString, string falseString, Func<Item, bool, bool, bool> checkFunction, Func<EventItem, bool, bool, bool> keyCheckFunction = null) : base(pluginConfig) {
             this.Name = name;
             this.trueString = trueString;
             this.falseString = falseString;
             this.checkFunction = checkFunction;
+            this.keyCheckFunction = keyCheckFunction;
         }
 
         public override string Name { get; }
@@ -46,6 +48,10 @@ namespace ItemSearchPlugin.Filters {
 
         public override bool CheckFilter(Item item) {
             return checkFunction.Invoke(item, usingTag ? taggedTrue : showTrue, usingTag ? taggedFalse : showFalse);
+        }
+        
+        public override bool CheckFilter(EventItem item) {
+            return keyCheckFunction != null && keyCheckFunction.Invoke(item, usingTag ? taggedTrue : showTrue, usingTag ? taggedFalse : showFalse);
         }
 
         public override void DrawEditor() {
