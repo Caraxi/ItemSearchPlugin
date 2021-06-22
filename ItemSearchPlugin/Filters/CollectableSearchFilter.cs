@@ -73,7 +73,7 @@ namespace ItemSearchPlugin.Filters {
 
 
         public override void DrawEditor() {
-
+            ImGui.SetNextItemWidth(-1);
             if (ImGui.BeginCombo("###CollectableSearchFilterCombo", SelectedMode.DescriptionAttr())) {
                 foreach (var v in Enum.GetValues(typeof(Mode))) {
                     if (ImGui.Selectable(v.DescriptionAttr(), SelectedMode == (Mode) v)) {
