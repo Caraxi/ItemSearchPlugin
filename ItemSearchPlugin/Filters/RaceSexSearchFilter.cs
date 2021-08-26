@@ -1,5 +1,4 @@
 ﻿using Dalamud.Data;
-using Dalamud.Game.ClientState.Actors;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
@@ -8,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
+using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Logging;
 using static ItemSearchPlugin.ClassExtensions;
 
 namespace ItemSearchPlugin.Filters {
@@ -70,7 +71,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override void DrawEditor() {
             ImGui.BeginChild($"{this.NameLocalizationKey}Child", new Vector2(-1, 23 * ImGui.GetIO().FontGlobalScale), false, usingTags ? ImGuiWindowFlags.NoInputs : ImGuiWindowFlags.None);
-            if (pluginInterface.ClientState?.LocalContentId != 0 && !usingTags) {
+            if (ItemSearchPlugin.ClientState?.LocalContentId != 0 && !usingTags) {
                 ImGui.SetNextItemWidth(-80 * ImGui.GetIO().FontGlobalScale);
             } else {
                 ImGui.SetNextItemWidth(-1);
@@ -78,13 +79,13 @@ namespace ItemSearchPlugin.Filters {
             
             ImGui.Combo("##RaceSexSearchFilter", ref this.selectedOption, options.Select(a => a.text).ToArray(), options.Count);
 
-            if (pluginInterface.ClientState?.LocalContentId != 0 && !usingTags) {
+            if (ItemSearchPlugin.ClientState?.LocalContentId != 0 && !usingTags) {
                 ImGui.SameLine();
                 
                 if (ImGui.SmallButton($"Current")) {
-                    if (pluginInterface.ClientState?.LocalPlayer != null) {
-                        var race = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Race];
-                        var sex = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Gender] == 0 ? CharacterSex.Male : CharacterSex.Female;
+                    if (ItemSearchPlugin.ClientState?.LocalPlayer != null) {
+                        var race = ItemSearchPlugin.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Race];
+                        var sex = ItemSearchPlugin.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Gender] == 0 ? CharacterSex.Male : CharacterSex.Female;
 
                         for (var i = 0; i < options.Count; i++) {
                             if (options[i].sex == sex && options[i].raceId == race) {
@@ -118,8 +119,8 @@ namespace ItemSearchPlugin.Filters {
             var t = tag.ToLower().Trim();
             var selfTag = false;
             if (t == "self") {
-                var race = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Race];
-                var sex = pluginInterface.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Gender] == 0 ? CharacterSex.Male : CharacterSex.Female;
+                var race = ItemSearchPlugin.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Race];
+                var sex = ItemSearchPlugin.ClientState.LocalPlayer.Customize[(int)CustomizeIndex.Gender] == 0 ? CharacterSex.Male : CharacterSex.Female;
 
                 for (var i = 0; i < options.Count; i++) {
                     if (options[i].sex == sex && options[i].raceId == race) {

@@ -30,8 +30,8 @@ namespace ItemSearchPlugin.Filters {
         }
         public override string Name => "Collectable";
         public override string NameLocalizationKey => "CollectableSearchFilter";
-        public override bool IsSet => plugin.PluginInterface.ClientState.LocalContentId != 0 && SelectedMode != Mode.NotSelected;
-        public override bool ShowFilter => plugin.PluginInterface.ClientState.LocalContentId != 0 && base.ShowFilter;
+        public override bool IsSet => ItemSearchPlugin.ClientState.LocalContentId != 0 && SelectedMode != Mode.NotSelected;
+        public override bool ShowFilter => ItemSearchPlugin.ClientState.LocalContentId != 0 && base.ShowFilter;
 
         private ushort[] collectableActionType = { 853, 1013, 1322, 2136, 2633, 3357, 4107, 5845, 20086 };
         private ItemSearchPlugin plugin;

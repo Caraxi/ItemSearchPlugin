@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dalamud.Logging;
 
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : SearchFilter {
@@ -181,12 +182,12 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
-            } else if(usingTags == false && pluginInterface.ClientState.LocalContentId != 0) {
+            } else if(usingTags == false && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Current Class")) {
-                    if (pluginInterface.ClientState?.LocalPlayer != null) {
+                    if (ItemSearchPlugin.ClientState?.LocalPlayer != null) {
                         selectedClassJobs.Clear();
-                        selectedClassJobs.Add(pluginInterface.ClientState.LocalPlayer.ClassJob.Id);
+                        selectedClassJobs.Add(ItemSearchPlugin.ClientState.LocalPlayer.ClassJob.Id);
                         changed = true;
                     }
                 }
@@ -210,8 +211,8 @@ namespace ItemSearchPlugin.Filters {
         public override bool ParseTag(string tag) {
             var t = tag.ToLower().Trim();
             var selfTag = false;
-            if (t == "self" && pluginInterface.ClientState?.LocalPlayer != null) {
-                t = pluginInterface.ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToString().ToLower();
+            if (t == "self" && ItemSearchPlugin.ClientState?.LocalPlayer != null) {
+                t = ItemSearchPlugin.ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToString().ToLower();
                 selfTag = true;
             }
 

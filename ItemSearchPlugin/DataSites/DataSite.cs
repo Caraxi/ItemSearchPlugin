@@ -1,4 +1,5 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using System.Diagnostics;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     public abstract class DataSite {
@@ -11,7 +12,10 @@ namespace ItemSearchPlugin {
         public virtual string Note { get; } = null;
 
         public virtual void OpenItem(Item item) {
-            System.Diagnostics.Process.Start(GetItemUrl(item));
+            System.Diagnostics.Process.Start(new ProcessStartInfo() {
+                UseShellExecute = true,
+                FileName = GetItemUrl(item)
+            });
         }
     }
 }

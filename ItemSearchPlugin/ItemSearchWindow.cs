@@ -6,10 +6,9 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Dalamud.Data;
-using Dalamud.Data.LuminaExtensions;
 using Dalamud.Interface;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using ImGuiNET;
 using ItemSearchPlugin.ActionButtons;
@@ -84,8 +83,8 @@ namespace ItemSearchPlugin {
         }
 
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
-            this.pluginInterface = plugin.PluginInterface;
-            this.data = pluginInterface.Data;
+            this.pluginInterface = ItemSearchPlugin.PluginInterface;
+            this.data = ItemSearchPlugin.Data;
             this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = plugin.PluginConfig;
             this.plugin = plugin;
@@ -143,7 +142,7 @@ namespace ItemSearchPlugin {
             SearchFilters.ForEach(a => a.ConfigSetup());
 
             ActionButtons = new List<IActionButton> {
-                new MarketBoardActionButton(pluginInterface, pluginConfig),
+                // new MarketBoardActionButton(pluginInterface, pluginConfig),
                 new DataSiteActionButton(pluginConfig),
                 new RecipeSearchActionButton(plugin.CraftingRecipeFinder),
                 new CopyItemAsJson(plugin),
@@ -438,7 +437,7 @@ namespace ItemSearchPlugin {
                     ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
                 }
 
-                if (pluginConfig.ShowTryOn && pluginInterface.ClientState?.LocalContentId != 0) {
+                if (pluginConfig.ShowTryOn && ItemSearchPlugin.ClientState?.LocalContentId != 0) {
                     ImGui.SameLine();
                     if (ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn)) {
                         pluginConfig.TryOnEnabled = autoTryOn;
@@ -709,7 +708,7 @@ namespace ItemSearchPlugin {
                             }
 
                             if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                                     if (selectedItem.ClassJobCategory.Row != 0) {
                                         plugin.FittingRoomUI.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                                     }
@@ -738,8 +737,8 @@ namespace ItemSearchPlugin {
                     }
                 }
 
-                var keyStateDown = ImGui.GetIO().KeysDown[0x28] || pluginInterface.ClientState.KeyState[0x28];
-                var keyStateUp = ImGui.GetIO().KeysDown[0x26] || pluginInterface.ClientState.KeyState[0x26];
+                var keyStateDown = ImGui.GetIO().KeysDown[0x28] || ItemSearchPlugin.KeyState[0x28];
+                var keyStateUp = ImGui.GetIO().KeysDown[0x26] || ItemSearchPlugin.KeyState[0x26];
 
 #if DEBUG
                 // Random up/down if both are pressed
@@ -793,7 +792,7 @@ namespace ItemSearchPlugin {
                     doSearchScroll = true;
                     this.selectedItem = itemList[selectedItemIndex];
                     if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
-                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && pluginInterface.ClientState.LocalContentId != 0) {
+                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                             if (selectedItem.ClassJobCategory.Row != 0) {
                                 plugin.FittingRoomUI.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                             }

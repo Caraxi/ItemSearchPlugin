@@ -6,21 +6,38 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Dalamud;
-using Dalamud.Data.LuminaExtensions;
+using Dalamud.Data;
+using Dalamud.Game;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.ClientState.Keys;
+using Dalamud.Game.Command;
+using Dalamud.Game.Gui;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.IoC;
+using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Utility;
 using ImGuiNET;
 using ImGuiScene;
 using ItemSearchPlugin.DataSites;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     public class ItemSearchPlugin : IDalamudPlugin {
         public string Name => "Item Search";
-        public DalamudPluginInterface PluginInterface { get; private set; }
+
+
+        [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService] public static DataManager Data { get; private set; } = null!;
+        [PluginService] public static CommandManager CommandManager { get; private set; } = null!;
+        [PluginService] public static KeyState KeyState { get; private set; } = null!;
+        [PluginService] public static ChatGui Chat { get; private set; } = null!;
+        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
+        [PluginService] public static ClientState ClientState { get; private set; } = null!;
+        [PluginService] public static GameGui GameGui { get; private set; } = null!;
+        [PluginService] public static Framework Framework { get; private set; } = null!;
+
         public ItemSearchPluginConfig PluginConfig { get; private set; }
 
         public FittingRoomUI FittingRoomUI { get; private set; }
@@ -41,7 +58,7 @@ namespace ItemSearchPlugin {
         public string Version { get; private set; }
 
         public void Dispose() {
-            PluginInterface.UiBuilder.OnBuildUi -= this.BuildUI;
+            PluginInterface.UiBuilder.Draw -= this.BuildUI;
             FittingRoomUI?.Dispose();
             CraftingRecipeFinder?.Dispose();
             itemSearchWindow?.Dispose();
@@ -56,10 +73,9 @@ namespace ItemSearchPlugin {
             textureDictionary.Clear();
         }
 
-        public void Initialize(DalamudPluginInterface pluginInterface) {
+        public ItemSearchPlugin() {
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            PluginInterface = pluginInterface;
-            this.PluginConfig = (ItemSearchPluginConfig) pluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
+            this.PluginConfig = (ItemSearchPluginConfig) PluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
 
             ItemSearchPlugin.DataSites = new DataSite[] {
                 new GarlandToolsDataSite(),
@@ -67,7 +83,7 @@ namespace ItemSearchPlugin {
                 new GamerEscapeDatasite(),
             };
 
-            this.PluginConfig.Init(pluginInterface, this);
+            this.PluginConfig.Init(PluginInterface, this);
 
 
             SetupGameFunctions();
@@ -78,7 +94,7 @@ namespace ItemSearchPlugin {
 
             CraftingRecipeFinder = new CraftingRecipeFinder(this);
 
-            PluginInterface.UiBuilder.OnBuildUi += this.BuildUI;
+            PluginInterface.UiBuilder.Draw += this.BuildUI;
             SetupCommands();
 
 #if DEBUG
@@ -96,12 +112,12 @@ namespace ItemSearchPlugin {
 
 
         public void SetupCommands() {
-            PluginInterface.CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo(OnItemSearchCommand) {
+            CommandManager.AddHandler("/xlitem", new Dalamud.Game.Command.CommandInfo(OnItemSearchCommand) {
                 HelpMessage = Loc.Localize("ItemSearchCommandHelp", "Open a window you can use to link any specific item to chat."),
                 ShowInHelp = true
             });
 
-            PluginInterface.CommandManager.AddHandler("/fittingroom", new Dalamud.Game.Command.CommandInfo((command, arguments) => {
+            CommandManager.AddHandler("/fittingroom", new Dalamud.Game.Command.CommandInfo((command, arguments) => {
                 this.FittingRoomUI.OpenFittingRoom();
             }) {
                 HelpMessage = Loc.Localize("ItemSearchFittingRoomCommand", "Open the fitting room."),
@@ -109,7 +125,7 @@ namespace ItemSearchPlugin {
             });
 
 #if DEBUG
-            PluginInterface.CommandManager.AddHandler("/itemsearchdumploc", new Dalamud.Game.Command.CommandInfo(((command, arguments) => {
+            CommandManager.AddHandler("/itemsearchdumploc", new Dalamud.Game.Command.CommandInfo(((command, arguments) => {
                 Loc.ExportLoadedDictionary();
             })) {ShowInHelp = false, HelpMessage = ""});
 #endif
@@ -122,13 +138,15 @@ namespace ItemSearchPlugin {
         }
 
         public void RemoveCommands() {
-            PluginInterface.CommandManager.RemoveHandler("/xlitem");
-            PluginInterface.CommandManager.RemoveHandler("/fittingroom");
+            CommandManager.RemoveHandler("/xlitem");
+            CommandManager.RemoveHandler("/fittingroom");
 #if DEBUG
-            PluginInterface.CommandManager.RemoveHandler("/itemsearchdumploc");
+            CommandManager.RemoveHandler("/itemsearchdumploc");
 #endif
         }
-        
+
+
+
         private Stopwatch debugStopwatch = new Stopwatch();
         private void BuildUI() {
             
@@ -178,14 +196,14 @@ namespace ItemSearchPlugin {
             }
 
             var payloadList = new List<Payload> {
-                new UIForegroundPayload(PluginInterface.Data, (ushort) (0x223 + item.Rarity * 2)),
-                new UIGlowPayload(PluginInterface.Data, (ushort) (0x224 + item.Rarity * 2)),
-                new ItemPayload(PluginInterface.Data, item.RowId, item.CanBeHq && PluginInterface.ClientState.KeyState[0x11]),
-                new UIForegroundPayload(PluginInterface.Data, 500),
-                new UIGlowPayload(PluginInterface.Data, 501),
+                new UIForegroundPayload((ushort) (0x223 + item.Rarity * 2)),
+                new UIGlowPayload((ushort) (0x224 + item.Rarity * 2)),
+                new ItemPayload(item.RowId, item.CanBeHq && KeyState[0x11]),
+                new UIForegroundPayload(500),
+                new UIGlowPayload(501),
                 new TextPayload($"{(char) SeIconChar.LinkMarker}"),
-                new UIForegroundPayload(PluginInterface.Data, 0),
-                new UIGlowPayload(PluginInterface.Data, 0),
+                new UIForegroundPayload(0),
+                new UIGlowPayload(0),
                 new TextPayload(item.Name),
                 new RawPayload(new byte[] {0x02, 0x27, 0x07, 0xCF, 0x01, 0x01, 0x01, 0xFF, 0x01, 0x03}),
                 new RawPayload(new byte[] {0x02, 0x13, 0x02, 0xEC, 0x03})
@@ -193,8 +211,8 @@ namespace ItemSearchPlugin {
 
             var payload = new SeString(payloadList);
 
-            PluginInterface.Framework.Gui.Chat.PrintChat(new XivChatEntry {
-                MessageBytes = payload.Encode()
+            Chat.PrintChat(new XivChatEntry {
+                Message = payload
             });
         }
 
@@ -219,7 +237,7 @@ namespace ItemSearchPlugin {
 
                     Task.Run(() => {
                         try {
-                            var iconTex = PluginInterface.Data.GetIcon(icon);
+                            var iconTex = Data.GetIcon(icon);
                             var tex = PluginInterface.UiBuilder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
                             if (tex != null && tex.ImGuiHandle != IntPtr.Zero) {
                                 textureDictionary[icon] = tex;
@@ -245,11 +263,11 @@ namespace ItemSearchPlugin {
 
 
         private void SetupGameFunctions() {
-            cardUnlockedStatic = PluginInterface.TargetModuleScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? 45 33 C0 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 0F B6 93");
-            var cardUnlockedAddress = PluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 8D 7B 78");
+            cardUnlockedStatic = SigScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? 45 33 C0 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 0F B6 93");
+            var cardUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 8D 7B 78");
             cardUnlocked = Marshal.GetDelegateForFunctionPointer<CardUnlockedDelegate>(cardUnlockedAddress);
 
-            var itemActionUnlockedAddress = PluginInterface.TargetModuleScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A5");
+            var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A5");
             itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockledDelegate>(itemActionUnlockedAddress);
         }
 

@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Lumina.Data;

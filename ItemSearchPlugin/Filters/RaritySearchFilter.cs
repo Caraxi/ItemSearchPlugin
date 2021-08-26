@@ -45,7 +45,7 @@ namespace ItemSearchPlugin.Filters {
                 return;
             }
 
-            if (ImGui.BeginCombo("###raritySelect", !usingTag || selectedValue == 0 ? "Any" : "", ImGuiComboFlags.HeightLargest)) {
+            if (ImGui.BeginCombo("###raritySelect", !usingTag && selectedValue == 0 ? "Any" : "", ImGuiComboFlags.HeightLargest)) {
 
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 

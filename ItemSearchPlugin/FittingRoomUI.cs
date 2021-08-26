@@ -10,12 +10,14 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Hooking;
 using Dalamud.Interface;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 
 namespace ItemSearchPlugin {
     public unsafe class FittingRoomUI : IDisposable {
+
         private readonly ItemSearchPlugin plugin;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -64,7 +66,7 @@ namespace ItemSearchPlugin {
 
             try {
                 address = new AddressResolver();
-                address.Setup(plugin.PluginInterface.TargetModuleScanner);
+                address.Setup(ItemSearchPlugin.SigScanner);
                 tryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
 
                 getInventoryContainer = Marshal.GetDelegateForFunctionPointer<GetInventoryContainer>(address.GetInventoryContainer);
@@ -188,9 +190,9 @@ namespace ItemSearchPlugin {
                         }
                         case TryOnControlID.SuppressLog: {
                             if (stain == 1) {
-                                plugin.PluginInterface.Framework.Gui.Chat.OnChatMessage += ChatOnOnChatMessage;
+                                ItemSearchPlugin.Chat.ChatMessage += ChatOnOnChatMessage;
                             } else {
-                                plugin.PluginInterface.Framework.Gui.Chat.OnChatMessage -= ChatOnOnChatMessage;
+                                ItemSearchPlugin.Chat.ChatMessage -= ChatOnOnChatMessage;
                             }
                             break;
                         }
@@ -206,10 +208,10 @@ namespace ItemSearchPlugin {
                     break;
                 }
             }
-            if (plugin.PluginInterface.ClientState.LocalContentId == 0) return;
-            var tryOnUi = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("Tryon", 1);
-            var examineUi = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("CharacterInspect", 1);
-            var itemDetail = (AtkUnitBase*) plugin.PluginInterface.Framework.Gui.GetUiObjectByName("ItemDetail", 1);
+            if (ItemSearchPlugin.ClientState.LocalContentId == 0) return;
+            var tryOnUi = (AtkUnitBase*) ItemSearchPlugin.GameGui.GetAddonByName("Tryon", 1);
+            var examineUi = (AtkUnitBase*) ItemSearchPlugin.GameGui.GetAddonByName("CharacterInspect", 1);
+            var itemDetail = (AtkUnitBase*) ItemSearchPlugin.GameGui.GetAddonByName("ItemDetail", 1);
             if (fittingRoomBaseAddress != IntPtr.Zero && tryOnUi != null) {
                 var pos = new Vector2(tryOnUi->X, tryOnUi->Y);
                 pos.Y += 20 * tryOnUi->Scale;
@@ -280,7 +282,7 @@ namespace ItemSearchPlugin {
                     if (ImGui.Selectable($"{save.Name}##fittingRoomSave", selectedSave == save, ImGuiSelectableFlags.AllowDoubleClick)) {
                         selectedSave = save;
                         if (ImGui.IsMouseDoubleClicked(0)) {
-                            LoadSelectedSave(plugin.PluginInterface.ClientState.KeyState[0x10]);
+                            LoadSelectedSave(ItemSearchPlugin.KeyState[0x10]);
                         }
                     }
 
@@ -296,13 +298,13 @@ namespace ItemSearchPlugin {
                         var dl = ImGui.GetWindowDrawList();
                         var c = 0;
                         foreach (var i in save.Items) {
-                            var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(i.ItemID % 500000);
+                            var item = ItemSearchPlugin.Data.Excel.GetSheet<Item>().GetRow(i.ItemID % 500000);
                             if (item != null) {
                                 var p = ImGui.GetCursorScreenPos();
                                 plugin.DrawIcon(item.Icon, itemSize);
 
                                 if (i.Stain > 0) {
-                                    var stain = plugin.PluginInterface.Data.Excel.GetSheet<Stain>().GetRow(i.Stain);
+                                    var stain = ItemSearchPlugin.Data.Excel.GetSheet<Stain>().GetRow(i.Stain);
 
                                     var b = stain.Color & 255;
                                     var g = (stain.Color >> 8) & 255;
@@ -396,7 +398,7 @@ namespace ItemSearchPlugin {
                 ImGui.EndChild();
                 if (selectedSave != null) {
 
-                    if (plugin.PluginInterface.ClientState.KeyState[0x10]) {
+                    if (ItemSearchPlugin.KeyState[0x10]) {
                         if (ImGui.Button(string.Format(Loc.Localize("FittingRoomUI_MergeButton", "Merge '{0}'"), selectedSave.Name), buttonSize)) {
                             LoadSelectedSave(true);
                         }
@@ -496,7 +498,7 @@ namespace ItemSearchPlugin {
 
                             if (id != 0) {
 
-                                var item = plugin.PluginInterface.Data.Excel.GetSheet<Item>().GetRow(id);
+                                var item = ItemSearchPlugin.Data.Excel.GetSheet<Item>().GetRow(id);
                                 if (item.EquipSlotCategory.Value.OffHand != 1 || item.ItemUICategory.Row == 11) {
                                     tryOnQueue.Enqueue((id, stain));
                                     tryOnQueue.Enqueue(((uint)TryOnControlID.SetSaveDeleteButton, 1));
@@ -512,9 +514,9 @@ namespace ItemSearchPlugin {
         }
 
         private void ChatOnOnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled) {
-            if (type == XivChatType.SystemMessage && message.Payloads.Count > 1 && (plugin.PluginInterface.ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Payloads[message.Payloads.Count - 1] : message.Payloads[0]) is TextPayload a) {
+            if (type == XivChatType.SystemMessage && message.Payloads.Count > 1 && (ItemSearchPlugin.ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Payloads[message.Payloads.Count - 1] : message.Payloads[0]) is TextPayload a) {
 
-                bool handle = plugin.PluginInterface.ClientState.ClientLanguage switch {
+                bool handle = ItemSearchPlugin.ClientState.ClientLanguage switch {
                     ClientLanguage.English => a.Text.StartsWith("You try on "),
                     ClientLanguage.German => a.Text.StartsWith("Da hast "),
                     ClientLanguage.French => a.Text.StartsWith("Vous essayez "),

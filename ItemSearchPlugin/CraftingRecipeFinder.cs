@@ -4,6 +4,8 @@ using Lumina.Excel.GeneratedSheets;
 using Dalamud.Game.Internal;
 using Dalamud.Plugin;
 using System.Collections.Concurrent;
+using Dalamud.Game;
+using Dalamud.Logging;
 
 namespace ItemSearchPlugin {
     public class CraftingRecipeFinder : IDisposable {
@@ -36,7 +38,7 @@ namespace ItemSearchPlugin {
 
             try {
                 Address = new AddressResolver();
-                Address.Setup(plugin.PluginInterface.TargetModuleScanner);
+                Address.Setup(ItemSearchPlugin.SigScanner);
 
                 getUIObject = Marshal.GetDelegateForFunctionPointer<GetUIObjectDelegate>(Address.GetUIObject);
                 getAgentObject = Marshal.GetDelegateForFunctionPointer<GetAgentObjectDelegate>(Address.GetAgentObject);
@@ -49,9 +51,9 @@ namespace ItemSearchPlugin {
         private void OnFrameworkUpdate(Framework framework) {
             try {
                 if (disposed) return;
-                if (plugin.PluginInterface.ClientState.LocalContentId == 0) return;
+                if (ItemSearchPlugin.ClientState.LocalContentId == 0) return;
                 if (!searchQueue.TryDequeue(out var itemID)) {
-                    plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
+                    ItemSearchPlugin.Framework.Update -= OnFrameworkUpdate;
                     return;
                 }
                 var uiObjectPtr = getUIObject();
@@ -84,13 +86,13 @@ namespace ItemSearchPlugin {
             }
 
             searchQueue.Enqueue(item.RowId);
-            plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
-            plugin.PluginInterface.Framework.OnUpdateEvent += OnFrameworkUpdate;
+            ItemSearchPlugin.Framework.Update -= OnFrameworkUpdate;
+            ItemSearchPlugin.Framework.Update += OnFrameworkUpdate;
         }
 
         public void Dispose() {
             disposed = true;
-            plugin.PluginInterface.Framework.OnUpdateEvent -= OnFrameworkUpdate;
+            ItemSearchPlugin.Framework.Update -= OnFrameworkUpdate;
         }
     }
 }

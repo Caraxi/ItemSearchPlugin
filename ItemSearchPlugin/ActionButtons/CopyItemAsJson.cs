@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
@@ -39,7 +40,7 @@ namespace ItemSearchPlugin.ActionButtons {
 
             
 
-            var recipes = plugin.PluginInterface.Data.GetExcelSheet<Recipe>().Where(a => a.ItemResult.Row == selectedItem.RowId).ToList();
+            var recipes = ItemSearchPlugin.Data.GetExcelSheet<Recipe>().Where(a => a.ItemResult.Row == selectedItem.RowId).ToList();
 
             if (recipes.Count == 0) {
                 sb.Append("Recipes: NONE");
@@ -51,7 +52,7 @@ namespace ItemSearchPlugin.ActionButtons {
                     sb.AppendLine("    Ingredients:");
                     foreach (var ri in r.UnkStruct5) {
 
-                        sb.AppendLine($"      [{ri.ItemIngredient}*{ri.AmountIngredient}] {plugin.PluginInterface.Data.GetExcelSheet<Item>().GetRow((uint) ri.ItemIngredient).Name} x {ri.AmountIngredient}");
+                        sb.AppendLine($"      [{ri.ItemIngredient}*{ri.AmountIngredient}] {ItemSearchPlugin.Data.GetExcelSheet<Item>().GetRow((uint) ri.ItemIngredient).Name} x {ri.AmountIngredient}");
 
 
                     } 
@@ -67,7 +68,7 @@ namespace ItemSearchPlugin.ActionButtons {
 
 
 
-            System.Windows.Forms.Clipboard.SetText(sb.ToString());
+            ImGui.SetClipboardText(sb.ToString());
 
 
         }

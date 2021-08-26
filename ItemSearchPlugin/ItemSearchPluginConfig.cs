@@ -74,12 +74,12 @@ namespace ItemSearchPlugin {
         public ClientLanguage SelectedClientLanguage {
             get {
                 return SelectedLanguage switch {
-                    0 => pluginInterface.ClientState.ClientLanguage,
+                    0 => ItemSearchPlugin.ClientState.ClientLanguage,
                     1 => ClientLanguage.English,
                     2 => ClientLanguage.Japanese,
                     3 => ClientLanguage.French,
                     4 => ClientLanguage.German,
-                    _ => pluginInterface.ClientState.ClientLanguage,
+                    _ => ItemSearchPlugin.ClientState.ClientLanguage,
                 };
             }
         }
