@@ -204,7 +204,7 @@ namespace ItemSearchPlugin {
                 new TextPayload($"{(char) SeIconChar.LinkMarker}"),
                 new UIForegroundPayload(0),
                 new UIGlowPayload(0),
-                new TextPayload(item.Name),
+                new TextPayload(item.Name + (item.CanBeHq && KeyState[0x11] ? $" {(char)SeIconChar.HighQuality}" : "")),
                 new RawPayload(new byte[] {0x02, 0x27, 0x07, 0xCF, 0x01, 0x01, 0x01, 0xFF, 0x01, 0x03}),
                 new RawPayload(new byte[] {0x02, 0x13, 0x02, 0xEC, 0x03})
             };
