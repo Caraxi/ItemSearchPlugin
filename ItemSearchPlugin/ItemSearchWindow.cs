@@ -142,7 +142,7 @@ namespace ItemSearchPlugin {
             SearchFilters.ForEach(a => a.ConfigSetup());
 
             ActionButtons = new List<IActionButton> {
-                // new MarketBoardActionButton(pluginInterface, pluginConfig),
+                new MarketBoardActionButton(pluginConfig),
                 new DataSiteActionButton(pluginConfig),
                 new RecipeSearchActionButton(plugin.CraftingRecipeFinder),
                 new CopyItemAsJson(plugin),

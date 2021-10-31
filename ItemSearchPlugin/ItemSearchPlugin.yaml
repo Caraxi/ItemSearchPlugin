@@ -1,6 +1,8 @@
-name: Item search
+name: Item Search
 author: Caraxi
 description: |-
-  Item Search
+  Filterable search for Items and Key Items.
+  Try on any item without having to find someone to link it.
 repo_url: https://github.com/Caraxi/ItemSearchPlugin
 dalamud_api_level: 4
+punchline: Search and link items, even if you don't have them.

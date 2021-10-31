@@ -39,7 +39,6 @@
 		<EmbeddedResource Remove="Publish\**" />
 		<Compile Remove="lib\**" />
 		<EmbeddedResource Remove="lib\**" />
-		<Compile Remove="ActionButtons\MarketBoardActionButton.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Linq.Async" Version="5.0.0" PrivateAssets="all"/>
