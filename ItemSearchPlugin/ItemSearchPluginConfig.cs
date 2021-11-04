@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Dalamud;
+using ItemSearchPlugin.ActionButtons;
 
 namespace ItemSearchPlugin {
 
@@ -89,6 +90,8 @@ namespace ItemSearchPlugin {
         public bool AutoFocus { get; set; } = true;
         public bool SuppressTryOnMessage { get; set; } = true;
         public bool TeamcraftForceBrowser { get; set; } = false;
+
+        public bool EnableFFXIVStore { get; set; } = false;
 
         public ItemSearchPluginConfig() {
             LoadDefaults();
@@ -249,6 +252,25 @@ namespace ItemSearchPlugin {
             if (!string.IsNullOrEmpty(SelectedDataSite.Note)) {
                 ImGui.TextColored(new Vector4(1, 1, 1, 0.5f), $"*{SelectedDataSite.Note}");
             }
+
+            var storeEnabled = EnableFFXIVStore;
+            if (ImGui.Checkbox("FFXIV Store", ref storeEnabled)) {
+                EnableFFXIVStore = storeEnabled;
+                FfxivStoreActionButton.BeginUpdate();
+                Save();
+            }
+
+            if (!storeEnabled && ImGui.IsItemHovered()) {
+                ImGui.BeginTooltip();
+                ImGui.TextColored(new Vector4(1, 0, 0, 1), "Warning: FFXIV Store");
+                ImGui.Separator();
+                ImGui.TextWrapped("Enabling FFXIV Store will cause Item Search Plugin to contact the FFXIV Store website to determine which items are available.");
+                ImGui.Text("If this concerns you, you probably shouldn't enable it.");
+                ImGui.EndTooltip();
+            }
+
+            ImGui.SameLine();
+            ImGui.TextDisabled($"{FfxivStoreActionButton.UpdateStatus}");
 
             ImGui.Text("Show Filters: ");
 

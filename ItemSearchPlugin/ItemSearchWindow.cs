@@ -134,7 +134,12 @@ namespace ItemSearchPlugin {
                 new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", BooleanSearchFilter.CheckFunc("IsUnique")),
                 new BooleanSearchFilter(pluginConfig, "Tradable", "Tradable", "Not Tradable", BooleanSearchFilter.CheckFunc("IsUntradable", true)),
                 new BooleanSearchFilter(pluginConfig, "Key Item", "Key Item", "Normal Item", ((item, t, f) => !t), ((item, t, f) => !f)),
-                
+                new BooleanSearchFilter(pluginConfig, "Store Item", "On Store", "Not On Store", (item, t, f) => {
+                    if (t) {
+                        return FfxivStoreActionButton.StoreItems.ContainsKey(item.RowId);
+                    }
+                    return !FfxivStoreActionButton.StoreItems.ContainsKey(item.RowId);
+                }) { VisibleFunction = () => pluginConfig.EnableFFXIVStore },
                 new StatSearchFilter(pluginConfig, data),
                 new CollectableSearchFilter(pluginConfig, plugin),
             };
@@ -145,6 +150,7 @@ namespace ItemSearchPlugin {
                 new MarketBoardActionButton(pluginConfig),
                 new DataSiteActionButton(pluginConfig),
                 new RecipeSearchActionButton(plugin.CraftingRecipeFinder),
+                new FfxivStoreActionButton(pluginConfig),
                 new CopyItemAsJson(plugin),
             };
         }
