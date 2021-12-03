@@ -267,7 +267,7 @@ namespace ItemSearchPlugin {
             var cardUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 8D 7B 78");
             cardUnlocked = Marshal.GetDelegateForFunctionPointer<CardUnlockedDelegate>(cardUnlockedAddress);
 
-            var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A5");
+            var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A9");
             itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockledDelegate>(itemActionUnlockedAddress);
         }
 

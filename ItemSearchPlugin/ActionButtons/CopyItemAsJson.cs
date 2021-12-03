@@ -50,7 +50,7 @@ namespace ItemSearchPlugin.ActionButtons {
 
                     sb.AppendLine($"  Recipe: {r.RowId}");
                     sb.AppendLine("    Ingredients:");
-                    foreach (var ri in r.UnkStruct5) {
+                    foreach (var ri in r.UnkData5) {
 
                         sb.AppendLine($"      [{ri.ItemIngredient}*{ri.AmountIngredient}] {ItemSearchPlugin.Data.GetExcelSheet<Item>().GetRow((uint) ri.ItemIngredient).Name} x {ri.AmountIngredient}");
 
