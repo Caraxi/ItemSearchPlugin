@@ -227,6 +227,7 @@ namespace ItemSearchPlugin {
 
                 hiddenPos.Y -= 19 * ImGui.GetIO().FontGlobalScale;
 
+                ImGuiHelpers.ForceNextWindowMainViewport();
                 ImGuiHelpers.SetNextWindowPosRelativeMainViewport(windowCollapsed ? hiddenPos : pos, ImGuiCond.Always);
                 ImGui.SetNextWindowSize(new Vector2(220 * ImGui.GetIO().FontGlobalScale, tryOnUi->Scale * 300 + buttonSize.Y * 3), ImGuiCond.Always);
 
