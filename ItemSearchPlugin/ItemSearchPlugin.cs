@@ -22,6 +22,7 @@ using Dalamud.Utility;
 using ImGuiNET;
 using ImGuiScene;
 using ItemSearchPlugin.DataSites;
+using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin {
     public class ItemSearchPlugin : IDalamudPlugin {
@@ -268,14 +269,14 @@ namespace ItemSearchPlugin {
             cardUnlocked = Marshal.GetDelegateForFunctionPointer<CardUnlockedDelegate>(cardUnlockedAddress);
 
             var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A9");
-            itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockledDelegate>(itemActionUnlockedAddress);
+            itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockedDelegate>(itemActionUnlockedAddress);
         }
 
 
-        private delegate bool ItemActionUnlockledDelegate(long itemActionId);
+        private delegate byte ItemActionUnlockedDelegate(IntPtr data);
         private delegate bool CardUnlockedDelegate(IntPtr a1, ushort card);
 
-        private ItemActionUnlockledDelegate itemActionUnlocked;
+        private ItemActionUnlockedDelegate itemActionUnlocked;
         private CardUnlockedDelegate cardUnlocked;
         private IntPtr cardUnlockedStatic;
 
@@ -283,8 +284,26 @@ namespace ItemSearchPlugin {
             return cardUnlocked(cardUnlockedStatic, cardId);
         }
 
-        internal bool IsCollectableOwned(uint actionId) {
-            return itemActionUnlocked(actionId);
+        internal unsafe bool ItemActionUnlocked(Item item) {
+            var itemAction = item.ItemAction.Value;
+            if (itemAction == null) {
+                return false;
+            }
+
+            var type = itemAction.Type;
+
+            var mem = Marshal.AllocHGlobal(256);
+            *(uint*) (mem + 142) = itemAction.RowId;
+
+            if (type == 25183) {
+                *(uint*) (mem + 112) = item.AdditionalData;
+            }
+
+            var ret = this.itemActionUnlocked(mem) == 1;
+
+            Marshal.FreeHGlobal(mem);
+
+            return ret;
         }
     }
 }

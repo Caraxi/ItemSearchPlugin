@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dalamud.Logging;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
@@ -33,7 +34,7 @@ namespace ItemSearchPlugin.Filters {
         public override bool IsSet => ItemSearchPlugin.ClientState.LocalContentId != 0 && SelectedMode != Mode.NotSelected;
         public override bool ShowFilter => ItemSearchPlugin.ClientState.LocalContentId != 0 && base.ShowFilter;
 
-        private ushort[] collectableActionType = { 853, 1013, 1322, 2136, 2633, 3357, 4107, 5845, 20086 };
+        private ushort[] collectableActionType = { 853, 1013, 1322, 2136, 2633, 3357, 4107, 25183, 20086 };
         private ItemSearchPlugin plugin;
 
         private bool faultState = false;
@@ -65,7 +66,7 @@ namespace ItemSearchPlugin.Filters {
             
             if (collectableActionType.Contains(actionType)) {
                 isCollectable = true;
-                isOwned = actionType == 3357 ? plugin.IsCardOwned((ushort) item.AdditionalData) : plugin.IsCollectableOwned(actionId);
+                isOwned = actionType == 3357 ? plugin.IsCardOwned((ushort) item.AdditionalData) : plugin.ItemActionUnlocked(item);
             }
 
             return (isCollectable, isOwned);
