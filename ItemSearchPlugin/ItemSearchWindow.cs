@@ -221,7 +221,8 @@ namespace ItemSearchPlugin {
                 
                 PushStyle(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
 
-                if (!ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", $"Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.NoCollapse)) {
+                ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", $"Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.None);
+                if (!isOpen) {
                     ResetStyle();
                     ImGui.End();
                     return false;
