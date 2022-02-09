@@ -41,7 +41,7 @@ namespace ItemSearchPlugin {
 
         public ItemSearchPluginConfig PluginConfig { get; private set; }
 
-        public FittingRoomUI FittingRoomUI { get; private set; }
+        public TryOn TryOn { get; private set; }
 
         public readonly Dictionary<ushort, TextureWrap> textureDictionary = new Dictionary<ushort, TextureWrap>();
 
@@ -60,12 +60,10 @@ namespace ItemSearchPlugin {
 
         public void Dispose() {
             PluginInterface.UiBuilder.Draw -= this.BuildUI;
-            FittingRoomUI?.Dispose();
             CraftingRecipeFinder?.Dispose();
             itemSearchWindow?.Dispose();
+            TryOn?.Dispose();
             RemoveCommands();
-            PluginInterface.Dispose();
-            
 
             foreach (var t in textureDictionary) {
                 t.Value?.Dispose();
@@ -91,7 +89,7 @@ namespace ItemSearchPlugin {
 
             ReloadLocalization();
 
-            FittingRoomUI = new FittingRoomUI(this);
+            TryOn = new TryOn(this);
 
             CraftingRecipeFinder = new CraftingRecipeFinder(this);
 
@@ -119,7 +117,7 @@ namespace ItemSearchPlugin {
             });
 
             CommandManager.AddHandler("/fittingroom", new Dalamud.Game.Command.CommandInfo((command, arguments) => {
-                this.FittingRoomUI.OpenFittingRoom();
+                this.TryOn.OpenFittingRoom();
             }) {
                 HelpMessage = Loc.Localize("ItemSearchFittingRoomCommand", "Open the fitting room."),
                 ShowInHelp = true
@@ -167,25 +165,18 @@ namespace ItemSearchPlugin {
 
 
             debugStopwatch.Restart();
-            if (PluginConfig.EnableFittingRoomSaves || PluginConfig.ShowItemID) {
-                if (FittingRoomUI == null) {
-                    FittingRoomUI = new FittingRoomUI(this);
-                } else {
-                    if (PluginConfig.EnableFittingRoomSaves) {
-                        FittingRoomUI?.Draw();
-                    }
-                }
-            }
-            
-#if DEBUG
-            ImGui.BeginMainMenuBar();
-            if (ImGui.MenuItem("ItemSearch")) {
-                itemSearchWindow?.Dispose();
-                itemSearchWindow = new ItemSearchWindow(this);
-                drawItemSearchWindow = true;
-            }
 
-            ImGui.EndMainMenuBar();
+#if DEBUG
+            if (PluginInterface.IsDebugging && PluginInterface.IsDev) {
+                ImGui.BeginMainMenuBar();
+                if (ImGui.MenuItem("ItemSearch")) {
+                    itemSearchWindow?.Dispose();
+                    itemSearchWindow = new ItemSearchWindow(this);
+                    drawItemSearchWindow = true;
+                }
+
+                ImGui.EndMainMenuBar();
+            }
 #endif
 
         }

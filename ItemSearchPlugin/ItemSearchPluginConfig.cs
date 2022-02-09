@@ -31,17 +31,12 @@ namespace ItemSearchPlugin {
 
         public string DataSite { get; set; }
 
-        [JsonProperty(ItemTypeNameHandling = TypeNameHandling.None)]
-        public List<FittingRoomSave> FittingRoomSaves { get; set; }
-
         public SortedSet<uint> Favorites { get; set; } = new SortedSet<uint>();
 
         [JsonIgnore]
         public Stack<FittingRoomSave> DeletedFittingRoomSaves { get; set; } = new Stack<FittingRoomSave>();
 
         public bool MarketBoardPluginIntegration { get; set; }
-
-        public bool EnableFittingRoomSaves { get; set; }
 
         public bool ShowLegacyItems { get; set; }
 
@@ -104,7 +99,6 @@ namespace ItemSearchPlugin {
             MaxItemLevel = 505;
             ShowTryOn = false;
             SuppressTryOnMessage = true;
-            EnableFittingRoomSaves = true;
             ShowLegacyItems = false;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
             SelectedLanguage = 0;
@@ -113,9 +107,6 @@ namespace ItemSearchPlugin {
             AutoFocus = true;
             HideKofi = false;
             TeamcraftForceBrowser = false;
-            if (FittingRoomSaves == null) {
-                FittingRoomSaves = new List<FittingRoomSave>();
-            }
         }
 
 
@@ -208,12 +199,6 @@ namespace ItemSearchPlugin {
             bool suppressTryOnMessage = SuppressTryOnMessage;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigSuppressTryOnMessage", "Surppress Try On Message"), ref suppressTryOnMessage)) {
                 SuppressTryOnMessage = suppressTryOnMessage;
-                Save();
-            }
-
-            bool enableFittingRoomSaves = EnableFittingRoomSaves;
-            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigEnableFittingRoomSaves", "Enable Outfit Saving"), ref enableFittingRoomSaves)) {
-                EnableFittingRoomSaves = enableFittingRoomSaves;
                 Save();
             }
 

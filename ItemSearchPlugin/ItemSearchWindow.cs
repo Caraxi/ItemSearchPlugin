@@ -714,9 +714,9 @@ namespace ItemSearchPlugin {
                             }
 
                             if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && ItemSearchPlugin.ClientState.LocalContentId != 0) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                                     if (selectedItem.ClassJobCategory.Row != 0) {
-                                        plugin.FittingRoomUI.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
+                                        plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                                     }
                                 }
                             }
@@ -798,9 +798,9 @@ namespace ItemSearchPlugin {
                     doSearchScroll = true;
                     this.selectedItem = itemList[selectedItemIndex];
                     if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
-                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.FittingRoomUI.CanUseTryOn && ItemSearchPlugin.ClientState.LocalContentId != 0) {
+                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                             if (selectedItem.ClassJobCategory.Row != 0) {
-                                plugin.FittingRoomUI.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
+                                plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                             }
                         }
                     }
