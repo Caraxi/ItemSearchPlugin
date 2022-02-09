@@ -75,9 +75,9 @@ namespace ItemSearchPlugin {
                     switch ((TryOnControlID) itemId) {
                         case TryOnControlID.SuppressLog: {
                             if (stain == 1) {
-                                ItemSearchPlugin.Chat.ChatMessage += ChatOnOnChatMessage;
+                                ItemSearchPlugin.Chat.CheckMessageHandled += HandleChat;
                             } else {
-                                ItemSearchPlugin.Chat.ChatMessage -= ChatOnOnChatMessage;
+                                ItemSearchPlugin.Chat.CheckMessageHandled -= HandleChat;
                             }
                             break;
                         }
@@ -95,7 +95,7 @@ namespace ItemSearchPlugin {
             }
         }
 
-        private void ChatOnOnChatMessage(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled) {
+        private void HandleChat(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled) {
             if (type != XivChatType.SystemMessage || message.Payloads.Count <= 1 || (ItemSearchPlugin.ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Payloads[message.Payloads.Count - 1] : message.Payloads[0]) is not TextPayload a) return;
             var handle = ItemSearchPlugin.ClientState.ClientLanguage switch {
                 ClientLanguage.English => a.Text?.StartsWith("You try on ") ?? false,
@@ -109,6 +109,7 @@ namespace ItemSearchPlugin {
 
         public void Dispose() {
             ItemSearchPlugin.Framework.Update -= FrameworkUpdate;
+            ItemSearchPlugin.Chat.CheckMessageHandled -= HandleChat;
         }
     }
 }
