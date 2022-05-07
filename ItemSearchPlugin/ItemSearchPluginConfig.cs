@@ -210,7 +210,7 @@ namespace ItemSearchPlugin {
             }
 
             if (ImGui.IsItemHovered()) {
-                ImGui.SetTooltip(Loc.Localize("ItemSearchPreviewHousingNote", "Note: To preview hosuing items you must have the 'Remodel Interior' window open."));
+                ImGui.SetTooltip(Loc.Localize("ItemSearchPreviewHousingNote", "Note: To preview housing fixtures you must have the 'Remodel Interior' window open."));
             }
             
             var prependFilterListWithCopy = PrependFilterListWithCopy;
