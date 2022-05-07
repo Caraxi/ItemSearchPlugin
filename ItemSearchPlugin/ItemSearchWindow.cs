@@ -158,7 +158,10 @@ namespace ItemSearchPlugin {
             };
         }
 
+        private SortType sortType;
+        
         private void UpdateItemList(int delay = 100) {
+            sortType = pluginConfig.SortType;
             PluginLog.Log("Loading Item List");
             triedLoadingItems = true;
             errorLoadingItems = false;
@@ -178,8 +181,20 @@ namespace ItemSearchPlugin {
                     
                     list.AddRange(this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
                     list.AddRange(this.data.GetExcelSheet<EventItem>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
+
+                    var sortedList = pluginConfig.SortType switch {
+                        SortType.ItemIDDesc => list.OrderByDescending(i => i.RowId),
+                        SortType.Name => list.OrderBy(i => i.Name),
+                        SortType.NameDesc => list.OrderByDescending(i => i.Name),
+                        SortType.ItemLevel => list.OrderBy(i => i.LevelItem),
+                        SortType.ItemLevelDesc => list.OrderByDescending(i => i.LevelItem),
+                        SortType.EquipLevel => list.OrderBy(i => i.LevelEquip),
+                        SortType.EquipLevelDesc => list.OrderByDescending(i => i.LevelEquip),
+                        _ => list.OrderBy(i => i.RowId),
+                    };
                     
-                    return list;
+                    
+                    return sortedList.ToList();
                 } catch (Exception ex) {
                     errorLoadingItems = true;
                     PluginLog.LogError("Failed loading Items");
@@ -211,7 +226,7 @@ namespace ItemSearchPlugin {
 
             try {
                 var isSearch = false;
-                if (triedLoadingItems == false || pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage) UpdateItemList(1000);
+                if (triedLoadingItems == false || pluginConfig.SelectedClientLanguage != plugin.LuminaItemsClientLanguage || pluginConfig.SortType != sortType) UpdateItemList(1000);
 
                 if ((selectedItemIndex < 0 && selectedItem != null) || (selectedItemIndex >= 0 && selectedItem == null)) {
                     // Should never happen, but just incase

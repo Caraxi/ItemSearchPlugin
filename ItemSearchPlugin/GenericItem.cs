@@ -66,7 +66,26 @@ namespace ItemSearchPlugin {
                 };
             }
         }
-        
+
+        public uint LevelItem {
+            get {
+                return itemType switch {
+                    ItemType.EventItem => 1,
+                    ItemType.Item => item.LevelItem.Row,
+                    _ => 0
+                };
+            }
+        }
+        public byte LevelEquip {
+            get {
+                return itemType switch {
+                    ItemType.EventItem => 255,
+                    ItemType.Item => item.LevelEquip,
+                    _ => 0
+                };
+            }
+        }
+
         public bool CanBeHq {
             get {
                 return itemType switch {

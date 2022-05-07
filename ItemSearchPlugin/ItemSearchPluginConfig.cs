@@ -88,6 +88,8 @@ namespace ItemSearchPlugin {
 
         public bool EnableFFXIVStore { get; set; } = false;
 
+        public SortType SortType { get; set; } = SortType.ItemID;
+
         public ItemSearchPluginConfig() {
             LoadDefaults();
         }
@@ -108,6 +110,7 @@ namespace ItemSearchPlugin {
             AutoFocus = true;
             HideKofi = false;
             TeamcraftForceBrowser = false;
+            SortType = SortType.ItemID;
         }
 
 
@@ -137,6 +140,19 @@ namespace ItemSearchPlugin {
                     Save();
                 }
 
+                ImGui.EndCombo();
+            }
+
+            if (ImGui.BeginCombo(Loc.Localize("ItemSearchConfigSort", "Sort Item List"), SortType.DescriptionAttr() ?? $"{SortType}")) {
+
+                foreach (var sortType in Enum.GetValues(typeof(SortType)).Cast<SortType>()) {
+                    if (ImGui.Selectable($"{sortType.DescriptionAttr()}##sortTypeOption_{(int)sortType}", SortType == sortType)) {
+                        SortType = sortType;
+                        Save();
+                        
+                    }
+                }
+                
                 ImGui.EndCombo();
             }
 
