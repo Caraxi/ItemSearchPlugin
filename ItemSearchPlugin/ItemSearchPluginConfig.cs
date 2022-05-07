@@ -28,6 +28,8 @@ namespace ItemSearchPlugin {
         public uint MaxItemLevel { get; set; }
 
         public bool ShowTryOn { get; set; }
+        
+        public bool ShowPreviewHousing { get; set; }
 
         public string DataSite { get; set; }
 
@@ -79,6 +81,7 @@ namespace ItemSearchPlugin {
 
         public bool HideKofi { get; set; } = false;
         public bool TryOnEnabled { get; set; } = false;
+        public bool PreviewHousingEnabled { get; set; } = false;
         public bool AutoFocus { get; set; } = true;
         public bool SuppressTryOnMessage { get; set; } = true;
         public bool TeamcraftForceBrowser { get; set; } = false;
@@ -95,6 +98,7 @@ namespace ItemSearchPlugin {
             MarketBoardPluginIntegration = false;
             MaxItemLevel = 505;
             ShowTryOn = false;
+            ShowPreviewHousing = false;
             SuppressTryOnMessage = true;
             ShowLegacyItems = false;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
@@ -199,6 +203,16 @@ namespace ItemSearchPlugin {
                 Save();
             }
 
+            bool previewHousing = ShowPreviewHousing;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigPreviewHousing", "Enable Housing Fixture Preview Feature"), ref previewHousing)) {
+                ShowPreviewHousing = previewHousing;
+                Save();
+            }
+
+            if (ImGui.IsItemHovered()) {
+                ImGui.SetTooltip(Loc.Localize("ItemSearchPreviewHousingNote", "Note: To preview hosuing items you must have the 'Remodel Interior' window open."));
+            }
+            
             var prependFilterListWithCopy = PrependFilterListWithCopy;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigPrependFilterListWithCopy", "Add filters when copying results to clipboard"), ref prependFilterListWithCopy)) {
                 PrependFilterListWithCopy = prependFilterListWithCopy;

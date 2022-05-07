@@ -33,6 +33,7 @@ namespace ItemSearchPlugin {
         public List<IActionButton> ActionButtons;
 
         private bool autoTryOn;
+        public bool autoPreviewHousing;
         private int debounceKeyPress;
         private bool doSearchScroll;
         private bool forceReload;
@@ -90,6 +91,7 @@ namespace ItemSearchPlugin {
             this.plugin = plugin;
             extraFiltersExpanded = pluginConfig.ExpandedFilters;
             autoTryOn = pluginConfig.ShowTryOn && pluginConfig.TryOnEnabled;
+            autoPreviewHousing = pluginConfig.ShowPreviewHousing && pluginConfig.PreviewHousingEnabled;
 
             while (!data.IsDataReady)
                 Thread.Sleep(1);
@@ -481,6 +483,19 @@ namespace ItemSearchPlugin {
                         ImGui.EndTooltip();
                     }
                 }
+
+                if (pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState?.LocalContentId != 0) {
+                    if (ItemSearchPlugin.GameGui.GetAddonByName("HousingEditInterior", 1) != IntPtr.Zero) {
+                        ImGui.SameLine();
+                        ImGui.Dummy(new Vector2(15, 0));
+                        ImGui.SameLine();
+                        if (ImGui.Checkbox(Loc.Localize("ItemSearchPreviewHousing", "Preview Housing"), ref autoPreviewHousing)) {
+                            pluginConfig.PreviewHousingEnabled = autoPreviewHousing;
+                            pluginConfig.Save();
+                        }
+                    }
+                }
+
                 ImGui.PushFont(UiBuilder.IconFont);
                 var configText = $"{(char)FontAwesomeIcon.Cog}";
                 var configTextSize = ImGui.CalcTextSize(configText);
@@ -720,6 +735,10 @@ namespace ItemSearchPlugin {
                                         plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                                     }
                                 }
+
+                                if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState.LocalContentId != 0) {
+                                    plugin.PreviewHousingItem(selectedItem);
+                                }
                             }
                             
                         }
@@ -803,6 +822,10 @@ namespace ItemSearchPlugin {
                             if (selectedItem.ClassJobCategory.Row != 0) {
                                 plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                             }
+                        }
+                        
+                        if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState.LocalContentId != 0) {
+                            plugin.PreviewHousingItem(selectedItem);
                         }
                     }
                     

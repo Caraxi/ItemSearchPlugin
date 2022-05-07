@@ -275,6 +275,69 @@ namespace ItemSearchPlugin {
             return cardUnlocked(cardUnlockedStatic, cardId);
         }
 
+        [StructLayout(LayoutKind.Explicit)]
+        public unsafe struct LayoutWorld {
+            [FieldOffset(0x20)] public LayoutManagerStruct* LayoutManager;
+
+
+            [StructLayout(LayoutKind.Explicit)]
+            public struct LayoutManagerStruct {
+                [FieldOffset(0x90)] public void* IndoorAreaData;
+            }
+        }
+
+        public unsafe LayoutWorld** LayoutWorldPtr;
+        public unsafe delegate void SetInteriorFixture(LayoutWorld.LayoutManagerStruct* layoutManager, int floor, int part, int fixture, byte unknown = 255);
+
+        private SetInteriorFixture setInteriorFixture;
+        internal unsafe void PreviewHousingItem(GenericItem gItem) {
+            if (gItem.GenericItemType != GenericItem.ItemType.Item) return;
+            var item = (Item)gItem;
+
+
+            var part = -1;
+            var fixtureId = (int) item.AdditionalData;
+
+            part = item.ItemUICategory.Row switch {
+                73 => 0, // Walls
+                74 => 3, // Floors
+                75 => 4, // Lights
+                _ => -1
+            };
+
+            if (part == -1) return;
+
+            #if DEBUG
+            // Bypass HousingEditInterior requirement in debug.
+            if (!(ImGui.GetIO().KeysDown[(int)VirtualKey.SHIFT] || KeyState[VirtualKey.SHIFT]) && GameGui.GetAddonByName("HousingEditInterior", 1) == IntPtr.Zero) return;
+            #else
+            if (GameGui.GetAddonByName("HousingEditInterior", 1) == IntPtr.Zero) return;
+            #endif
+            
+            
+            if (LayoutWorldPtr == null) {
+                LayoutWorldPtr = (LayoutWorld**) SigScanner.GetStaticAddressFromSig("48 89 05 ?? ?? ?? ?? 48 8B 00");
+                if (LayoutWorldPtr == null) return;
+            }
+
+            if (setInteriorFixture == null) {
+                setInteriorFixture = Marshal.GetDelegateForFunctionPointer<SetInteriorFixture>(SigScanner.ScanText("E8 ?? ?? ?? ?? 33 C0 48 83 C4 38 C3 33 C0"));
+                if (setInteriorFixture == null) return;
+            }
+            
+            var lWorld = LayoutWorldPtr[0];
+            if (lWorld == null) return;
+            var lManager = lWorld->LayoutManager;
+            if (lManager == null) return;
+            if (lManager->IndoorAreaData == null) return;
+
+            PluginLog.Log($"Preview Housing Fixture: {item.Name.RawString}");
+            setInteriorFixture(lManager, 0, part, fixtureId);
+            setInteriorFixture(lManager, 1, part, fixtureId);
+            setInteriorFixture(lManager, 2, part, fixtureId);
+        }
+        
+
         internal unsafe bool ItemActionUnlocked(Item item) {
             return false;
             var itemAction = item.ItemAction.Value;
