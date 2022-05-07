@@ -300,7 +300,10 @@ namespace ItemSearchPlugin {
                         ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xFF5E5BDD);
                         ImGui.SameLine(ImGui.GetWindowWidth() - ImGui.CalcTextSize("Support on Ko-fi").X - ImGui.GetStyle().FramePadding.X * 3);
                         if (ImGui.Button("Support on Ko-Fi")) {
-                            Process.Start("https://ko-fi.com/Caraxi");
+                            Process.Start(new ProcessStartInfo(){
+                                UseShellExecute = true,
+                                FileName = "https://ko-fi.com/Caraxi"
+                            });
                         }
                         ImGui.PopStyleColor(3);
                     }
