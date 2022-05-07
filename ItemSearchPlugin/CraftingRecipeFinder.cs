@@ -62,7 +62,7 @@ namespace ItemSearchPlugin {
                     PluginLog.LogError("CraftingRecipeFinder: Null pointer returned from GetUIObject()");
                     return;
                 }
-                getUIAgentModule = Address.GetVirtualFunction<GetUIAgentModuleDelegate>(uiObjectPtr, 0, 34);
+                getUIAgentModule = Address.GetVirtualFunction<GetUIAgentModuleDelegate>(uiObjectPtr, 0, 35);
                 var uiAgentModulePtr = getUIAgentModule(uiObjectPtr);
                 if (uiAgentModulePtr.Equals(IntPtr.Zero)) {
                     PluginLog.LogError("CraftingRecipeFinder: Null pointer returned from GetUIAgentModule()");
