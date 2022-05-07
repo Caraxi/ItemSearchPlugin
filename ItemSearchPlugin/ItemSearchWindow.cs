@@ -141,7 +141,7 @@ namespace ItemSearchPlugin {
                     return !FfxivStoreActionButton.StoreItems.ContainsKey(item.RowId);
                 }) { VisibleFunction = () => pluginConfig.EnableFFXIVStore },
                 new StatSearchFilter(pluginConfig, data),
-                new CollectableSearchFilter(pluginConfig, plugin),
+                // new CollectableSearchFilter(pluginConfig, plugin),
             };
 
             SearchFilters.ForEach(a => a.ConfigSetup());

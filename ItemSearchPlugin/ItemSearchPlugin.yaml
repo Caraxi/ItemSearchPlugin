@@ -4,5 +4,4 @@ description: |-
   Filterable search for Items and Key Items.
   Try on any item without having to find someone to link it.
 repo_url: https://github.com/Caraxi/ItemSearchPlugin
-dalamud_api_level: 5
 punchline: Search and link items, even if you don't have them.

@@ -259,8 +259,8 @@ namespace ItemSearchPlugin {
             var cardUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 8D 7B 78");
             cardUnlocked = Marshal.GetDelegateForFunctionPointer<CardUnlockedDelegate>(cardUnlockedAddress);
 
-            var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A9");
-            itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockedDelegate>(itemActionUnlockedAddress);
+            //var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A9");
+            //itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockedDelegate>(itemActionUnlockedAddress);
         }
 
 
@@ -276,6 +276,7 @@ namespace ItemSearchPlugin {
         }
 
         internal unsafe bool ItemActionUnlocked(Item item) {
+            return false;
             var itemAction = item.ItemAction.Value;
             if (itemAction == null) {
                 return false;

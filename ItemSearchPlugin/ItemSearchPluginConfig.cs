@@ -32,10 +32,7 @@ namespace ItemSearchPlugin {
         public string DataSite { get; set; }
 
         public SortedSet<uint> Favorites { get; set; } = new SortedSet<uint>();
-
-        [JsonIgnore]
-        public Stack<FittingRoomSave> DeletedFittingRoomSaves { get; set; } = new Stack<FittingRoomSave>();
-
+        
         public bool MarketBoardPluginIntegration { get; set; }
 
         public bool ShowLegacyItems { get; set; }

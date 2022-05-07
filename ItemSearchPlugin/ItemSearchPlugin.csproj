@@ -13,7 +13,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.9.0.0</Version>
+		<Version>1.9.0.1</Version>
 	</PropertyGroup>
 	<ItemGroup Label="Resources">
 		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
@@ -39,10 +39,11 @@
 		<EmbeddedResource Remove="Publish\**" />
 		<Compile Remove="lib\**" />
 		<EmbeddedResource Remove="lib\**" />
+		<Compile Remove="Filters\CollectableSearchFilter.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Linq.Async" Version="5.0.0" PrivateAssets="all"/>
-		<PackageReference Include="DalamudPackager" Version="2.1.2" />
+		<PackageReference Include="System.Linq.Async" Version="5.0.0" PrivateAssets="all" />
+		<PackageReference Include="DalamudPackager" Version="2.1.6" />
 		<PackageReference Include="ILRepack" Version="2.1.0-beta1" />
 	</ItemGroup>
 	<Target Name="ILRepack" AfterTargets="PostBuildEvent">

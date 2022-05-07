@@ -6,6 +6,7 @@ using Dalamud.Plugin;
 using System.Collections.Concurrent;
 using Dalamud.Game;
 using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace ItemSearchPlugin {
     public class CraftingRecipeFinder : IDisposable {
