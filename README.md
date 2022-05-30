@@ -22,8 +22,3 @@ Limit the displayed items to items within a range in equip level and item level
 Try on items right from the search window without having to link it first.
 
 ![Try On Preview](https://raw.githubusercontent.com/Caraxi/ItemSearchPlugin/master/preview/try-on.gif)
-
-### Outfit Preview Saving
-Save the items in the fitting room to view again at a later time.
-
-![Saved Outfits Preview](https://raw.githubusercontent.com/Caraxi/ItemSearchPlugin/master/preview/saved-outfits.gif)
