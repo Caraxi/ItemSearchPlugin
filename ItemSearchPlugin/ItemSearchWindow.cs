@@ -481,7 +481,7 @@ namespace ItemSearchPlugin {
                         showStainSelector = true;
                     }
 
-                    if (ImGui.IsItemClicked(1)) {
+                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
                         selectedStainColor = Vector4.Zero;
                         selectedStain = null;
                         pluginConfig.SelectedStain = 0;
