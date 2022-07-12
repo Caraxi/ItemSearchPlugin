@@ -83,6 +83,7 @@ namespace ItemSearchPlugin {
         public bool TryOnEnabled { get; set; } = false;
         public bool PreviewHousingEnabled { get; set; } = false;
         public bool AutoFocus { get; set; } = true;
+        public bool AutoSelectAll { get; set; } = true;
         public bool SuppressTryOnMessage { get; set; } = true;
         public bool TeamcraftForceBrowser { get; set; } = false;
 
@@ -108,6 +109,7 @@ namespace ItemSearchPlugin {
             DisabledFilters = new List<string>();
             PrependFilterListWithCopy = false;
             AutoFocus = true;
+            AutoSelectAll = false;
             HideKofi = false;
             TeamcraftForceBrowser = false;
             SortType = SortType.ItemID;
@@ -192,6 +194,12 @@ namespace ItemSearchPlugin {
             bool autoFocus = AutoFocus;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigAutoFocus", "Auto focus search box"), ref autoFocus)) {
                 AutoFocus = autoFocus;
+                Save();
+            }
+
+            bool autoSelectAll = AutoSelectAll;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigAutoSelectAll", "Auto select all inside search box"), ref autoSelectAll)) {
+                AutoSelectAll = autoSelectAll;
                 Save();
             }
 
