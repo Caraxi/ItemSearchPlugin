@@ -82,7 +82,9 @@ namespace ItemSearchPlugin.ActionButtons {
 
         private static void UpdateTask() {
             UpdateStatus = "Fetching Product List";
-            var json = Util.HttpClient.GetStringAsync("https://api.store.finalfantasyxiv.com/ffxivcatalog/api/products/?lang=en-us&currency=USD&limit=10000").Result;
+            using var wc = Util.HttpClient.GetStringAsync("https://api.store.finalfantasyxiv.com/ffxivcatalog/api/products/?lang=en-us&currency=USD&limit=10000");
+            wc.Wait();
+            var json = wc.Result;
             if (_updateCancellationToken.IsCancellationRequested) {
                 UpdateStatus = "[Cancelled] " + UpdateStatus;
                 return;
