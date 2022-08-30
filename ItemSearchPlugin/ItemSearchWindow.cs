@@ -663,7 +663,7 @@ namespace ItemSearchPlugin {
                 for (var i = 0; i < itemList.Count; i++) {
                     if (i == 0 && itemSize == Vector2.Zero) {
                         itemSize = ImGui.CalcTextSize(itemList[i].Name);
-                        rowSize = new Vector2(ImGui.GetWindowContentRegionWidth() - 20 * ImGui.GetIO().FontGlobalScale, itemSize.Y);
+                        rowSize = new Vector2((ImGui.GetWindowContentRegionMax().X - ImGui.GetWindowContentRegionMin().X) - 20 * ImGui.GetIO().FontGlobalScale, itemSize.Y);
                         if (!doSearchScroll) {
                             var sizePerItem = itemSize.Y + style.ItemSpacing.Y;
                             var skipItems = (int)Math.Floor(scrollY / sizePerItem);

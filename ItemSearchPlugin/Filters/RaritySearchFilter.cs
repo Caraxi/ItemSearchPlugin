@@ -50,7 +50,7 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
                 ImGui.BeginChild($"###colorBoxNone", new Vector2(-1, 20 * ImGui.GetIO().FontGlobalScale), false);
-                if (ImGui.Selectable($"Any###optionNone", selectedValue == 0, ImGuiSelectableFlags.None, new Vector2(ImGui.GetWindowContentRegionWidth(), 20 * ImGui.GetIO().FontGlobalScale))) {
+                if (ImGui.Selectable($"Any###optionNone", selectedValue == 0, ImGuiSelectableFlags.None, new Vector2((ImGui.GetWindowContentRegionMax().X - ImGui.GetWindowContentRegionMin().X), 20 * ImGui.GetIO().FontGlobalScale))) {
                     selectedValue = 0;
                     Modified = true;
                     ImGui.CloseCurrentPopup();
