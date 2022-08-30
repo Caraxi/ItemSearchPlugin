@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.DataSites {
@@ -23,10 +24,7 @@ namespace ItemSearchPlugin.DataSites {
             if (!(teamcraftLocalFailed || config.TeamcraftForceBrowser)) {
                 Task.Run(() => {
                     try {
-                        var wr = WebRequest.CreateHttp($"http://localhost:14500/db/en/item/{item.RowId}");
-                        wr.Timeout = 500;
-                        wr.Method = "GET";
-                        wr.GetResponse().Close();
+                        var wr = Util.HttpClient.GetStringAsync($"http://localhost:14500/db/en/item/{item.RowId}").Wait(500);
                     } catch {
                         try {
                             if (System.IO.Directory.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ffxiv-teamcraft"))) {

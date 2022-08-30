@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Logging;
+using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
@@ -81,15 +82,16 @@ namespace ItemSearchPlugin.ActionButtons {
 
         private static void UpdateTask() {
             UpdateStatus = "Fetching Product List";
-            using var wc = new WebClient();
-            var json = wc.DownloadString("https://api.store.finalfantasyxiv.com/ffxivcatalog/api/products/?lang=en-us&currency=USD&limit=10000");
+            using var wc = Util.HttpClient.GetStringAsync("https://api.store.finalfantasyxiv.com/ffxivcatalog/api/products/?lang=en-us&currency=USD&limit=10000");
+            wc.Wait();
+            var json = wc.Result;
             if (_updateCancellationToken.IsCancellationRequested) {
-                UpdateStatus = "[Cancelled] " + UpdateStatus;;
+                UpdateStatus = "[Cancelled] " + UpdateStatus;
                 return;
             }
             var productList = JsonConvert.DeserializeObject<ProductList>(json);
             if (productList == null) {
-                UpdateStatus = "[Error] " + UpdateStatus;;
+                UpdateStatus = "[Error] " + UpdateStatus;
                 return;
             }
 
@@ -102,7 +104,7 @@ namespace ItemSearchPlugin.ActionButtons {
 
             var allItems = ItemSearchPlugin.Data.Excel.GetSheet<Item>(Language.English);
             if (allItems == null) {
-                UpdateStatus = "[Error] " + UpdateStatus;;
+                UpdateStatus = "[Error] " + UpdateStatus;
                 return;
             }
             StoreProducts.Clear();
@@ -110,7 +112,7 @@ namespace ItemSearchPlugin.ActionButtons {
                 var p = productList.Products[i];
                 try {
                     if (_updateCancellationToken.IsCancellationRequested) {
-                        UpdateStatus = "[Cancelled] " + UpdateStatus;;
+                        UpdateStatus = "[Cancelled] " + UpdateStatus;
                         return;
                     }
 
@@ -125,7 +127,9 @@ namespace ItemSearchPlugin.ActionButtons {
                         fullProductJson = File.ReadAllText(cacheFile);
                     } else {
                         UpdateStatus = $"Fetching Store Items: {i}/{productList.Products.Count} [{p.ID}, from Store]";
-                        fullProductJson = wc.DownloadString($"https://api.store.finalfantasyxiv.com/ffxivcatalog/api/products/{p.ID}?lang=en-us&currency=USD");
+                        using var wc = Util.HttpClient.GetStringAsync($"https://api.store.finalfantasyxiv.com/ffxivcatalog/api/products/{p.ID}?lang=en-us&currency=USD");
+                        wc.Wait();
+                        fullProductJson = wc.Result;
                     }
 
                     if (_updateCancellationToken.IsCancellationRequested) {
