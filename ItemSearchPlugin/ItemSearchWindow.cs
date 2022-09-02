@@ -132,6 +132,7 @@ namespace ItemSearchPlugin {
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),
                 new SoldByNPCSearchFilter(pluginConfig, data),
+                new BooleanSearchFilter(pluginConfig, "Can Be HQ", "Has HQ", "No HQ", BooleanSearchFilter.CheckFunc("CanBeHq")),
                 new BooleanSearchFilter(pluginConfig, "Dyeable", "Dyeable", "Not Dyeable", BooleanSearchFilter.CheckFunc("IsDyeable")),
                 new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", BooleanSearchFilter.CheckFunc("IsUnique")),
                 new BooleanSearchFilter(pluginConfig, "Tradable", "Tradable", "Not Tradable", BooleanSearchFilter.CheckFunc("IsUntradable", true)),
@@ -663,7 +664,7 @@ namespace ItemSearchPlugin {
                 for (var i = 0; i < itemList.Count; i++) {
                     if (i == 0 && itemSize == Vector2.Zero) {
                         itemSize = ImGui.CalcTextSize(itemList[i].Name);
-                        rowSize = new Vector2(ImGui.GetWindowContentRegionWidth() - 20 * ImGui.GetIO().FontGlobalScale, itemSize.Y);
+                        rowSize = new Vector2(ImGui.GetWindowContentRegionMax().X - ImGui.GetWindowContentRegionMin().X - 20 * ImGui.GetIO().FontGlobalScale, itemSize.Y);
                         if (!doSearchScroll) {
                             var sizePerItem = itemSize.Y + style.ItemSpacing.Y;
                             var skipItems = (int)Math.Floor(scrollY / sizePerItem);
@@ -683,8 +684,8 @@ namespace ItemSearchPlugin {
                         var starText = $"{(char)FontAwesomeIcon.Heart}";
                         var starTextSize = ImGui.CalcTextSize(starText);
                         var starTextHovered = ImGui.IsMouseHoveringRect(ImGui.GetCursorScreenPos(), ImGui.GetCursorScreenPos() + starTextSize);
-
-                        uint starTextCol = pluginConfig.Favorites.Contains(itemList[i].RowId) ? 0xCC0000AA : 0U; ;
+                        var itemRowHovered = ImGui.IsMouseHoveringRect(ImGui.GetCursorScreenPos(), ImGui.GetCursorScreenPos() + new Vector2(ImGui.GetContentRegionAvail().X, starTextSize.Y));
+                        uint starTextCol = pluginConfig.Favorites.Contains(itemList[i].RowId) ? 0xCC0000AA : (uint)(itemRowHovered ? 0x22FFFFFF : 0x0) ;
 
                         if (starTextHovered) {
                             starTextCol = pluginConfig.Favorites.Contains(itemList[i].RowId) ? 0xAA777777 : 0xAA0000AAU;

@@ -234,7 +234,7 @@ namespace ItemSearchPlugin.Filters {
             ImGui.BeginChild($"###{NameLocalizationKey}Child", new Vector2(-1, 23 * ImGui.GetIO().FontGlobalScale), false, usingTags ? ImGuiWindowFlags.NoInputs : ImGuiWindowFlags.None);
 
             if (selectedCurrencyOption != null && selectedCurrencyOption.SubOptions.Count > 0) {
-                ImGui.SetNextItemWidth(ImGui.GetWindowContentRegionWidth() / 2);
+                ImGui.SetNextItemWidth(ImGui.GetWindowContentRegionMax().X - ImGui.GetWindowContentRegionMin().X / 2);
             } else {
                 ImGui.SetNextItemWidth(-1);
             }
