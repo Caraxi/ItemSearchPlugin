@@ -91,7 +91,7 @@ namespace ItemSearchPlugin {
 
             TryOn = new TryOn(this);
 
-            CraftingRecipeFinder = new CraftingRecipeFinder(this);
+            CraftingRecipeFinder = new CraftingRecipeFinder();
 
             PluginInterface.UiBuilder.Draw += this.BuildUI;
             SetupCommands();
