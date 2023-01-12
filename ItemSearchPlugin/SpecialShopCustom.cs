@@ -51,18 +51,13 @@ namespace ItemSearchPlugin {
                     },
                     Quest = new LazyRow<Quest>(lumina, parser.ReadColumn<int>(1201 + i), language),
                     Unknown6 = parser.ReadColumn<int>(1261 + i),
-                    AchievementUnlock = new LazyRow<Achievement>(lumina, parser.ReadColumn<int>(1321 + i), language),
+                    Unknown7 = parser.ReadColumn<byte>(1321 + i),
                     Unknown8 = parser.ReadColumn<byte>(1381 + i),
-                    PatchNumber = parser.ReadColumn<ushort>(1441 + i)
+                    AchievementUnlock = new LazyRow<Achievement>(lumina, parser.ReadColumn<int>(1441 + i), language),
+                    Unknown10 = parser.ReadColumn<byte>(1501 + i),
+                    PatchNumber = parser.ReadColumn<ushort>(1561 + i)
                 };
             }
-            UseCurrencyType = parser.ReadColumn<byte>(1501);
-            QuestUnlock = new LazyRow<Quest>(lumina, parser.ReadColumn<uint>(1502), language);
-            CompleteText = new LazyRow<DefaultTalk>(lumina, parser.ReadColumn<int>(1503), language);
-            NotCompleteText = new LazyRow<DefaultTalk>(lumina, parser.ReadColumn<int>(1504), language);
-            Unknown1505 = parser.ReadColumn<uint>(1505);
-            Unknown1506 = parser.ReadColumn<bool>(1506);
-
         }
 
         public struct Entry {
@@ -70,8 +65,10 @@ namespace ItemSearchPlugin {
             public CostEntry[] Cost;
             public LazyRow<Quest> Quest;
             public int Unknown6;
+            public byte Unknown7;
+            public byte Unknown8;
             public LazyRow<Achievement> AchievementUnlock;
-            public int Unknown8;
+            public int Unknown10;
             public ushort PatchNumber;
         }
 
