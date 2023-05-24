@@ -180,7 +180,7 @@ namespace ItemSearchPlugin {
                 try {
                     var list = new List<GenericItem>();
                     
-                    list.AddRange(this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
+                    list.AddRange(this.data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => i.RowId > 0 && !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
                     list.AddRange(this.data.GetExcelSheet<EventItem>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
 
                     var sortedList = pluginConfig.SortType switch {
