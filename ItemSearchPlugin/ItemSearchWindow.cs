@@ -476,7 +476,7 @@ namespace ItemSearchPlugin {
                     ImGui.SameLine();
 
 
-                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Unknown4 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Unknown5 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
                     PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
                     if (ImGui.ColorButton("X", selectedStainColor, ImGuiColorEditFlags.NoTooltip)) {
                         showStainSelector = true;
@@ -589,7 +589,7 @@ namespace ItemSearchPlugin {
 
                                 var stainColor = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
 
-                                ImGui.PushStyleColor(ImGuiCol.Border, stain.Unknown4 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                                ImGui.PushStyleColor(ImGuiCol.Border, stain.Unknown5 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
 
                                 if (ImGui.ColorButton($"###stain{stain.RowId}", stainColor, ImGuiColorEditFlags.NoTooltip)) {
                                     selectedStain = stain;
