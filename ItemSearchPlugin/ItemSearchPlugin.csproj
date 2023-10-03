@@ -13,7 +13,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.9.3.1</Version>
+		<Version>1.9.4.0</Version>
 	</PropertyGroup>
 	<ItemGroup Label="Resources">
 		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
@@ -29,7 +29,7 @@
 		<AssemblyName>ItemSearchPlugin</AssemblyName>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-		<DalamudLibPath>C:\ffxiv\repo\Dalamud\bin\Release</DalamudLibPath>
+		<DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev</DalamudLibPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Resources\**" />
