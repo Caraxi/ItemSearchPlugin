@@ -2,6 +2,7 @@
 using Dalamud.Plugin;
 using System;
 using System.Dynamic;
+using System.Linq;
 
 namespace ItemSearchPlugin.ActionButtons {
     class MarketBoardActionButton : IActionButton {
@@ -20,7 +21,7 @@ namespace ItemSearchPlugin.ActionButtons {
         }
 
         public override bool GetShowButton(Item selectedItem) {
-            return this.pluginConfig.MarketBoardPluginIntegration && selectedItem.ItemSearchCategory.Row > 0 && ItemSearchPlugin.PluginInterface.PluginInternalNames.Contains("MarketBoardPlugin");
+            return this.pluginConfig.MarketBoardPluginIntegration && selectedItem.ItemSearchCategory.Row > 0 && ItemSearchPlugin.PluginInterface.InstalledPlugins.Any(p => p.InternalName == "MarkerBoardPlugin" && p.IsLoaded);
         }
 
         public override void OnButtonClicked(Item selectedItem) {

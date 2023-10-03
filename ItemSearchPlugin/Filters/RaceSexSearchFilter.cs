@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Threading;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using static ItemSearchPlugin.ClassExtensions;
 
 namespace ItemSearchPlugin.Filters {
@@ -18,11 +19,10 @@ namespace ItemSearchPlugin.Filters {
         private int lastIndex;
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
-        private DataManager data;
-        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data, DalamudPluginInterface pluginInterface) : base(pluginConfig) {
+        private IDataManager data;
+        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, IDataManager data, DalamudPluginInterface pluginInterface) : base(pluginConfig) {
             this.pluginInterface = pluginInterface;
             this.data = data;
-            while (!data.IsDataReady) Thread.Sleep(1);
 
             equipRaceCategories = data.GetExcelSheet<EquipRaceCategory>().ToList();
 

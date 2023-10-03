@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 using Dalamud.Data;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
 
 namespace ItemSearchPlugin.Filters {
     class SoldByNPCSearchFilter : SearchFilter {
-        private readonly DataManager data;
+        private readonly IDataManager data;
 
         private readonly HashSet<uint> soldForAnything = new HashSet<uint>();
         private readonly Dictionary<uint, HashSet<uint>> soldForCurrency = new Dictionary<uint, HashSet<uint>>();
@@ -46,7 +47,7 @@ namespace ItemSearchPlugin.Filters {
         private readonly CurrencyOption soldByAnyNpcOption;
 
 
-        public SoldByNPCSearchFilter(ItemSearchPluginConfig config, DataManager dataManager) : base(config) {
+        public SoldByNPCSearchFilter(ItemSearchPluginConfig config, IDataManager dataManager) : base(config) {
             this.data = dataManager;
 
             notSoldByNpcOption = new CurrencyOption {Invert = true, Name = "Not sold by NPC", ItemHashSet = soldForAnything, HideIfEmpty = false};

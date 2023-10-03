@@ -4,23 +4,17 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Dalamud;
-using Dalamud.Data;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Keys;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
-using Dalamud.Utility;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
-using ImGuiScene;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.GeneratedSheets;
 
@@ -30,20 +24,19 @@ namespace ItemSearchPlugin {
 
 
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
-        [PluginService] public static DataManager Data { get; private set; } = null!;
-        [PluginService] public static CommandManager CommandManager { get; private set; } = null!;
-        [PluginService] public static KeyState KeyState { get; private set; } = null!;
-        [PluginService] public static ChatGui Chat { get; private set; } = null!;
-        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
-        [PluginService] public static ClientState ClientState { get; private set; } = null!;
-        [PluginService] public static GameGui GameGui { get; private set; } = null!;
-        [PluginService] public static Framework Framework { get; private set; } = null!;
+        [PluginService] public static IDataManager Data { get; private set; } = null!;
+        [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
+        [PluginService] public static IKeyState KeyState { get; private set; } = null!;
+        [PluginService] public static IChatGui Chat { get; private set; } = null!;
+        [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
+        [PluginService] public static IClientState ClientState { get; private set; } = null!;
+        [PluginService] public static IGameGui GameGui { get; private set; } = null!;
+        [PluginService] public static IFramework Framework { get; private set; } = null!;
+        [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
 
         public ItemSearchPluginConfig PluginConfig { get; private set; }
 
         public TryOn TryOn { get; private set; }
-
-        public readonly Dictionary<ushort, TextureWrap> textureDictionary = new Dictionary<ushort, TextureWrap>();
 
         public CraftingRecipeFinder CraftingRecipeFinder { get; private set; }
 
@@ -64,12 +57,6 @@ namespace ItemSearchPlugin {
             itemSearchWindow?.Dispose();
             TryOn?.Dispose();
             RemoveCommands();
-
-            foreach (var t in textureDictionary) {
-                t.Value?.Dispose();
-            }
-
-            textureDictionary.Clear();
         }
 
         public ItemSearchPlugin() {
@@ -203,41 +190,22 @@ namespace ItemSearchPlugin {
 
             var payload = new SeString(payloadList);
 
-            Chat.PrintChat(new XivChatEntry {
+            Chat.Print(new XivChatEntry {
                 Message = payload
             });
         }
 
         internal void DrawIcon(ushort icon, Vector2 size) {
             if (icon < 65000) {
-                if (textureDictionary.ContainsKey(icon)) {
-                    var tex = textureDictionary[icon];
-                    if (tex == null || tex.ImGuiHandle == IntPtr.Zero) {
-                        ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
-                        ImGui.BeginChild("FailedTexture", size, true);
-                        ImGui.Text(icon.ToString());
-                        ImGui.EndChild();
-                        ImGui.PopStyleColor();
-                    } else {
-                        ImGui.Image(textureDictionary[icon].ImGuiHandle, size);
-                    }
-                } else {
-                    ImGui.BeginChild("WaitingTexture", size, true);
+                var tex = TextureProvider.GetIcon(icon);
+                if (tex == null || tex.ImGuiHandle == nint.Zero) {
+                    ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
+                    ImGui.BeginChild("FailedTexture", size, true);
+                    ImGui.Text(icon.ToString());
                     ImGui.EndChild();
-
-                    textureDictionary[icon] = null;
-
-                    Task.Run(() => {
-                        try {
-                            var iconTex = Data.GetIcon(icon);
-                            var tex = PluginInterface.UiBuilder.LoadImageRaw(iconTex.GetRgbaImageData(), iconTex.Header.Width, iconTex.Header.Height, 4);
-                            if (tex != null && tex.ImGuiHandle != IntPtr.Zero) {
-                                textureDictionary[icon] = tex;
-                            }
-                        } catch {
-                            // Ignore
-                        }
-                    });
+                    ImGui.PopStyleColor();
+                } else {
+                    ImGui.Image(tex.ImGuiHandle, size);
                 }
             } else {
                 ImGui.BeginChild("NoIcon", size, true);

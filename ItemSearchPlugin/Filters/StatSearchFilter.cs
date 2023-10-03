@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
@@ -37,11 +38,7 @@ namespace ItemSearchPlugin.Filters {
             { "ten", "tenacity" },
         };
 
-        public StatSearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
-            while (!data.IsDataReady) {
-                Thread.Sleep(1);
-            }
-
+        public StatSearchFilter(ItemSearchPluginConfig config, IDataManager data) : base(config) {
             Task.Run(() => {
                 var baseParamCounts = new Dictionary<byte, int>();
 

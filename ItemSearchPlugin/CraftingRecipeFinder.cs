@@ -3,6 +3,7 @@ using Lumina.Excel.GeneratedSheets;
 using System.Collections.Concurrent;
 using Dalamud.Game;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace ItemSearchPlugin {
@@ -11,7 +12,7 @@ namespace ItemSearchPlugin {
 
         private bool disposed;
 
-        private unsafe void OnFrameworkUpdate(Framework framework) {
+        private unsafe void OnFrameworkUpdate(IFramework framework) {
             try {
                 if (disposed) return;
                 if (ItemSearchPlugin.ClientState.LocalContentId == 0) return;

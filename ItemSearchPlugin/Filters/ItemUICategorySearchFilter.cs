@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 
 namespace ItemSearchPlugin.Filters {
     internal class ItemUICategorySearchFilter : SearchFilter {
@@ -34,7 +35,7 @@ namespace ItemSearchPlugin.Filters {
         private bool focused;
         private readonly Vector2 popupSize = new Vector2(-1, 120);
 
-        public ItemUICategorySearchFilter(ItemSearchPluginConfig config, DataManager data) : base(config) {
+        public ItemUICategorySearchFilter(ItemSearchPluginConfig config, IDataManager data) : base(config) {
             uiCategories = new List<ItemUICategory> {null};
             uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().ToList().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name.ToString()));
             string nullName = Loc.Localize("ItemUiCategorySearchFilterAll", "All");

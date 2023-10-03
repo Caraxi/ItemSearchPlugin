@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Data;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
@@ -16,9 +17,9 @@ namespace ItemSearchPlugin.Filters {
 
         private bool finishedLoading = false;
 
-        private DataManager data;
+        private IDataManager data;
 
-        public CraftableSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) : base(pluginConfig) {
+        public CraftableSearchFilter(ItemSearchPluginConfig pluginConfig, IDataManager data) : base(pluginConfig) {
             this.craftableItems = new Dictionary<uint, RecipeLookup>();
             this.data = data;
             string craftableJobFormat = Loc.Localize("CraftableJobFormat", "Craftable: {0}");

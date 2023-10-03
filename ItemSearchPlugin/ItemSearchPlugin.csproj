@@ -29,7 +29,7 @@
 		<AssemblyName>ItemSearchPlugin</AssemblyName>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-		<DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+		<DalamudLibPath>C:\ffxiv\repo\Dalamud\bin\Release</DalamudLibPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Resources\**" />
@@ -43,7 +43,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" PrivateAssets="all" />
-		<PackageReference Include="DalamudPackager" Version="2.1.10" />
+		<PackageReference Include="DalamudPackager" Version="2.1.12" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.CSharp" />

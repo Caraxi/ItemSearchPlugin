@@ -8,16 +8,13 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Lumina.Excel.GeneratedSheets;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 namespace ItemSearchPlugin {
     public class TryOn : IDisposable {
 
         private readonly ItemSearchPlugin plugin;
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate byte TryOnDelegate(uint unknownCanEquip, uint itemBaseId, ulong stainColor, uint itemGlamourId, byte unknownByte);
-
-        private readonly TryOnDelegate tryOn;
 
         private int tryOnDelay = 10;
 
@@ -29,17 +26,9 @@ namespace ItemSearchPlugin {
 
         public TryOn(ItemSearchPlugin plugin) {
             this.plugin = plugin;
-
-            try {
-                var address = new AddressResolver();
-                address.Setup(ItemSearchPlugin.SigScanner);
-                tryOn = Marshal.GetDelegateForFunctionPointer<TryOnDelegate>(address.TryOn);
-
-                CanUseTryOn = true;
-                ItemSearchPlugin.Framework.Update += FrameworkUpdate;
-            } catch (Exception ex) {
-                PluginLog.LogError(ex.ToString());
-            }
+            CanUseTryOn = true;
+            ItemSearchPlugin.Framework.Update += FrameworkUpdate;
+        
         }
 
         public bool CanUseTryOn { get; }
@@ -66,7 +55,7 @@ namespace ItemSearchPlugin {
         }
 
         
-        public void FrameworkUpdate(Framework framework) {
+        public void FrameworkUpdate(IFramework framework) {
             
             while (CanUseTryOn && tryOnQueue.Count > 0 && (tryOnDelay <= 0 || tryOnDelay-- <= 0)) {
                 try {
@@ -83,7 +72,7 @@ namespace ItemSearchPlugin {
                         }
                         default: {
                             tryOnDelay = 1;
-                            tryOn(0xFF, itemId, stain, 0, 0);
+                            AgentTryon.TryOn(0, itemId, (byte)stain, 0, 0);
                             break;
                         }
                     }

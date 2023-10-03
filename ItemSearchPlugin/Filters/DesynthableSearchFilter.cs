@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Data;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
@@ -12,9 +13,9 @@ namespace ItemSearchPlugin.Filters {
 
         private bool finishedLoading = false;
 
-        private DataManager data;
+        private IDataManager data;
 
-        public DesynthableSearchFilter(ItemSearchPluginConfig pluginConfig, DataManager data) : base(pluginConfig) {
+        public DesynthableSearchFilter(ItemSearchPluginConfig pluginConfig, IDataManager data) : base(pluginConfig) {
             this.data = data;
             string craftableJobFormat = Loc.Localize("DesynthableJobFormat", "Desynthable: {0}");
 

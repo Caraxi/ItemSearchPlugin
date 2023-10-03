@@ -10,6 +10,7 @@ using Dalamud.Data;
 using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
@@ -20,7 +21,7 @@ namespace ItemSearchPlugin {
     internal class ItemSearchWindow : IDisposable {
         private readonly ItemSearchPlugin plugin;
         private readonly DalamudPluginInterface pluginInterface;
-        private readonly DataManager data;
+        private readonly IDataManager data;
         private readonly UiBuilder builder;
         private GenericItem selectedItem;
         private int selectedItemIndex = -1;
@@ -92,10 +93,7 @@ namespace ItemSearchPlugin {
             extraFiltersExpanded = pluginConfig.ExpandedFilters;
             autoTryOn = pluginConfig.ShowTryOn && pluginConfig.TryOnEnabled;
             autoPreviewHousing = pluginConfig.ShowPreviewHousing && pluginConfig.PreviewHousingEnabled;
-
-            while (!data.IsDataReady)
-                Thread.Sleep(1);
-
+            
             stains = data.Excel.GetSheet<Stain>().ToList();
             FixStainsOrder();
 
