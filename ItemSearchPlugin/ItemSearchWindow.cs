@@ -503,7 +503,7 @@ namespace ItemSearchPlugin {
                 }
 
                 if (pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState?.LocalContentId != 0) {
-                    if (ItemSearchPlugin.GameGui.GetAddonByName("HousingEditInterior", 1) != IntPtr.Zero) {
+                    if (ItemSearchPlugin.GameGui.GetAddonByName("HousingEditInterior", 1) != IntPtr.Zero || ItemSearchPlugin.GameGui.GetAddonByName("HousingEditExterior", 1) != IntPtr.Zero) {
                         ImGui.SameLine();
                         ImGui.Dummy(new Vector2(15, 0));
                         ImGui.SameLine();
@@ -756,6 +756,7 @@ namespace ItemSearchPlugin {
 
                                 if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                                     plugin.PreviewHousingItem(selectedItem);
+                                    plugin.PreviewExteriorHousingItem(selectedItem);
                                 }
                             }
                             
@@ -844,6 +845,7 @@ namespace ItemSearchPlugin {
                         
                         if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                             plugin.PreviewHousingItem(selectedItem);
+                            plugin.PreviewExteriorHousingItem(selectedItem);
                         }
                     }
                     
