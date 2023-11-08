@@ -263,6 +263,8 @@ namespace ItemSearchPlugin {
         private SetInteriorFixture setInteriorFixture;
         public unsafe delegate void SetExteriorFixture(void* housingController, uint plot, int part, ushort fixture);
         private SetExteriorFixture setExteriorFixture;
+        public unsafe delegate void StainExteriorFixture(void* housingController, uint plot, int part, byte stain);
+        private StainExteriorFixture stainExteriorFixture;
         
         [StructLayout(LayoutKind.Explicit)]
         private struct OutdoorTerritoryExtension {
@@ -271,7 +273,7 @@ namespace ItemSearchPlugin {
             [FieldOffset(0x96AA)] public sbyte EditingFixturesOfPlot;
         }
         
-        internal unsafe void PreviewExteriorHousingItem(GenericItem gItem) {
+        internal unsafe void PreviewExteriorHousingItem(GenericItem gItem, uint stainId) {
             if (gItem.GenericItemType != GenericItem.ItemType.Item) return;
             var item = (Item)gItem;
             var part = -1;
@@ -303,6 +305,11 @@ namespace ItemSearchPlugin {
             if (setExteriorFixture == null) {
                 setExteriorFixture = Marshal.GetDelegateForFunctionPointer<SetExteriorFixture>(SigScanner.ScanText("E8 ?? ?? ?? ?? 44 0F B6 0E 41 80 F9 FF"));
                 if (setExteriorFixture == null) return;
+            }
+            
+            if (stainExteriorFixture == null) {
+                stainExteriorFixture = Marshal.GetDelegateForFunctionPointer<StainExteriorFixture>(SigScanner.ScanText("40 55 48 83 EC 30 41 0F B6 E9"));
+                if (stainExteriorFixture == null) return;
             }
 
             var layout = FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutWorld.Instance();
@@ -336,6 +343,7 @@ namespace ItemSearchPlugin {
                 setExteriorFixture(controller, plot, 5, (ushort)unitedExterior.OptionalWall.Row);
                 setExteriorFixture(controller, plot, 6, (ushort)unitedExterior.OptionalSignboard.Row);
                 setExteriorFixture(controller, plot, 7, (ushort)unitedExterior.Fence.Row);
+                for (var i = 0; i < 8; i++) stainExteriorFixture(controller, plot, i, (byte)stainId);
             } else {
                 if (fixtureId > ushort.MaxValue) return;
                 var fixture = Data.GetExcelSheet<HousingExterior>()?.GetRow(fixtureId);
@@ -345,6 +353,7 @@ namespace ItemSearchPlugin {
                     return; // Invalid Size
                 }
                 setExteriorFixture(controller, plot, part, (ushort)fixtureId);
+                stainExteriorFixture(controller, plot, part, (byte)stainId);
             }
         }
         

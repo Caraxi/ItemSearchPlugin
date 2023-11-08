@@ -756,7 +756,7 @@ namespace ItemSearchPlugin {
 
                                 if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                                     plugin.PreviewHousingItem(selectedItem);
-                                    plugin.PreviewExteriorHousingItem(selectedItem);
+                                    plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
                                 }
                             }
                             
@@ -845,7 +845,7 @@ namespace ItemSearchPlugin {
                         
                         if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ItemSearchPlugin.ClientState.LocalContentId != 0) {
                             plugin.PreviewHousingItem(selectedItem);
-                            plugin.PreviewExteriorHousingItem(selectedItem);
+                            plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
                         }
                     }
                     
