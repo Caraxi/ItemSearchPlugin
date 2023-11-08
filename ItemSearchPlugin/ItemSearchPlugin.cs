@@ -344,7 +344,7 @@ namespace ItemSearchPlugin {
                     PluginLog.Debug("Fail: Incorrect Plot Size");
                     return; // Invalid Size
                 }
-                setExteriorFixture(controller, (uint)plotIndex, part, (ushort)fixtureId);
+                setExteriorFixture(controller, plot, part, (ushort)fixtureId);
             }
         }
         
