@@ -1,7 +1,5 @@
-using System;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using Lumina.Text;
 
 namespace ItemSearchPlugin {
     public class GenericItem {

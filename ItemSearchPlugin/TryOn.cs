@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Dalamud;
-using Dalamud.Game;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Lumina.Excel.GeneratedSheets;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
@@ -35,7 +32,7 @@ namespace ItemSearchPlugin {
 
         public void TryOnItem(Item item, uint stain = 0, bool hq = false) {
 #if DEBUG
-            PluginLog.Log($"Try On: {item.Name}");
+            PluginLog.Debug($"Try On: {item.Name}");
 #endif
             if (item.EquipSlotCategory?.Value == null) return;
             if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17 && (item.EquipSlotCategory.Value.OffHand <=0 || item.ItemUICategory.Row == 11)) {
@@ -45,7 +42,7 @@ namespace ItemSearchPlugin {
             }
 #if DEBUG
             else {
-                PluginLog.Log($"Cancelled Try On: Invalid Item. ({item.EquipSlotCategory.Row}, {item.EquipSlotCategory.Value.OffHand}, {item.EquipSlotCategory.Value.Waist}, {item.EquipSlotCategory.Value.SoulCrystal})");
+                PluginLog.Warning($"Cancelled Try On: Invalid Item. ({item.EquipSlotCategory.Row}, {item.EquipSlotCategory.Value.OffHand}, {item.EquipSlotCategory.Value.Waist}, {item.EquipSlotCategory.Value.SoulCrystal})");
             }
 #endif
         }

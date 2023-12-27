@@ -5,9 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Data;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Data;
@@ -133,7 +130,7 @@ namespace ItemSearchPlugin.Filters {
 
                 } catch (Exception ex) {
                     error = true;
-                    PluginLog.LogError($"{ex}");
+                    PluginLog.Error($"{ex}");
                 }
 
                 
@@ -187,8 +184,8 @@ namespace ItemSearchPlugin.Filters {
                 }
                 return new CurrencyOption() {Name = forceName ?? item.Name, ItemHashSet = soldForCurrency[itemId], Tag = tag?.ToLower()};
             } catch (Exception ex) {
-                PluginLog.Log($"Failed to get Currency Option for {itemId}");
-                PluginLog.LogError($"{ex}");
+                PluginLog.Error($"Failed to get Currency Option for {itemId}");
+                PluginLog.Error($"{ex}");
                 return null;
             }
             

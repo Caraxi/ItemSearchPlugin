@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
@@ -158,7 +157,7 @@ namespace ItemSearchPlugin {
         
         private void UpdateItemList(int delay = 100) {
             sortType = pluginConfig.SortType;
-            PluginLog.Log("Loading Item List");
+            PluginLog.Debug("Loading Item List");
             triedLoadingItems = true;
             errorLoadingItems = false;
             plugin.LuminaItems = null;
@@ -193,14 +192,14 @@ namespace ItemSearchPlugin {
                     return sortedList.ToList();
                 } catch (Exception ex) {
                     errorLoadingItems = true;
-                    PluginLog.LogError("Failed loading Items");
-                    PluginLog.LogError(ex.ToString());
+                    PluginLog.Error("Failed loading Items");
+                    PluginLog.Error(ex.ToString());
                     return new List<GenericItem>();
                 }
             }).ContinueWith(t => {
 #if DEBUG
                 sw.Stop();
-                PluginLog.Log($"Loaded Item List in: {sw.ElapsedMilliseconds}ms");
+                PluginLog.Debug($"Loaded Item List in: {sw.ElapsedMilliseconds}ms");
 #endif
                 if (errorLoadingItems) {
                     return plugin.LuminaItems;
@@ -519,7 +518,7 @@ namespace ItemSearchPlugin {
                 ImGui.SameLine(ImGui.GetWindowWidth() - (configTextSize.X + ImGui.GetStyle().ItemSpacing.X) - (ImGui.CalcTextSize(itemCountText).X + ImGui.GetStyle().ItemSpacing.X * (isSearch ? 3 : 2)));
                 if (isSearch) {
                     if (ImGui.Button(itemCountText)) {
-                        PluginLog.Log("Copying results to Clipboard");
+                        PluginLog.Debug("Copying results to Clipboard");
 
                         var sb = new StringBuilder();
 
@@ -642,14 +641,14 @@ namespace ItemSearchPlugin {
                 return isOpen;
             } catch (Exception ex) {
                 ResetStyle();
-                PluginLog.LogError(ex.ToString());
+                PluginLog.Error(ex.ToString());
                 selectedItem = null;
                 selectedItemIndex = -1;
                 return isOpen;
             }
         }
 
-        private bool StainButton(Stain? stain, Vector2 size, bool showSelectedHighlight = true) {
+        private bool StainButton(Stain stain, Vector2 size, bool showSelectedHighlight = true) {
             ImGui.Dummy(size);
             
             var drawOffset = size / 1.5f;
@@ -809,7 +808,7 @@ namespace ItemSearchPlugin {
                                             isOpen = false;
                                         }
                                     } catch (Exception ex) {
-                                        PluginLog.LogError(ex.ToString());
+                                        PluginLog.Error(ex.ToString());
                                     }
                                 }
                             }
@@ -918,7 +917,7 @@ namespace ItemSearchPlugin {
                     
                 }
             } catch (Exception ex) {
-                PluginLog.LogError($"{ex}");
+                PluginLog.Error($"{ex}");
                 ImGui.SetScrollY(0);
                 
             }

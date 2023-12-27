@@ -4,8 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using Newtonsoft.Json;
 
 namespace ItemSearchPlugin {
@@ -23,7 +21,7 @@ namespace ItemSearchPlugin {
             using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ItemSearchPlugin.Localization.{langCode}.json");
 
             if (s == null) {
-                PluginLog.LogError("Failed to find language file.");
+                PluginLog.Error("Failed to find language file.");
                 localizationStrings = new Dictionary<string, string>();
                 return;
             }
@@ -46,18 +44,18 @@ namespace ItemSearchPlugin {
             try {
                 var currentUiLang = CultureInfo.CurrentUICulture;
                 #if DEBUG
-                PluginLog.Log("Trying to set up Loc for culture {0}", currentUiLang.TwoLetterISOLanguageName);
+                PluginLog.Debug("Trying to set up Loc for culture {0}", currentUiLang.TwoLetterISOLanguageName);
                 #endif
                 LoadLanguage(ApplicableLangCodes.Any(x => currentUiLang.TwoLetterISOLanguageName == x) ? currentUiLang.TwoLetterISOLanguageName : "en");
             } catch (Exception ex) {
-                PluginLog.LogError("Could not get language information. Setting up fallbacks. {0}", ex.ToString());
+                PluginLog.Error("Could not get language information. Setting up fallbacks. {0}", ex.ToString());
                 LoadLanguage("en");
             }
         }
 
         internal static void ExportLoadedDictionary() {
             string json = JsonConvert.SerializeObject(localizationStrings, Formatting.Indented);
-            PluginLog.Log(json);
+            PluginLog.Debug(json);
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
@@ -11,7 +9,7 @@ namespace ItemSearchPlugin.Filters {
         public static Func<Item, bool, bool, bool> CheckFunc(string n, bool invert = false) {
             var p = typeof(Item).GetProperty(n);
             if (p == null) {
-                PluginLog.LogError($"Invalid Check Function for BooleanSearchFilter: {n}");
+                PluginLog.Error($"Invalid Check Function for BooleanSearchFilter: {n}");
             }
             return (i, t, f) => {
                 if (p == null) return true;

@@ -1,11 +1,8 @@
-﻿using System;
-using Dalamud.Data;
-using ImGuiNET;
+﻿using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 
 namespace ItemSearchPlugin.Filters {

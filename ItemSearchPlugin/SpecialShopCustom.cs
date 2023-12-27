@@ -1,8 +1,6 @@
-﻿using Dalamud.Plugin;
-using Lumina.Data;
+﻿using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using Lumina.Text;
 
 namespace ItemSearchPlugin {
 

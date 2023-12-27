@@ -1,12 +1,10 @@
-﻿using Dalamud.Data;
-using Dalamud.Plugin;
+﻿using Dalamud.Plugin;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 
 namespace ItemSearchPlugin.Filters {
@@ -178,7 +176,7 @@ namespace ItemSearchPlugin.Filters {
                         }
                     }
                 } catch (NullReferenceException nre) {
-                    PluginLog.LogError(nre.ToString());
+                    PluginLog.Error(nre.ToString());
                 }
 
                 ImGui.Columns(2);

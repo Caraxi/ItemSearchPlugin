@@ -1,7 +1,4 @@
 ﻿using Lumina.Excel.GeneratedSheets;
-using Dalamud.Plugin;
-using System;
-using System.Dynamic;
 using System.Linq;
 
 namespace ItemSearchPlugin.ActionButtons {

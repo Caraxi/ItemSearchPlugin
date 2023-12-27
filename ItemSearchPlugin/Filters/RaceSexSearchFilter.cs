@@ -1,14 +1,11 @@
-﻿using Dalamud.Data;
-using Dalamud.Plugin;
+﻿using Dalamud.Plugin;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using static ItemSearchPlugin.ClassExtensions;
 
@@ -64,7 +61,7 @@ namespace ItemSearchPlugin.Filters {
                 var erc = equipRaceCategories[item.EquipRestriction];
                 return erc.AllowsRaceSex(raceId, sex);
             } catch (Exception ex) {
-                PluginLog.LogError(ex.ToString());
+                PluginLog.Error(ex.ToString());
                 return true;
             }
         }

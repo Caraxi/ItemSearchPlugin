@@ -1,4 +1,6 @@
-﻿using System;
+﻿global using static ItemSearchPlugin.ItemSearchPlugin;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -11,7 +13,6 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
@@ -36,6 +37,7 @@ namespace ItemSearchPlugin {
         [PluginService] public static IGameGui GameGui { get; private set; } = null!;
         [PluginService] public static IFramework Framework { get; private set; } = null!;
         [PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
+        [PluginService] public static IPluginLog PluginLog { get; private set; }
 
         public ItemSearchPluginConfig PluginConfig { get; private set; }
 
@@ -173,7 +175,7 @@ namespace ItemSearchPlugin {
 
         internal void LinkItem(GenericItem item) {
             if (item == null) {
-                PluginLog.Log("Tried to link NULL item.");
+                PluginLog.Warning("Tried to link NULL item.");
                 return;
             }
 
@@ -300,7 +302,7 @@ namespace ItemSearchPlugin {
             if (GameGui.GetAddonByName("HousingEditExterior", 1) == IntPtr.Zero) return;
 #endif
             
-            PluginLog.Log($"Preview Housing Exterior: {item.Name.ToDalamudString().TextValue}");
+            PluginLog.Debug($"Preview Housing Exterior: {item.Name.ToDalamudString().TextValue}");
             
             if (setExteriorFixture == null) {
                 setExteriorFixture = Marshal.GetDelegateForFunctionPointer<SetExteriorFixture>(SigScanner.ScanText("E8 ?? ?? ?? ?? 44 0F B6 0E 41 80 F9 FF"));
@@ -398,7 +400,7 @@ namespace ItemSearchPlugin {
             if (lManager == null) return;
             if (lManager->IndoorAreaData == null) return;
 
-            PluginLog.Log($"Preview Housing Fixture: {item.Name.RawString}");
+            PluginLog.Debug($"Preview Housing Fixture: {item.Name.RawString}");
             setInteriorFixture(lManager, 0, part, fixtureId);
             setInteriorFixture(lManager, 1, part, fixtureId);
             setInteriorFixture(lManager, 2, part, fixtureId);

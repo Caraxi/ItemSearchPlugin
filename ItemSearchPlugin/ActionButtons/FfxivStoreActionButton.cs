@@ -7,7 +7,6 @@ using System.Net;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Logging;
 using ImGuiNET;
 using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
@@ -94,7 +93,7 @@ namespace ItemSearchPlugin.ActionButtons {
             }
 
 
-            PluginLog.Log($"Got Store Product List: {productList.Products.Count}");
+            PluginLog.Debug($"Got Store Product List: {productList.Products.Count}");
             StoreItems.Clear();
 
             var storeProductCacheDirectory = Path.Combine(ItemSearchPlugin.PluginInterface.GetPluginConfigDirectory(), "FFXIV Store Cache");
@@ -135,19 +134,19 @@ namespace ItemSearchPlugin.ActionButtons {
                     var productListing = JsonConvert.DeserializeObject<ProductListing>(fullProductJson);
                     if (productListing?.Product == null) continue;
                     if (productListing.Product.Items == null) {
-                        PluginLog.Log($"{p.Name} has no Items?");
+                        PluginLog.Debug($"{p.Name} has no Items?");
                     } else {
                         StoreProducts.Add(p.ID, productListing.Product);
 
                         foreach (var item in productListing.Product.Items) {
                             var matchingItems = allItems.Where(i => i.Name.RawString == item.Name).ToList();
                             if (matchingItems.Count == 0) {
-                                PluginLog.Log($"Failed to find matching item for {item.Name}.");
+                                PluginLog.Debug($"Failed to find matching item for {item.Name}.");
                                 continue;
                             }
 
                             if (matchingItems.Count > 1) {
-                                PluginLog.Log($"Found multiple matching items for {item.Name}.");
+                                PluginLog.Debug($"Found multiple matching items for {item.Name}.");
                             }
 
                             foreach (var matchedItem in matchingItems) {
@@ -162,14 +161,14 @@ namespace ItemSearchPlugin.ActionButtons {
                         }
 
                         if (!usingCache) {
-                            PluginLog.Log($"Cached Product Info: {p.ID}");
+                            PluginLog.Debug($"Cached Product Info: {p.ID}");
                             File.WriteAllText(cacheFile, fullProductJson);
                             Task.Delay(500).Wait();
                         }
                     }
                 } catch (Exception ex) {
                     UpdateStatus = "[Error] " + UpdateStatus;
-                    PluginLog.LogError(ex, "Error in Update Task");
+                    PluginLog.Error(ex, "Error in Update Task");
                     return;
                 }
 

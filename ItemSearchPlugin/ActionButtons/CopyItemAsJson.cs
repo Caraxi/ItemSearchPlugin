@@ -2,7 +2,6 @@
 using System.Text;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
-using Newtonsoft.Json;
 
 namespace ItemSearchPlugin.ActionButtons {
     class CopyItemAsJson : IActionButton {
