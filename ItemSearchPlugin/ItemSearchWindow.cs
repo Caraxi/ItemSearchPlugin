@@ -6,11 +6,13 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Data;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
 using ImGuiNET;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
@@ -22,7 +24,6 @@ namespace ItemSearchPlugin {
         private readonly ItemSearchPlugin plugin;
         private readonly DalamudPluginInterface pluginInterface;
         private readonly IDataManager data;
-        private readonly UiBuilder builder;
         private GenericItem selectedItem;
         private int selectedItemIndex = -1;
 
@@ -48,7 +49,7 @@ namespace ItemSearchPlugin {
         private Stain selectedStain;
         private readonly List<Stain> stains;
         private bool showStainSelector;
-        private Vector4 selectedStainColor = Vector4.Zero;
+        private byte selectedStainTab = 2;
         private readonly Dictionary<byte, Vector4> stainShadeHeaders;
 
         private bool extraFiltersExpanded;
@@ -87,7 +88,6 @@ namespace ItemSearchPlugin {
         public ItemSearchWindow(ItemSearchPlugin plugin, string searchText = "") {
             this.pluginInterface = ItemSearchPlugin.PluginInterface;
             this.data = ItemSearchPlugin.Data;
-            this.builder = pluginInterface.UiBuilder;
             this.pluginConfig = plugin.PluginConfig;
             this.plugin = plugin;
             extraFiltersExpanded = pluginConfig.ExpandedFilters;
@@ -100,10 +100,7 @@ namespace ItemSearchPlugin {
             if (pluginConfig.SelectedStain > 0) {
                 selectedStain = stains.FirstOrDefault(s => s.RowId == pluginConfig.SelectedStain);
                 if (selectedStain != null) {
-                    var b = selectedStain.Color & 255;
-                    var g = (selectedStain.Color >> 8) & 255;
-                    var r = (selectedStain.Color >> 16) & 255;
-                    selectedStainColor = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
+                    selectedStainTab = selectedStain.Shade;
                 }
             }
 
@@ -476,12 +473,12 @@ namespace ItemSearchPlugin {
 
                     ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Unknown5 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
                     PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
-                    if (ImGui.ColorButton("X", selectedStainColor, ImGuiColorEditFlags.NoTooltip)) {
+
+                    if (StainButton(selectedStain, new Vector2(ImGui.GetItemRectSize().Y), false)) {
                         showStainSelector = true;
                     }
 
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
-                        selectedStainColor = Vector4.Zero;
                         selectedStain = null;
                         pluginConfig.SelectedStain = 0;
                         pluginConfig.Save();
@@ -561,65 +558,83 @@ namespace ItemSearchPlugin {
 
 
                 if (showStainSelector) {
-                    ImGui.SetNextWindowSize(new Vector2(210, 180));
-                    ImGui.SetNextWindowPos(mainWindowPos + mainWindowSize - new Vector2(0, 180));
-                    ImGui.Begin("Select Dye", ref showStainSelector, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove);
-                    
-                    ImGui.BeginTabBar("stainShadeTabs");
+                    ImGui.SetNextWindowSize(ImGuiHelpers.ScaledVector2(300, 220));
+                    ImGui.SetNextWindowPos(mainWindowPos + mainWindowSize - ImGuiHelpers.ScaledVector2(0, 220));
 
-                    var unselectedModifier = new Vector4(0, 0, 0, 0.7f);
 
-                    foreach (var shade in stainShadeHeaders) {
-                        ImGui.PushStyleColor(ImGuiCol.TabActive, shade.Value);
-                        ImGui.PushStyleColor(ImGuiCol.TabHovered, shade.Value);
-                        ImGui.PushStyleColor(ImGuiCol.TabUnfocused, shade.Value);
-                        ImGui.PushStyleColor(ImGuiCol.TabUnfocusedActive, shade.Value);
-                        ImGui.PushStyleColor(ImGuiCol.Tab, shade.Value - unselectedModifier);
+
+                    if (ImGui.Begin("Select Dye", ref showStainSelector, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar| ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove)) {
                         
-                        if (ImGui.BeginTabItem($"    ###StainShade{shade.Key}")) {
-                            var c = 0;
+                        var texture = ItemSearchPlugin.TextureProvider.GetTextureFromGame("ui/uld/ListColorChooser_hr1.tex");
+                        if (texture != null) {
+                            var size = ImGui.GetContentRegionAvail().X / stainShadeHeaders.Count;
 
-                            PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
-                            foreach (var stain in stains.Where(s => s.Shade == shade.Key && !string.IsNullOrEmpty(s.Name))) {
-                                var b = stain.Color & 255;
-                                var g = (stain.Color >> 8) & 255;
-                                var r = (stain.Color >> 16) & 255;
 
-                                var stainColor = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
 
-                                ImGui.PushStyleColor(ImGuiCol.Border, stain.Unknown5 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                            using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero)) {
+                                foreach (var shade in stainShadeHeaders) {
 
-                                if (ImGui.ColorButton($"###stain{stain.RowId}", stainColor, ImGuiColorEditFlags.NoTooltip)) {
-                                    selectedStain = stain;
-                                    selectedStainColor = stainColor;
-                                    showStainSelector = false;
-                                    pluginConfig.SelectedStain = stain.RowId;
-                                    pluginConfig.Save();
-                                }
+                                   
 
-                                ImGui.PopStyleColor(1);
+                                    using (ImRaii.Group()) {
+                                        var p = ImGui.GetCursorPos();
+                                        if (shade.Key == 10) {
+                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0, 0.647f), new Vector2(0.3333f, 1f));
+                                        } else {
+                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0, 0), new Vector2(0.3333f, 0.3529f), shade.Value);
+                                        }
+                                        ImGui.SetCursorPos(p);
+                                        if (selectedStainTab == shade.Key || ImGui.IsItemHovered()) {
+                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0.6666f, 0), new Vector2(1, 0.3529f));
+                                        } else {
+                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0.3333f, 0), new Vector2(0.6666f, 0.3529f));
+                                        }
+                                        
+                                    }
+                                    
 
-                                if (ImGui.IsItemHovered()) {
-                                    ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
-                                    ImGui.SetTooltip(stain.Name);
-                                }
-  
-                                if (c++ < 5) {
+                                    if (ImGui.IsItemHovered()) {
+                                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                                    }
+
+                                    if (ImGui.IsItemClicked()) {
+                                        selectedStainTab = shade.Key;
+                                    }
+   
+                                    
                                     ImGui.SameLine();
-                                } else {
-                                    c = 0;
+                                    
+
                                 }
                             }
+                            ImGui.NewLine();
+                            ImGui.Separator();
 
-                            PopStyle(1);
-                            
-                            ImGui.EndTabItem();
+                            var stainSize = ImGui.GetContentRegionAvail().X / 8f;
+
+                            using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero)) {
+                                foreach (var stain in stains.Where(s => s.Shade == selectedStainTab && !string.IsNullOrEmpty(s.Name))) {
+                                    if (ImGui.GetContentRegionAvail().X < stainSize) {
+                                        ImGui.NewLine();
+                                    }
+
+                                    if (StainButton(stain, new Vector2(stainSize))) {
+                                        selectedStain = stain;
+                                        showStainSelector = false;
+                                        pluginConfig.SelectedStain = stain.RowId;
+                                        pluginConfig.Save();
+                                    }
+
+                                    if (ImGui.IsItemHovered()) {
+                                        ImGui.SetTooltip(stain.Name.ToDalamudString().TextValue);
+                                    }
+                                    
+                                    ImGui.SameLine();
+                                    
+                                }
+                            }
                         }
-
-                        ImGui.PopStyleColor(5);
                     }
-
-                    ImGui.EndTabBar();
                     ImGui.End();
                 }
 
@@ -634,6 +649,58 @@ namespace ItemSearchPlugin {
             }
         }
 
+        private bool StainButton(Stain? stain, Vector2 size, bool showSelectedHighlight = true) {
+            ImGui.Dummy(size);
+            
+            var drawOffset = size / 1.5f;
+            var drawOffset2 = size / 2.25f;
+            var pos = ImGui.GetItemRectMin();
+            var center = ImGui.GetItemRectMin() + ImGui.GetItemRectSize() / 2;
+            var dl = ImGui.GetWindowDrawList();
+            var texture = ItemSearchPlugin.TextureProvider.GetTextureFromGame("ui/uld/ListColorChooser_hr1.tex");
+            if (texture == null) return ImGui.IsItemClicked();
+            
+            if (stain == null) {
+                dl.AddImage(texture.ImGuiHandle, center - drawOffset2, center + drawOffset2, new Vector2(0.8333333f, 0.3529412f), new Vector2(0.9444444f, 0.47058824f), 0x80FFFFFF);
+                dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
+                if (ImGui.IsItemHovered()) {
+                    dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
+                }
+                return ImGui.IsItemClicked();
+            }
+            
+            var b = stain.Color & 255;
+            var g = (stain.Color >> 8) & 255;
+            var r = (stain.Color >> 16) & 255;
+            var stainVec4 = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
+            var stainColor = ImGui.GetColorU32(stainVec4);
+            
+            dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0, 0.3529f), new Vector2(0.27777f, 0.6470f), stainColor);
+            if (stain.Unknown5) {
+                dl.PushClipRect(center - drawOffset2, center + drawOffset2);
+                ImGui.ColorConvertRGBtoHSV(stainVec4.X, stainVec4.Y, stainVec4.Z, out var h, out var s, out var v);
+                ImGui.ColorConvertHSVtoRGB(h, s, v - 0.5f, out var dR, out var dG, out var dB);
+                ImGui.ColorConvertHSVtoRGB(h, s, v + 0.8f, out var bR, out var bG, out var bB);
+                var dColor = ImGui.GetColorU32(new Vector4(dR, dG, dB, 1));
+                var bColor = ImGui.GetColorU32(new Vector4(bR, bG, bB, 1));
+                var tr = pos + size with { Y = 0 };
+                var bl = pos + size with { X = 0 };
+                var opacity = 0U;
+                for (var x = 3; x < size.X; x++) {
+                    if (opacity < 0xF0_00_00_00U) opacity += 0x08_00_00_00U;
+                    dl.AddLine(tr + new Vector2(0, x), bl + new Vector2(x, 0), opacity | (0x00A0A0A0 & dColor), 2);
+                    dl.AddLine(tr - new Vector2(0, x), bl - new Vector2(x, 0), opacity | (0x00FFFFFF & bColor), 2);
+                }
+                dl.PopClipRect();
+            }
+            
+            dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
+            if ((showSelectedHighlight && selectedStain == stain) || ImGui.IsItemHovered()) {
+                dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
+            }
+            
+            return ImGui.IsItemClicked();
+        }
 
         private int itemHovered = -1;
         private int lastItemCount = 0;
