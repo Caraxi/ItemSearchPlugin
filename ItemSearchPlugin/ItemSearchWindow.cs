@@ -251,10 +251,11 @@ namespace ItemSearchPlugin {
                 ImGui.AlignTextToFramePadding();
 
                 if (selectedItem != null) {
+                    ImGui.BeginChild("SelectedItemBox", new Vector2(-1, 45) * ImGui.GetIO().FontGlobalScale);
+
                     var icon = selectedItem.Icon;
 
                     plugin.DrawIcon(icon, new Vector2(45 * ImGui.GetIO().FontGlobalScale));
-
 
                     ImGui.SameLine();
                     ImGui.BeginGroup();
@@ -300,6 +301,8 @@ namespace ItemSearchPlugin {
                     }
 
                     ImGui.EndGroup();
+
+                    ImGui.EndChild();
                 } else {
                     ImGui.BeginChild("NoSelectedItemBox", new Vector2(-1, 45) * ImGui.GetIO().FontGlobalScale);
                     ImGui.Text(Loc.Localize("ItemSearchSelectItem", "Please select an item."));
