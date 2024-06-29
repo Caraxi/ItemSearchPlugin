@@ -36,7 +36,7 @@ namespace ItemSearchPlugin.Filters {
         private static float _trueWidth;
 
         public BooleanSearchFilter(ItemSearchPluginConfig pluginConfig, string name, string trueString, string falseString, Func<Item, bool, bool, bool> checkFunction, Func<EventItem, bool, bool, bool> keyCheckFunction = null) : base(pluginConfig) {
-            this.Name = name;
+            Name = name;
             this.trueString = trueString;
             this.falseString = falseString;
             this.checkFunction = checkFunction;

@@ -13,9 +13,9 @@ namespace ItemSearchPlugin {
         private unsafe void OnFrameworkUpdate(IFramework framework) {
             try {
                 if (disposed) return;
-                if (ItemSearchPlugin.ClientState.LocalContentId == 0) return;
+                if (ClientState.LocalContentId == 0) return;
                 if (!searchQueue.TryDequeue(out var itemID)) {
-                    ItemSearchPlugin.Framework.Update -= OnFrameworkUpdate;
+                    Framework.Update -= OnFrameworkUpdate;
                     return;
                 }
 
@@ -31,13 +31,13 @@ namespace ItemSearchPlugin {
             }
 
             searchQueue.Enqueue(item.RowId);
-            ItemSearchPlugin.Framework.Update -= OnFrameworkUpdate;
-            ItemSearchPlugin.Framework.Update += OnFrameworkUpdate;
+            Framework.Update -= OnFrameworkUpdate;
+            Framework.Update += OnFrameworkUpdate;
         }
 
         public void Dispose() {
             disposed = true;
-            ItemSearchPlugin.Framework.Update -= OnFrameworkUpdate;
+            Framework.Update -= OnFrameworkUpdate;
         }
     }
 }

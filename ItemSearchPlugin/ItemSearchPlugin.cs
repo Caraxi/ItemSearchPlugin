@@ -6,17 +6,18 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Dalamud;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Interface.Textures;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using FFXIVClientStructs.FFXIV.Client.Game.Housing;
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.GeneratedSheets;
@@ -57,7 +58,7 @@ namespace ItemSearchPlugin {
         public string Version { get; private set; }
 
         public void Dispose() {
-            PluginInterface.UiBuilder.Draw -= this.BuildUI;
+            PluginInterface.UiBuilder.Draw -= BuildUI;
             CraftingRecipeFinder?.Dispose();
             itemSearchWindow?.Dispose();
             TryOn?.Dispose();
@@ -65,19 +66,16 @@ namespace ItemSearchPlugin {
         }
 
         public ItemSearchPlugin() {
-            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            this.PluginConfig = (ItemSearchPluginConfig) PluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+            PluginConfig = (ItemSearchPluginConfig) PluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
 
-            ItemSearchPlugin.DataSites = new DataSite[] {
+            DataSites = [
                 new GarlandToolsDataSite(),
                 new TeamcraftDataSite(PluginConfig),
-                new GamerEscapeDatasite(),
-            };
+                new GamerEscapeDatasite()
+            ];
 
-            this.PluginConfig.Init(PluginInterface, this);
-
-
-            SetupGameFunctions();
+            PluginConfig.Init(PluginInterface, this);
 
             ReloadLocalization();
 
@@ -85,12 +83,16 @@ namespace ItemSearchPlugin {
 
             CraftingRecipeFinder = new CraftingRecipeFinder();
 
-            PluginInterface.UiBuilder.Draw += this.BuildUI;
+            PluginInterface.UiBuilder.Draw += BuildUI;
             SetupCommands();
 
 #if DEBUG
             OnItemSearchCommand("", "");
 #endif
+
+            PluginInterface.UiBuilder.OpenMainUi += () => OnItemSearchCommand(string.Empty, string.Empty);
+            PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigWindow;
+
         }
 
         public void ReloadLocalization() {
@@ -109,7 +111,7 @@ namespace ItemSearchPlugin {
             });
 
             CommandManager.AddHandler("/fittingroom", new Dalamud.Game.Command.CommandInfo((command, arguments) => {
-                this.TryOn.OpenFittingRoom();
+                TryOn.OpenFittingRoom();
             }) {
                 HelpMessage = Loc.Localize("ItemSearchFittingRoomCommand", "Open the fitting room."),
                 ShowInHelp = true
@@ -141,17 +143,16 @@ namespace ItemSearchPlugin {
         private Stopwatch debugStopwatch = new Stopwatch();
         private void BuildUI() {
             
-
+            drawConfigWindow = drawConfigWindow && PluginConfig.DrawConfigUI();
             
             if (drawItemSearchWindow) {
 
                 drawItemSearchWindow = itemSearchWindow != null && itemSearchWindow.Draw();
-                drawConfigWindow = drawItemSearchWindow && drawConfigWindow && PluginConfig.DrawConfigUI();
+                
 
                 if (drawItemSearchWindow == false) {
                     itemSearchWindow?.Dispose();
                     itemSearchWindow = null;
-                    drawConfigWindow = false;
                 }
             }
 
@@ -200,16 +201,21 @@ namespace ItemSearchPlugin {
             });
         }
 
+        private Stopwatch iconFailTime = new();
         internal void DrawIcon(ushort icon, Vector2 size) {
             if (icon < 65000) {
-                var tex = TextureProvider.GetIcon(icon);
+                var tex = TextureProvider.GetFromGameIcon(new GameIconLookup(icon, false, false, ClientLanguage.English)).GetWrapOrDefault();
                 if (tex == null || tex.ImGuiHandle == nint.Zero) {
-                    ImGui.PushStyleColor(ImGuiCol.Border, new Vector4(1, 0, 0, 1));
-                    ImGui.BeginChild("FailedTexture", size, true);
-                    ImGui.Text(icon.ToString());
-                    ImGui.EndChild();
-                    ImGui.PopStyleColor();
+                    if (iconFailTime.ElapsedMilliseconds > 1000) {
+                        ImGui.BeginChild("FailedTexture", size, true);
+                        ImGui.Text(icon.ToString());
+                        ImGui.EndChild();
+                    } else {
+                        if (!iconFailTime.IsRunning) iconFailTime.Restart();
+                        ImGui.Dummy(size);
+                    }
                 } else {
+                    iconFailTime.Reset();
                     ImGui.Image(tex.ImGuiHandle, size);
                 }
             } else {
@@ -226,26 +232,8 @@ namespace ItemSearchPlugin {
             drawConfigWindow = !drawConfigWindow;
         }
 
-
-        private void SetupGameFunctions() {
-            cardUnlockedStatic = SigScanner.GetStaticAddressFromSig("48 8D 0D ?? ?? ?? ?? 45 33 C0 BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 0F B6 93");
-            var cardUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 8D 7B 78");
-            cardUnlocked = Marshal.GetDelegateForFunctionPointer<CardUnlockedDelegate>(cardUnlockedAddress);
-
-            //var itemActionUnlockedAddress = SigScanner.ScanText("E8 ?? ?? ?? ?? 84 C0 75 A9");
-            //itemActionUnlocked = Marshal.GetDelegateForFunctionPointer<ItemActionUnlockedDelegate>(itemActionUnlockedAddress);
-        }
-
-
-        private delegate byte ItemActionUnlockedDelegate(IntPtr data);
-        private delegate bool CardUnlockedDelegate(IntPtr a1, ushort card);
-
-        private ItemActionUnlockedDelegate itemActionUnlocked;
-        private CardUnlockedDelegate cardUnlocked;
-        private IntPtr cardUnlockedStatic;
-
-        internal bool IsCardOwned(ushort cardId) {
-            return cardUnlocked(cardUnlockedStatic, cardId);
+        internal unsafe bool IsCardOwned(ushort cardId) {
+            return UIState.Instance()->IsTripleTriadCardUnlocked(cardId);
         }
 
         [StructLayout(LayoutKind.Explicit)]
@@ -270,7 +258,7 @@ namespace ItemSearchPlugin {
         
         [StructLayout(LayoutKind.Explicit)]
         private struct OutdoorTerritoryExtension {
-            [FieldOffset(0x00)] public HousingOutdoorTerritory Base;
+            [FieldOffset(0x00)] public OutdoorTerritory Base;
             [FieldOffset(0x96A8)] public sbyte StandingInPlot;
             [FieldOffset(0x96AA)] public sbyte EditingFixturesOfPlot;
         }
@@ -318,8 +306,8 @@ namespace ItemSearchPlugin {
             if (layout == null) return;
             var active = layout->ActiveLayout;
             if (active == null) return;
-            var controller = active->HousingController;
-            if (controller == null) return;
+            var outdoorAreaData = active->OutdoorAreaData;
+            if (outdoorAreaData == null) return;
             var manager = HousingManager.Instance();
             if (manager == null) return;
             var territory = (OutdoorTerritoryExtension*) manager->OutdoorTerritory;
@@ -329,7 +317,7 @@ namespace ItemSearchPlugin {
             if (plotIndex is < 0 or >= 60) return;
 
             var plot = (uint)plotIndex + 1;
-            var plotSize = territory->Base.PlotSpan[plotIndex].Size;
+            var plotSize = territory->Base.Plots[plotIndex].Size;
             
             var unitedExterior = Data.GetExcelSheet<HousingUnitedExterior>()?.GetRow(fixtureId);
             if (unitedExterior != null) {
@@ -337,15 +325,15 @@ namespace ItemSearchPlugin {
                     PluginLog.Debug("Fail: Incorrect Plot Size");
                     return;
                 }
-                setExteriorFixture(controller, plot, 0, (ushort)unitedExterior.Roof.Row);
-                setExteriorFixture(controller, plot, 1, (ushort)unitedExterior.Walls.Row);
-                setExteriorFixture(controller, plot, 2, (ushort)unitedExterior.Windows.Row);
-                setExteriorFixture(controller, plot, 3, (ushort)unitedExterior.Door.Row);
-                setExteriorFixture(controller, plot, 4, (ushort)unitedExterior.OptionalRoof.Row);
-                setExteriorFixture(controller, plot, 5, (ushort)unitedExterior.OptionalWall.Row);
-                setExteriorFixture(controller, plot, 6, (ushort)unitedExterior.OptionalSignboard.Row);
-                setExteriorFixture(controller, plot, 7, (ushort)unitedExterior.Fence.Row);
-                for (var i = 0; i < 8; i++) stainExteriorFixture(controller, plot, i, (byte)stainId);
+                setExteriorFixture(outdoorAreaData, plot, 0, (ushort)unitedExterior.Roof.Row);
+                setExteriorFixture(outdoorAreaData, plot, 1, (ushort)unitedExterior.Walls.Row);
+                setExteriorFixture(outdoorAreaData, plot, 2, (ushort)unitedExterior.Windows.Row);
+                setExteriorFixture(outdoorAreaData, plot, 3, (ushort)unitedExterior.Door.Row);
+                setExteriorFixture(outdoorAreaData, plot, 4, (ushort)unitedExterior.OptionalRoof.Row);
+                setExteriorFixture(outdoorAreaData, plot, 5, (ushort)unitedExterior.OptionalWall.Row);
+                setExteriorFixture(outdoorAreaData, plot, 6, (ushort)unitedExterior.OptionalSignboard.Row);
+                setExteriorFixture(outdoorAreaData, plot, 7, (ushort)unitedExterior.Fence.Row);
+                for (var i = 0; i < 8; i++) stainExteriorFixture(outdoorAreaData, plot, i, (byte)stainId);
             } else {
                 if (fixtureId > ushort.MaxValue) return;
                 var fixture = Data.GetExcelSheet<HousingExterior>()?.GetRow(fixtureId);
@@ -354,8 +342,8 @@ namespace ItemSearchPlugin {
                     PluginLog.Debug("Fail: Incorrect Plot Size");
                     return; // Invalid Size
                 }
-                setExteriorFixture(controller, plot, part, (ushort)fixtureId);
-                stainExteriorFixture(controller, plot, part, (byte)stainId);
+                setExteriorFixture(outdoorAreaData, plot, part, (ushort)fixtureId);
+                stainExteriorFixture(outdoorAreaData, plot, part, (byte)stainId);
             }
         }
         
@@ -404,30 +392,6 @@ namespace ItemSearchPlugin {
             setInteriorFixture(lManager, 0, part, fixtureId);
             setInteriorFixture(lManager, 1, part, fixtureId);
             setInteriorFixture(lManager, 2, part, fixtureId);
-        }
-        
-
-        internal unsafe bool ItemActionUnlocked(Item item) {
-            return false;
-            var itemAction = item.ItemAction.Value;
-            if (itemAction == null) {
-                return false;
-            }
-
-            var type = itemAction.Type;
-
-            var mem = Marshal.AllocHGlobal(256);
-            *(uint*) (mem + 142) = itemAction.RowId;
-
-            if (type == 25183) {
-                *(uint*) (mem + 112) = item.AdditionalData;
-            }
-
-            var ret = this.itemActionUnlocked(mem) == 1;
-
-            Marshal.FreeHGlobal(mem);
-
-            return ret;
         }
     }
 }

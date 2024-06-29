@@ -39,7 +39,7 @@ namespace ItemSearchPlugin.ActionButtons {
 
             
 
-            var recipes = ItemSearchPlugin.Data.GetExcelSheet<Recipe>().Where(a => a.ItemResult.Row == selectedItem.RowId).ToList();
+            var recipes = Data.GetExcelSheet<Recipe>().Where(a => a.ItemResult.Row == selectedItem.RowId).ToList();
 
             if (recipes.Count == 0) {
                 sb.Append("Recipes: NONE");
@@ -51,7 +51,7 @@ namespace ItemSearchPlugin.ActionButtons {
                     sb.AppendLine("    Ingredients:");
                     foreach (var ri in r.UnkData5) {
 
-                        sb.AppendLine($"      [{ri.ItemIngredient}*{ri.AmountIngredient}] {ItemSearchPlugin.Data.GetExcelSheet<Item>().GetRow((uint) ri.ItemIngredient).Name} x {ri.AmountIngredient}");
+                        sb.AppendLine($"      [{ri.ItemIngredient}*{ri.AmountIngredient}] {Data.GetExcelSheet<Item>().GetRow((uint) ri.ItemIngredient).Name} x {ri.AmountIngredient}");
 
 
                     } 

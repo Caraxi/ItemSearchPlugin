@@ -55,7 +55,7 @@ namespace ItemSearchPlugin.Filters {
 
 
             
-            if (ImGui.BeginCombo("##ItemUiCategorySearchFilterBox", uiCategoriesArray[usingTag ? this.taggedCategory : this.selectedCategory])) {
+            if (ImGui.BeginCombo("##ItemUiCategorySearchFilterBox", uiCategoriesArray[usingTag ? taggedCategory : selectedCategory])) {
                 ImGui.SetNextItemWidth(-1);
                 ImGui.InputTextWithHint("###ItemUiCategorySearchFilterFilter", "Filter", ref categorySearchInput,  60);
                 var isFocused = ImGui.IsItemActive();

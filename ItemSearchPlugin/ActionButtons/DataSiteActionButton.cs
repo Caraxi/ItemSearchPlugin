@@ -20,7 +20,7 @@ namespace ItemSearchPlugin.ActionButtons {
         }
 
         public override bool GetShowButton(Item selectedItem) {
-            return this.pluginConfig.SelectedDataSite != null;
+            return pluginConfig.SelectedDataSite != null;
         }
 
         public override void OnButtonClicked(Item selectedItem) {

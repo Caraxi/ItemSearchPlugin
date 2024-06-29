@@ -45,7 +45,7 @@ namespace ItemSearchPlugin.Filters {
 
 
         public SoldByNPCSearchFilter(ItemSearchPluginConfig config, IDataManager dataManager) : base(config) {
-            this.data = dataManager;
+            data = dataManager;
 
             notSoldByNpcOption = new CurrencyOption {Invert = true, Name = "Not sold by NPC", ItemHashSet = soldForAnything, HideIfEmpty = false};
             soldByAnyNpcOption = new CurrencyOption {Name = "Any Currency", ItemHashSet = soldForAnything, HideIfEmpty = false};

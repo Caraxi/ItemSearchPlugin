@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud;
+using Dalamud.Game;
 using ItemSearchPlugin.ActionButtons;
 
 namespace ItemSearchPlugin {
@@ -46,18 +46,19 @@ namespace ItemSearchPlugin {
         [NonSerialized] private DataSite lastDataSite;
 
         public uint SelectedStain { get; set; } = 0;
+        public uint SelectedStain2 { get; set; } = 0;
 
         public bool ExpandedFilters { get; set; } = false;
 
         [JsonIgnore]
         public DataSite SelectedDataSite {
             get {
-                if (lastDataSite == null || (lastDataSite.Name != this.DataSite)) {
-                    if (string.IsNullOrEmpty(this.DataSite)) {
+                if (lastDataSite == null || (lastDataSite.Name != DataSite)) {
+                    if (string.IsNullOrEmpty(DataSite)) {
                         return null;
                     }
 
-                    lastDataSite = ItemSearchPlugin.DataSites.FirstOrDefault(ds => ds.Name == this.DataSite);
+                    lastDataSite = ItemSearchPlugin.DataSites.FirstOrDefault(ds => ds.Name == DataSite);
                 }
 
                 return lastDataSite;
@@ -68,12 +69,12 @@ namespace ItemSearchPlugin {
         public ClientLanguage SelectedClientLanguage {
             get {
                 return SelectedLanguage switch {
-                    0 => ItemSearchPlugin.ClientState.ClientLanguage,
+                    0 => ClientState.ClientLanguage,
                     1 => ClientLanguage.English,
                     2 => ClientLanguage.Japanese,
                     3 => ClientLanguage.French,
                     4 => ClientLanguage.German,
-                    _ => ItemSearchPlugin.ClientState.ClientLanguage,
+                    _ => ClientState.ClientLanguage,
                 };
             }
         }
@@ -119,7 +120,7 @@ namespace ItemSearchPlugin {
         }
 
         public void Save() {
-            this.pluginInterface.SavePluginConfig(this);
+            pluginInterface.SavePluginConfig(this);
         }
 
 
@@ -246,13 +247,13 @@ namespace ItemSearchPlugin {
                 Save();
             }
 
-            int dataSiteIndex = Array.IndexOf(ItemSearchPlugin.DataSites, this.SelectedDataSite);
+            int dataSiteIndex = Array.IndexOf(ItemSearchPlugin.DataSites, SelectedDataSite);
             if (ImGui.Combo(Loc.Localize("ItemSearchConfigExternalDataSite", "External Data Site"), ref dataSiteIndex, ItemSearchPlugin.DataSites.Select(t => Loc.Localize(t.NameTranslationKey, t.Name) + (string.IsNullOrEmpty(t.Note) ? "" : "*")).ToArray(), ItemSearchPlugin.DataSites.Length)) {
-                this.DataSite = ItemSearchPlugin.DataSites[dataSiteIndex].Name;
+                DataSite = ItemSearchPlugin.DataSites[dataSiteIndex].Name;
                 Save();
             }
 
-            if (this.DataSite == "Teamcraft") {
+            if (DataSite == "Teamcraft") {
                 var teamcraftBroswer = TeamcraftForceBrowser;
                 if (ImGui.Checkbox(Loc.Localize("ItemSearchTeamcraftForceBrowser", "Only use browser for Teamcraft"), ref teamcraftBroswer)) {
                     TeamcraftForceBrowser = teamcraftBroswer;

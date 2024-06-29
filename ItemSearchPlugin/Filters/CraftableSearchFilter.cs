@@ -18,7 +18,7 @@ namespace ItemSearchPlugin.Filters {
         private IDataManager data;
 
         public CraftableSearchFilter(ItemSearchPluginConfig pluginConfig, IDataManager data) : base(pluginConfig) {
-            this.craftableItems = new Dictionary<uint, RecipeLookup>();
+            craftableItems = new Dictionary<uint, RecipeLookup>();
             this.data = data;
             string craftableJobFormat = Loc.Localize("CraftableJobFormat", "Craftable: {0}");
 

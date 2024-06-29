@@ -19,9 +19,9 @@ namespace ItemSearchPlugin.Filters {
 
         public EquipAsSearchFilter(ItemSearchPluginConfig config, IDataManager data, DalamudPluginInterface pluginInterface) : base(config) {
             this.pluginInterface = pluginInterface;
-            this.selectedClassJobs = new List<uint>();
-            this.classJobCategories = data.GetExcelSheet<ClassJobCategory>().ToList();
-            this.classJobs = data.GetExcelSheet<ClassJob>()
+            selectedClassJobs = new List<uint>();
+            classJobCategories = data.GetExcelSheet<ClassJobCategory>().ToList();
+            classJobs = data.GetExcelSheet<ClassJob>()
                 .Where(cj => cj.RowId != 0)
                 .OrderBy(cj => {
                     return cj.Role switch {
@@ -181,12 +181,12 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
-            } else if(usingTags == false && ItemSearchPlugin.ClientState.LocalContentId != 0) {
+            } else if(usingTags == false && ClientState.LocalContentId != 0) {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Current Class")) {
-                    if (ItemSearchPlugin.ClientState?.LocalPlayer != null) {
+                    if (ClientState?.LocalPlayer != null) {
                         selectedClassJobs.Clear();
-                        selectedClassJobs.Add(ItemSearchPlugin.ClientState.LocalPlayer.ClassJob.Id);
+                        selectedClassJobs.Add(ClientState.LocalPlayer.ClassJob.Id);
                         changed = true;
                     }
                 }
@@ -210,8 +210,8 @@ namespace ItemSearchPlugin.Filters {
         public override bool ParseTag(string tag) {
             var t = tag.ToLower().Trim();
             var selfTag = false;
-            if (t == "self" && ItemSearchPlugin.ClientState?.LocalPlayer != null) {
-                t = ItemSearchPlugin.ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToString().ToLower();
+            if (t == "self" && ClientState?.LocalPlayer != null) {
+                t = ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToString().ToLower();
                 selfTag = true;
             }
 

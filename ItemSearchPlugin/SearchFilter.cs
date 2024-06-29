@@ -75,7 +75,7 @@ namespace ItemSearchPlugin {
         /// <summary>
         /// True if the filter is not disabled.
         /// </summary>
-        public bool IsEnabled => !this.CanBeDisabled || !this.PluginConfig.DisabledFilters.Contains(this.NameLocalizationKey);
+        public bool IsEnabled => !CanBeDisabled || !PluginConfig.DisabledFilters.Contains(NameLocalizationKey);
 
         /// <summary>
         /// True if the filter should be shown in the "Enabled Filters" section of config.
@@ -86,7 +86,7 @@ namespace ItemSearchPlugin {
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected SearchFilter(ItemSearchPluginConfig config) {
-            this.PluginConfig = config;
+            PluginConfig = config;
         }
 
         internal void ConfigSetup() {

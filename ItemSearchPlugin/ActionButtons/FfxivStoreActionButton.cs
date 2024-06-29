@@ -96,10 +96,10 @@ namespace ItemSearchPlugin.ActionButtons {
             PluginLog.Debug($"Got Store Product List: {productList.Products.Count}");
             StoreItems.Clear();
 
-            var storeProductCacheDirectory = Path.Combine(ItemSearchPlugin.PluginInterface.GetPluginConfigDirectory(), "FFXIV Store Cache");
+            var storeProductCacheDirectory = Path.Combine(PluginInterface.GetPluginConfigDirectory(), "FFXIV Store Cache");
             Directory.CreateDirectory(storeProductCacheDirectory);
 
-            var allItems = ItemSearchPlugin.Data.Excel.GetSheet<Item>(Language.English);
+            var allItems = Data.Excel.GetSheet<Item>(Language.English);
             if (allItems == null) {
                 UpdateStatus = "[Error] " + UpdateStatus;;
                 return;
@@ -207,7 +207,7 @@ namespace ItemSearchPlugin.ActionButtons {
                 ImGui.End();
             }
 
-            if (!isPopupOpen) ItemSearchPlugin.PluginInterface.UiBuilder.Draw -= DrawProductSelection;
+            if (!isPopupOpen) PluginInterface.UiBuilder.Draw -= DrawProductSelection;
 
         }
 
@@ -226,8 +226,8 @@ namespace ItemSearchPlugin.ActionButtons {
             productSelectionList = storeItems;
             productSelectionPosition = ImGui.GetIO().MousePos;
             productSelectionButtonSize = Vector2.Zero;
-            ItemSearchPlugin.PluginInterface.UiBuilder.Draw -= DrawProductSelection;
-            ItemSearchPlugin.PluginInterface.UiBuilder.Draw += DrawProductSelection;
+            PluginInterface.UiBuilder.Draw -= DrawProductSelection;
+            PluginInterface.UiBuilder.Draw += DrawProductSelection;
         }
 
         public override bool GetShowButton(Item selectedItem) {
@@ -238,7 +238,7 @@ namespace ItemSearchPlugin.ActionButtons {
         public override ActionButtonPosition ButtonPosition => ActionButtonPosition.TOP;
 
         public override void Dispose() {
-            ItemSearchPlugin.PluginInterface.UiBuilder.Draw -= DrawProductSelection;
+            PluginInterface.UiBuilder.Draw -= DrawProductSelection;
             if (_storeUpdateTask != null) {
                 _updateCancellationToken.Cancel();
                 _storeUpdateTask.Wait();
