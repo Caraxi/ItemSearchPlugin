@@ -28,7 +28,7 @@ namespace ItemSearchPlugin {
         public string Name => "Item Search";
 
 
-        [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static IDataManager Data { get; private set; } = null!;
         [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
         [PluginService] public static IKeyState KeyState { get; private set; } = null!;

@@ -12,7 +12,7 @@ using ItemSearchPlugin.ActionButtons;
 namespace ItemSearchPlugin {
 
     public class ItemSearchPluginConfig : IPluginConfiguration {
-        [NonSerialized] private DalamudPluginInterface pluginInterface;
+        [NonSerialized] private IDalamudPluginInterface pluginInterface;
         [NonSerialized] private ItemSearchPlugin plugin;
         [JsonIgnore] internal List<(string localizationKey, string englishName)> FilterNames { get; } = new List<(string localizationKey, string englishName)>();
 
@@ -114,7 +114,7 @@ namespace ItemSearchPlugin {
         }
 
 
-        public void Init(DalamudPluginInterface pluginInterface, ItemSearchPlugin plugin) {
+        public void Init(IDalamudPluginInterface pluginInterface, ItemSearchPlugin plugin) {
             this.pluginInterface = pluginInterface;
             this.plugin = plugin;
         }

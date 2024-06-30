@@ -11,13 +11,13 @@ using static ItemSearchPlugin.ClassExtensions;
 
 namespace ItemSearchPlugin.Filters {
     internal class RaceSexSearchFilter : SearchFilter {
-        private readonly DalamudPluginInterface pluginInterface;
+        private readonly IDalamudPluginInterface pluginInterface;
         private int selectedOption;
         private int lastIndex;
         private readonly List<(string text, uint raceId, CharacterSex sex)> options;
         private readonly List<EquipRaceCategory> equipRaceCategories;
         private IDataManager data;
-        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, IDataManager data, DalamudPluginInterface pluginInterface) : base(pluginConfig) {
+        public RaceSexSearchFilter(ItemSearchPluginConfig pluginConfig, IDataManager data, IDalamudPluginInterface pluginInterface) : base(pluginConfig) {
             this.pluginInterface = pluginInterface;
             this.data = data;
 

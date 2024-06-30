@@ -21,7 +21,7 @@ using Lumina.Excel.GeneratedSheets;
 namespace ItemSearchPlugin {
     internal class ItemSearchWindow : IDisposable {
         private readonly ItemSearchPlugin plugin;
-        private readonly DalamudPluginInterface pluginInterface;
+        private readonly IDalamudPluginInterface pluginInterface;
         private readonly IDataManager data;
         private GenericItem selectedItem;
         private int selectedItemIndex = -1;
