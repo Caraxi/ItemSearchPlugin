@@ -47,6 +47,8 @@ namespace ItemSearchPlugin {
                 38 => cjc.DNC,
                 39 => cjc.RPR,
                 40 => cjc.SGE,
+                41 => cjc.VPR,
+                42 => cjc.PCT,
                 _ => false,
             };
         }
