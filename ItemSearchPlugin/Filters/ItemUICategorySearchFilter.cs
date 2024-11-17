@@ -1,5 +1,5 @@
 ﻿using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -23,7 +23,7 @@ namespace ItemSearchPlugin.Filters {
             }
         }
 
-        private readonly List<ItemUICategory> uiCategories;
+        private readonly List<ItemUICategory?> uiCategories;
         private readonly string[] uiCategoriesArray;
 
         private int selectedCategory;
@@ -33,15 +33,16 @@ namespace ItemSearchPlugin.Filters {
         private readonly Vector2 popupSize = new Vector2(-1, 120);
 
         public ItemUICategorySearchFilter(ItemSearchPluginConfig config, IDataManager data) : base(config) {
-            uiCategories = new List<ItemUICategory> {null};
-            uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().ToList().Where(x => !string.IsNullOrEmpty(x.Name)).OrderBy(x => x.Name.ToString()));
+            uiCategories = [null];
+            uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().ToList().Where(x => !string.IsNullOrEmpty(x.Name.ToString())).OrderBy(x => x.Name.ToString()).Select((x) => (ItemUICategory?)x));
             string nullName = Loc.Localize("ItemUiCategorySearchFilterAll", "All");
-            uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Name.ToString().Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
+            uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Value.Name.ToString().Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
         }
 
 
         public override bool CheckFilter(Item item) {
-            return item.ItemUICategory.Row == uiCategories[usingTag ? taggedCategory : selectedCategory].RowId;
+            var category = uiCategories[usingTag ? taggedCategory : selectedCategory];
+            return item.ItemUICategory.RowId == (category == null ? 0 : category.Value.RowId);
         }
 
         public override void DrawEditor() {

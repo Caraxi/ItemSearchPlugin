@@ -4,7 +4,7 @@ using Dalamud.Game;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
@@ -34,15 +34,14 @@ namespace ItemSearchPlugin {
 #if DEBUG
             PluginLog.Debug($"Try On: {item.Name}");
 #endif
-            if (item.EquipSlotCategory?.Value == null) return;
-            if (item.EquipSlotCategory.Row > 0 && item.EquipSlotCategory.Row != 6 && item.EquipSlotCategory.Row != 17 && (item.EquipSlotCategory.Value.OffHand <=0 || item.ItemUICategory.Row == 11)) {
+            if (item.EquipSlotCategory.RowId > 0 && item.EquipSlotCategory.RowId != 6 && item.EquipSlotCategory.RowId != 17 && (item.EquipSlotCategory.Value.OffHand <=0 || item.ItemUICategory.RowId == 11)) {
                 if (plugin.PluginConfig.SuppressTryOnMessage) tryOnQueue.Enqueue(((uint) TryOnControlID.SuppressLog, 1, 0));
                 tryOnQueue.Enqueue((item.RowId + (uint) (hq ? 1000000 : 0), stain, stain2));
                 if (plugin.PluginConfig.SuppressTryOnMessage) tryOnQueue.Enqueue(((uint)TryOnControlID.SuppressLog, 0, 0));
             }
 #if DEBUG
             else {
-                PluginLog.Warning($"Cancelled Try On: Invalid Item. ({item.EquipSlotCategory.Row}, {item.EquipSlotCategory.Value.OffHand}, {item.EquipSlotCategory.Value.Waist}, {item.EquipSlotCategory.Value.SoulCrystal})");
+                PluginLog.Warning($"Cancelled Try On: Invalid Item. ({item.EquipSlotCategory.RowId}, {item.EquipSlotCategory.Value.OffHand}, {item.EquipSlotCategory.Value.Waist}, {item.EquipSlotCategory.Value.SoulCrystal})");
             }
 #endif
         }

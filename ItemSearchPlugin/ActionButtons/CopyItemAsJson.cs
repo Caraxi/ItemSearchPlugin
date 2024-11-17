@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.ActionButtons {
     class CopyItemAsJson : IActionButton {
@@ -39,7 +39,7 @@ namespace ItemSearchPlugin.ActionButtons {
 
             
 
-            var recipes = Data.GetExcelSheet<Recipe>().Where(a => a.ItemResult.Row == selectedItem.RowId).ToList();
+            var recipes = Data.GetExcelSheet<Recipe>().Where(a => a.ItemResult.RowId == selectedItem.RowId).ToList();
 
             if (recipes.Count == 0) {
                 sb.Append("Recipes: NONE");
@@ -49,9 +49,11 @@ namespace ItemSearchPlugin.ActionButtons {
 
                     sb.AppendLine($"  Recipe: {r.RowId}");
                     sb.AppendLine("    Ingredients:");
-                    foreach (var ri in r.UnkData5) {
+                    for (var i = 0; i < r.Ingredient.Count; i++) {
+                        var ri = r.Ingredient[i];
+                        var amount = r.AmountIngredient[i];
 
-                        sb.AppendLine($"      [{ri.ItemIngredient}*{ri.AmountIngredient}] {Data.GetExcelSheet<Item>().GetRow((uint) ri.ItemIngredient).Name} x {ri.AmountIngredient}");
+                        sb.AppendLine($"      [{ri.RowId}*{amount}] {ri.Value.Name} x {amount}");
 
 
                     } 

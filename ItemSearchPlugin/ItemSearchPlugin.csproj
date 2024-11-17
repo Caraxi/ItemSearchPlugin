@@ -29,8 +29,8 @@
 		<AssemblyName>ItemSearchPlugin</AssemblyName>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-		<DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev</DalamudLibPath>
 	</PropertyGroup>
+	<Import Project="Dalamud.Plugin.Bootstrap.targets" />
 	<ItemGroup>
 		<Compile Remove="Resources\**" />
 		<EmbeddedResource Remove="Resources\**" />
@@ -47,38 +47,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="Dalamud">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\Dalamud.dll</HintPath>
-		</Reference>
-		<Reference Include="FFXIVClientStructs">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\FFXIVClientStructs.dll</HintPath>
-		</Reference>
-		<Reference Include="ImGui.NET">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\ImGui.NET.dll</HintPath>
-		</Reference>
-		<Reference Include="ImGuiScene">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\ImGuiScene.dll</HintPath>
-		</Reference>
-		<Reference Include="Serilog">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\Serilog.dll</HintPath>
-		</Reference>
-		<Reference Include="Newtonsoft.Json">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\Newtonsoft.Json.dll</HintPath>
-		</Reference>
-		<Reference Include="Lumina">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\Lumina.dll</HintPath>
-		</Reference>
-		<Reference Include="Lumina.Excel">
-			<Private>false</Private>
-			<HintPath>$(DalamudLibPath)\Lumina.Excel.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Localization\de.json" />

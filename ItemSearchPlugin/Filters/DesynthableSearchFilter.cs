@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.Filters {
     internal class DesynthableSearchFilter : SearchFilter {
@@ -44,21 +44,20 @@ namespace ItemSearchPlugin.Filters {
         public override bool ShowFilter => base.ShowFilter && finishedLoading;
 
         public override bool CheckFilter(Item item) {
-            if (item == null) return false;
             if (!finishedLoading) return true;
 
             var isDesynthable = item.Desynth > 0;
             return selectedOption switch {
                 1 => !isDesynthable,
                 2 => isDesynthable,
-                3 => isDesynthable && item.ClassJobRepair.Row == 8,
-                4 => isDesynthable && item.ClassJobRepair.Row == 9,
-                5 => isDesynthable && item.ClassJobRepair.Row == 10,
-                6 => isDesynthable && item.ClassJobRepair.Row == 11,
-                7 => isDesynthable && item.ClassJobRepair.Row == 12,
-                8 => isDesynthable && item.ClassJobRepair.Row == 13,
-                9 => isDesynthable && item.ClassJobRepair.Row == 14,
-                10 => isDesynthable && item.ClassJobRepair.Row == 15,
+                3 => isDesynthable && item.ClassJobRepair.RowId == 8,
+                4 => isDesynthable && item.ClassJobRepair.RowId == 9,
+                5 => isDesynthable && item.ClassJobRepair.RowId == 10,
+                6 => isDesynthable && item.ClassJobRepair.RowId == 11,
+                7 => isDesynthable && item.ClassJobRepair.RowId == 12,
+                8 => isDesynthable && item.ClassJobRepair.RowId == 13,
+                9 => isDesynthable && item.ClassJobRepair.RowId == 14,
+                10 => isDesynthable && item.ClassJobRepair.RowId == 15,
                 _ => true
             };
         }

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin {
     public abstract class DataSite {

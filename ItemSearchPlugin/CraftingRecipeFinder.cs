@@ -1,5 +1,5 @@
 using System;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System.Collections.Concurrent;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
@@ -25,10 +25,6 @@ namespace ItemSearchPlugin {
 
         public void SearchRecipesByItem(Item item) {
             if (disposed) return;
-            if (item == null) {
-                PluginLog.Debug("Tried to find recipe for NULL item.");
-                return;
-            }
 
             searchQueue.Enqueue(item.RowId);
             Framework.Update -= OnFrameworkUpdate;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Numerics;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using ImGuiNET;
 
 namespace ItemSearchPlugin.Filters {
@@ -41,13 +41,13 @@ namespace ItemSearchPlugin.Filters {
         }
 
         public override bool CheckFilter(Item item) {
-            if (item.LevelItem.Row > MaxLevel) {
-                if (maxLevel == MaxLevel) maxLevel = (int)item.LevelItem.Row;
-                MaxLevel = (int) item.LevelItem.Row;
-                PluginConfig.MaxItemLevel = item.LevelItem.Row;
+            if (item.LevelItem.RowId > MaxLevel) {
+                if (maxLevel == MaxLevel) maxLevel = (int)item.LevelItem.RowId;
+                MaxLevel = (int) item.LevelItem.RowId;
+                PluginConfig.MaxItemLevel = item.LevelItem.RowId;
                 PluginConfig.Save();
             }
-            return item.LevelItem.Row >= (usingTag ? taggedMin : minLevel) && item.LevelItem.Row <= (usingTag ? taggedMax : maxLevel);
+            return item.LevelItem.RowId >= (usingTag ? taggedMin : minLevel) && item.LevelItem.RowId <= (usingTag ? taggedMax : maxLevel);
         }
 
         public override void DrawEditor() {
