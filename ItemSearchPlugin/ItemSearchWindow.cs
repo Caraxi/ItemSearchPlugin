@@ -15,7 +15,6 @@ using Dalamud.Utility;
 using ImGuiNET;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
-using Serilog;
 using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin {
@@ -130,6 +129,7 @@ namespace ItemSearchPlugin {
                 new RaceSexSearchFilter(pluginConfig, data, pluginInterface),
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),
+                new SoldByNPCSearchFilter(pluginConfig, data),
                 new DyeableSearchFilter(pluginConfig),
                 new BooleanSearchFilter(pluginConfig, "Can Be HQ", "Has HQ", "No HQ", BooleanSearchFilter.CheckFunc("CanBeHq")),
                 new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", BooleanSearchFilter.CheckFunc("IsUnique")),
@@ -444,7 +444,7 @@ namespace ItemSearchPlugin {
                             }
                         }
                     } catch (Exception ex) {
-                        Log.Error($"Exception in Choose: {ex.Message}");
+                        PluginLog.Error($"Exception in Choose: {ex.Message}");
                     }
                 }
 

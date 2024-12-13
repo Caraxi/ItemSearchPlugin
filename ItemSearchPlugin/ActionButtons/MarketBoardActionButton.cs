@@ -18,7 +18,7 @@ namespace ItemSearchPlugin.ActionButtons {
         }
 
         public override bool GetShowButton(Item selectedItem) {
-            return pluginConfig.MarketBoardPluginIntegration && selectedItem.ItemSearchCategory.RowId > 0 && PluginInterface.InstalledPlugins.Any(p => p.InternalName == "MarkerBoardPlugin" && p.IsLoaded);
+            return pluginConfig.MarketBoardPluginIntegration && selectedItem.ItemSearchCategory.RowId > 0 && PluginInterface.InstalledPlugins.Any(p => p.InternalName == "MarketBoardPlugin" && p.IsLoaded);
         }
 
         public override void OnButtonClicked(Item selectedItem) {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
 
 namespace ItemSearchPlugin.Filters {
     internal class ItemUICategorySearchFilter : SearchFilter {
@@ -36,7 +37,7 @@ namespace ItemSearchPlugin.Filters {
             uiCategories = [null];
             uiCategories.AddRange(data.GetExcelSheet<ItemUICategory>().ToList().Where(x => !string.IsNullOrEmpty(x.Name.ToString())).OrderBy(x => x.Name.ToString()).Select((x) => (ItemUICategory?)x));
             string nullName = Loc.Localize("ItemUiCategorySearchFilterAll", "All");
-            uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Value.Name.ToString().Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
+            uiCategoriesArray = uiCategories.Select(x => x == null ? nullName : x.Value.Name.ToDalamudString().TextValue.Replace("\u0002\u001F\u0001\u0003", "-")).ToArray();
         }
 
 
