@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin {
     public static class ClassExtensions {
@@ -72,8 +72,8 @@ namespace ItemSearchPlugin {
                     4 => erc.Miqote,
                     5 => erc.Roegadyn,
                     6 => erc.AuRa,
-                    7 => erc.Unknown6, // Hrothgar
-                    8 => erc.Unknown7, // Viera
+                    7 => erc.Unknown0, // Hrothgar
+                    8 => erc.Unknown1, // Viera
                     _ => false
                 }
             };

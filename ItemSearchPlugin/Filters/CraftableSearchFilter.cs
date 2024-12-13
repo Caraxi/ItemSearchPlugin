@@ -3,7 +3,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.Filters {
     internal class CraftableSearchFilter : SearchFilter {
@@ -52,21 +52,20 @@ namespace ItemSearchPlugin.Filters {
         public override bool ShowFilter => base.ShowFilter && finishedLoading;
 
         public override bool CheckFilter(Item item) {
-            if (item == null) return false;
             if (!finishedLoading) return true;
 
             var isCraftable = craftableItems.ContainsKey(item.RowId);
             return selectedOption switch {
                 1 => !isCraftable,
                 2 => isCraftable,
-                3 => isCraftable && craftableItems[item.RowId].CRP.Row > 0,
-                4 => isCraftable && craftableItems[item.RowId].BSM.Row > 0,
-                5 => isCraftable && craftableItems[item.RowId].ARM.Row > 0,
-                6 => isCraftable && craftableItems[item.RowId].GSM.Row > 0,
-                7 => isCraftable && craftableItems[item.RowId].LTW.Row > 0,
-                8 => isCraftable && craftableItems[item.RowId].WVR.Row > 0,
-                9 => isCraftable && craftableItems[item.RowId].ALC.Row > 0,
-                10 => isCraftable && craftableItems[item.RowId].CUL.Row > 0,
+                3 => isCraftable && craftableItems[item.RowId].CRP.RowId> 0,
+                4 => isCraftable && craftableItems[item.RowId].BSM.RowId> 0,
+                5 => isCraftable && craftableItems[item.RowId].ARM.RowId> 0,
+                6 => isCraftable && craftableItems[item.RowId].GSM.RowId> 0,
+                7 => isCraftable && craftableItems[item.RowId].LTW.RowId> 0,
+                8 => isCraftable && craftableItems[item.RowId].WVR.RowId> 0,
+                9 => isCraftable && craftableItems[item.RowId].ALC.RowId> 0,
+                10 => isCraftable && craftableItems[item.RowId].CUL.RowId > 0,
                 _ => true
             };
         }

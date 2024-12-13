@@ -1,4 +1,4 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.ActionButtons {
     class DataSiteActionButton : IActionButton {

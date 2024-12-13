@@ -1,4 +1,4 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.ActionButtons {
     class RecipeSearchActionButton : IActionButton {
@@ -17,7 +17,7 @@ namespace ItemSearchPlugin.ActionButtons {
         }
 
         public override bool GetShowButton(Item selectedItem) {
-            return selectedItem != null;
+            return selectedItem.RowId != 0;
         }
 
         public override void OnButtonClicked(Item selectedItem) {

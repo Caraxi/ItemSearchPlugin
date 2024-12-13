@@ -1,5 +1,5 @@
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin {
     public class GenericItem {
@@ -8,8 +8,8 @@ namespace ItemSearchPlugin {
             EventItem
         }
 
-        private EventItem eventItem = null;
-        private Item item = null;
+        private EventItem eventItem = default;
+        private Item item = default;
         private ItemType itemType;
 
         public GenericItem(EventItem eventItem) {
@@ -28,8 +28,8 @@ namespace ItemSearchPlugin {
         public string Name {
             get {
                 return itemType switch {
-                    ItemType.EventItem => eventItem.Name,
-                    ItemType.Item => item.Name,
+                    ItemType.EventItem => eventItem.Name.ToString(),
+                    ItemType.Item => item.Name.ToString(),
                     _ => string.Empty
                 };
             }
@@ -69,7 +69,7 @@ namespace ItemSearchPlugin {
             get {
                 return itemType switch {
                     ItemType.EventItem => 1,
-                    ItemType.Item => item.LevelItem.Row,
+                    ItemType.Item => item.LevelItem.RowId,
                     _ => 0
                 };
             }
@@ -94,19 +94,19 @@ namespace ItemSearchPlugin {
             }
         }
 
-        public LazyRow<ClassJobCategory> ClassJobCategory {
+        public RowRef<ClassJobCategory> ClassJobCategory {
             get {
                 return itemType switch {
-                    ItemType.EventItem => null,
+                    ItemType.EventItem => default,
                     ItemType.Item => item.ClassJobCategory,
-                    _ => null
+                    _ => default
                 };
             }
         }
         
 
-        public static explicit operator Item(GenericItem genericItem) => genericItem.itemType == ItemType.Item ? genericItem.item : null;
-        public static explicit operator EventItem(GenericItem genericItem) => genericItem.itemType == ItemType.EventItem ? genericItem.eventItem : null;
+        public static explicit operator Item(GenericItem genericItem) => genericItem.itemType == ItemType.Item ? genericItem.item : default;
+        public static explicit operator EventItem(GenericItem genericItem) => genericItem.itemType == ItemType.EventItem ? genericItem.eventItem : default;
         public static implicit operator GenericItem(EventItem eventItem) => new GenericItem(eventItem);
         public static implicit operator GenericItem(Item item) => new GenericItem(item);
 

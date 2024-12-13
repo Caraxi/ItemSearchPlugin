@@ -9,18 +9,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using ImGuiNET;
 using Lumina.Data;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 
 namespace ItemSearchPlugin.ActionButtons {
     public class FfxivStoreActionButton : IActionButton {
 
-        private static ItemSearchPluginConfig _pluginConfig;
+        private static ItemSearchPluginConfig _pluginConfig = null!;
         public static Dictionary<uint, List<uint>> StoreItems = new();
         private static Dictionary<uint, Product> StoreProducts = new();
 
-        private static Task _storeUpdateTask;
-        private static CancellationTokenSource _updateCancellationToken;
+        private static Task _storeUpdateTask = null!;
+        private static CancellationTokenSource _updateCancellationToken = null!;
 
         public static string UpdateStatus = string.Empty;
 
@@ -30,8 +30,6 @@ namespace ItemSearchPlugin.ActionButtons {
                     _updateCancellationToken.Cancel();
                     _storeUpdateTask.Wait();
                 }
-                _storeUpdateTask = null;
-                _updateCancellationToken = null;
             }
 
             if (!_pluginConfig.EnableFFXIVStore) return;
@@ -139,7 +137,7 @@ namespace ItemSearchPlugin.ActionButtons {
                         StoreProducts.Add(p.ID, productListing.Product);
 
                         foreach (var item in productListing.Product.Items) {
-                            var matchingItems = allItems.Where(i => i.Name.RawString == item.Name).ToList();
+                            var matchingItems = allItems.Where(i => i.Name.ToString() == item.Name).ToList();
                             if (matchingItems.Count == 0) {
                                 PluginLog.Debug($"Failed to find matching item for {item.Name}.");
                                 continue;

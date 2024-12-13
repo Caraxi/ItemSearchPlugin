@@ -1,6 +1,6 @@
 ﻿using Dalamud.Plugin;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,15 +28,15 @@ namespace ItemSearchPlugin.Filters {
             };
 
             foreach (var race in data.GetExcelSheet<Race>().ToList()) {
-                if (race.RSEMBody.Row > 0 && race.RSEFBody.Row > 0) {
+                if (race.RSEMBody.RowId > 0 && race.RSEFBody.RowId > 0) {
                     string male = string.Format(Loc.Localize("RaceSexMale", "Male {0}"), race.Masculine);
                     string female = string.Format(Loc.Localize("RaceSexFemale", "Female {0}"), race.Feminine);
                     options.Add((male, race.RowId, CharacterSex.Male));
                     options.Add((female, race.RowId, CharacterSex.Female));
-                } else if (race.RSEMBody.Row > 0) {
-                    options.Add((race.Masculine, race.RowId, CharacterSex.Male));
-                } else if (race.RSEFBody.Row > 0) {
-                    options.Add((race.Feminine, race.RowId, CharacterSex.Female));
+                } else if (race.RSEMBody.RowId > 0) {
+                    options.Add((race.Masculine.ToString(), race.RowId, CharacterSex.Male));
+                } else if (race.RSEFBody.RowId > 0) {
+                    options.Add((race.Feminine.ToString(), race.RowId, CharacterSex.Female));
                 }
             }
         }

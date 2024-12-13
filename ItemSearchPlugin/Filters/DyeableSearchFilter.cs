@@ -1,6 +1,6 @@
 using System.Linq;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.Filters;
 
@@ -27,7 +27,6 @@ internal class DyeableSearchFilter : SearchFilter {
     }
     
     public override bool CheckFilter(Item item) {
-        if (item == null) return false;
         if (item.DyeCount < toggles.Length) return toggles[item.DyeCount];
         return true;
     }

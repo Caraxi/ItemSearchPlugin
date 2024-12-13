@@ -1,6 +1,6 @@
 ﻿using Dalamud.Plugin;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,8 +55,8 @@ namespace ItemSearchPlugin.Filters {
 
         public override bool CheckFilter(Item item) {
             try {
-                if (item.ClassJobCategory.Row != 0) {
-                    ClassJobCategory cjc = classJobCategories[(int) item.ClassJobCategory.Row];
+                if (item.ClassJobCategory.RowId != 0) {
+                    ClassJobCategory cjc = classJobCategories[(int) item.ClassJobCategory.RowId];
 
                     if (selectedMode == 0) {
                         foreach (uint cjid in selectedClassJobs) {
@@ -93,9 +93,7 @@ namespace ItemSearchPlugin.Filters {
 
                 first = false;
                 var cj = classJobs.FirstOrDefault(c => c.RowId == i);
-                if (cj != null) {
-                    sb.Append(cj.Abbreviation);
-                }
+                sb.Append(cj.Abbreviation);
             }
 
             if (first) {
@@ -158,7 +156,7 @@ namespace ItemSearchPlugin.Filters {
                             }
 
                             bool selected = selectedClassJobs.Contains(cj.RowId);
-                            if (ImGui.Checkbox(cj.Abbreviation, ref selected)) {
+                            if (ImGui.Checkbox(cj.Abbreviation.ToString(), ref selected)) {
                                 if (selected) {
                                     if (!selectedClassJobs.Contains(cj.RowId)) {
                                         selectedClassJobs.Add(cj.RowId);
@@ -186,7 +184,7 @@ namespace ItemSearchPlugin.Filters {
                 if (ImGui.SmallButton("Current Class")) {
                     if (ClientState?.LocalPlayer != null) {
                         selectedClassJobs.Clear();
-                        selectedClassJobs.Add(ClientState.LocalPlayer.ClassJob.Id);
+                        selectedClassJobs.Add(ClientState.LocalPlayer.ClassJob.RowId);
                         changed = true;
                     }
                 }
@@ -211,7 +209,7 @@ namespace ItemSearchPlugin.Filters {
             var t = tag.ToLower().Trim();
             var selfTag = false;
             if (t == "self" && ClientState?.LocalPlayer != null) {
-                t = ClientState.LocalPlayer.ClassJob.GameData.Abbreviation.ToString().ToLower();
+                t = ClientState.LocalPlayer.ClassJob.Value.Abbreviation.ToString().ToLower();
                 selfTag = true;
             }
 

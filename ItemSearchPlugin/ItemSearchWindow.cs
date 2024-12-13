@@ -15,15 +15,14 @@ using Dalamud.Utility;
 using ImGuiNET;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
-using Serilog;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin {
     internal class ItemSearchWindow : IDisposable {
         private readonly ItemSearchPlugin plugin;
         private readonly IDalamudPluginInterface pluginInterface;
         private readonly IDataManager data;
-        private GenericItem selectedItem;
+        private GenericItem? selectedItem;
         private int selectedItemIndex = -1;
 
         private CancellationTokenSource searchCancelTokenSource;
@@ -45,8 +44,8 @@ namespace ItemSearchPlugin {
 
         private int styleCounter;
 
-        private Stain selectedStain;
-        private Stain selectedStain2;
+        private Stain? selectedStain;
+        private Stain? selectedStain2;
         private readonly List<Stain> stains;
         private bool showStainSelector;
         private byte selectedStainTab = 2;
@@ -101,7 +100,7 @@ namespace ItemSearchPlugin {
             if (pluginConfig.SelectedStain > 0) {
                 selectedStain = stains.FirstOrDefault(s => s.RowId == pluginConfig.SelectedStain);
                 if (selectedStain != null) {
-                    selectedStainTab = selectedStain.Shade;
+                    selectedStainTab = selectedStain.Value.Shade;
                 }
             }
             if (pluginConfig.SelectedStain2 > 0) {
@@ -179,8 +178,8 @@ namespace ItemSearchPlugin {
                 try {
                     var list = new List<GenericItem>();
                     
-                    list.AddRange(data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => i.RowId > 0 && !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
-                    list.AddRange(data.GetExcelSheet<EventItem>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name)).Select(i => new GenericItem(i)));
+                    list.AddRange(data.GetExcelSheet<Item>(pluginConfig.SelectedClientLanguage).Where(i => i.RowId > 0 && !string.IsNullOrEmpty(i.Name.ToString())).Select(i => new GenericItem(i)));
+                    list.AddRange(data.GetExcelSheet<EventItem>(pluginConfig.SelectedClientLanguage).Where(i => !string.IsNullOrEmpty(i.Name.ToString())).Select(i => new GenericItem(i)));
 
                     var sortedList = pluginConfig.SortType switch {
                         SortType.ItemIDDesc => list.OrderByDescending(i => i.RowId),
@@ -445,7 +444,7 @@ namespace ItemSearchPlugin {
                             }
                         }
                     } catch (Exception ex) {
-                        Log.Error($"Exception in Choose: {ex.Message}");
+                        PluginLog.Error($"Exception in Choose: {ex.Message}");
                     }
                 }
 
@@ -474,7 +473,7 @@ namespace ItemSearchPlugin {
                     ImGui.SameLine();
 
 
-                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Unknown5 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Value.Unknown1 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
                     PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
 
                     if (StainButton(selectedStain, new Vector2(ImGui.GetItemRectSize().Y), false)) {
@@ -496,7 +495,7 @@ namespace ItemSearchPlugin {
                     if (ImGui.IsItemHovered()) {
                         ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
                         ImGui.BeginTooltip();
-                        ImGui.Text(selectedStain == null ? "No Dye Selected" : selectedStain.Name);
+                        ImGui.Text(selectedStain == null ? "No Dye Selected" : selectedStain.Value.Name.ToString());
                         if (selectedStain != null) {
                             ImGui.TextDisabled("Right click to clear selection.");
                         }
@@ -506,7 +505,7 @@ namespace ItemSearchPlugin {
                     ImGui.SameLine();
 
 
-                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Unknown5 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Value.Unknown1 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
                     PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
 
                     if (StainButton(selectedStain2, new Vector2(ImGui.GetItemRectSize().Y), false)) {
@@ -527,7 +526,7 @@ namespace ItemSearchPlugin {
                     if (ImGui.IsItemHovered()) {
                         ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
                         ImGui.BeginTooltip();
-                        ImGui.Text(selectedStain2 == null ? "No Dye Selected" : selectedStain2.Name);
+                        ImGui.Text(selectedStain2 == null ? "No Dye Selected" : selectedStain2.Value.Name.ToString());
                         if (selectedStain != null) {
                             ImGui.TextDisabled("Right click to clear selection.");
                         }
@@ -651,7 +650,7 @@ namespace ItemSearchPlugin {
                             var stainSize = ImGui.GetContentRegionAvail().X / 8f;
 
                             using (ImRaii.PushStyle(ImGuiStyleVar.ItemSpacing, Vector2.Zero)) {
-                                foreach (var stain in stains.Where(s => s.Shade == selectedStainTab && !string.IsNullOrEmpty(s.Name))) {
+                                foreach (var stain in stains.Where(s => s.Shade == selectedStainTab && !string.IsNullOrEmpty(s.Name.ToString()))) {
                                     if (ImGui.GetContentRegionAvail().X < stainSize) {
                                         ImGui.NewLine();
                                     }
@@ -698,7 +697,7 @@ namespace ItemSearchPlugin {
             }
         }
 
-        private bool StainButton(Stain stain, Vector2 size, bool showSelectedHighlight = true) {
+        private bool StainButton(Stain? stainMaybe, Vector2 size, bool showSelectedHighlight = true) {
             ImGui.Dummy(size);
             
             var drawOffset = size / 1.5f;
@@ -709,7 +708,7 @@ namespace ItemSearchPlugin {
             var texture = TextureProvider.GetFromGame("ui/uld/ListColorChooser_hr1.tex").GetWrapOrDefault();
             if (texture == null) return ImGui.IsItemClicked();
             
-            if (stain == null) {
+            if (stainMaybe == null) {
                 dl.AddImage(texture.ImGuiHandle, center - drawOffset2, center + drawOffset2, new Vector2(0.8333333f, 0.3529412f), new Vector2(0.9444444f, 0.47058824f), 0x80FFFFFF);
                 dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
                 if (ImGui.IsItemHovered()) {
@@ -717,6 +716,7 @@ namespace ItemSearchPlugin {
                 }
                 return ImGui.IsItemClicked();
             }
+            var stain = stainMaybe.Value;
             
             var b = stain.Color & 255;
             var g = (stain.Color >> 8) & 255;
@@ -725,7 +725,7 @@ namespace ItemSearchPlugin {
             var stainColor = ImGui.GetColorU32(stainVec4);
             
             dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0, 0.3529f), new Vector2(0.27777f, 0.6470f), stainColor);
-            if (stain.Unknown5) {
+            if (stain.Unknown1) {
                 dl.PushClipRect(center - drawOffset2, center + drawOffset2);
                 ImGui.ColorConvertRGBtoHSV(stainVec4.X, stainVec4.Y, stainVec4.Z, out var h, out var s, out var v);
                 ImGui.ColorConvertHSVtoRGB(h, s, v - 0.5f, out var dR, out var dG, out var dB);
@@ -744,7 +744,7 @@ namespace ItemSearchPlugin {
             }
             
             dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
-            if ((showSelectedHighlight && selectedStain == stain) || ImGui.IsItemHovered()) {
+            if ((showSelectedHighlight && selectedStain.HasValue && selectedStain.Value.RowId == stain.RowId) || ImGui.IsItemHovered()) {
                 dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
             }
             
@@ -862,9 +862,9 @@ namespace ItemSearchPlugin {
                                 }
                             }
 
-                            if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
+                            if (selectedItem!.GenericItemType == GenericItem.ItemType.Item) {
                                 if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ClientState.LocalContentId != 0) {
-                                    if (selectedItem.ClassJobCategory.Row != 0) {
+                                    if (selectedItem.ClassJobCategory.RowId != 0) {
                                         plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0, selectedStain2?.RowId ?? 0);
                                     }
                                 }
@@ -953,7 +953,7 @@ namespace ItemSearchPlugin {
                     selectedItem = itemList[selectedItemIndex];
                     if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
                         if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ClientState.LocalContentId != 0) {
-                            if (selectedItem.ClassJobCategory.Row != 0) {
+                            if (selectedItem.ClassJobCategory.RowId != 0) {
                                 plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
                             }
                         }

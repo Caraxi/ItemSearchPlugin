@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.Filters {
     internal class StatSearchFilter : SearchFilter {
@@ -37,14 +37,14 @@ namespace ItemSearchPlugin.Filters {
 
         public StatSearchFilter(ItemSearchPluginConfig config, IDataManager data) : base(config) {
             Task.Run(() => {
-                var baseParamCounts = new Dictionary<byte, int>();
+                var baseParamCounts = new Dictionary<uint, int>();
 
-                foreach (var p in data.GetExcelSheet<Item>().ToList().SelectMany(i => i.UnkData59)) {
-                    if (!baseParamCounts.ContainsKey(p.BaseParam)) {
-                        baseParamCounts.Add(p.BaseParam, 0);
+                foreach (var p in data.GetExcelSheet<Item>().ToList().SelectMany(i => i.BaseParam)) {
+                    if (!baseParamCounts.ContainsKey(p.RowId)) {
+                        baseParamCounts.Add(p.RowId, 0);
                     }
 
-                    baseParamCounts[p.BaseParam] += 1;
+                    baseParamCounts[p.RowId] += 1;
                 }
 
                 var sheet = data.GetExcelSheet<BaseParam>();
@@ -54,15 +54,15 @@ namespace ItemSearchPlugin.Filters {
 
         public override string Name => "Has Stats";
         public override string NameLocalizationKey => "StatSearchFilter";
-        public override bool IsSet => Stats.Count > 0 && Stats.Any(s => s.BaseParam != null && s.BaseParam.RowId != 0);
+        public override bool IsSet => Stats.Count > 0 && Stats.Any(s => s.BaseParam.RowId != 0);
 
         public override bool CheckFilter(Item item) {
             if (baseParams == null) return true;
             if (modeAny) {
                 // Match Any
-                foreach (var s in Stats.Where(s => s.BaseParam != null && s.BaseParam.RowId != 0)) {
-                    foreach (var p in item.UnkData59) {
-                        if (p.BaseParam == s.BaseParam.RowId) {
+                foreach (var s in Stats.Where(s => s.BaseParam.RowId != 0)) {
+                    foreach (var p in item.BaseParam) {
+                        if (p.RowId == s.BaseParam.RowId) {
                             return true;
                         }
                     }
@@ -72,10 +72,10 @@ namespace ItemSearchPlugin.Filters {
             } else {
                 // Match All
 
-                foreach (var s in Stats.Where(s => s.BaseParam != null && s.BaseParam.RowId != 0)) {
+                foreach (var s in Stats.Where(s => s.BaseParam.RowId != 0)) {
                     bool foundMatch = false;
-                    foreach (var p in item.UnkData59) {
-                        if (p.BaseParam == s.BaseParam.RowId) {
+                    foreach (var p in item.BaseParam) {
+                        if (p.RowId == s.BaseParam.RowId) {
                             foundMatch = true;
                         }
                     }
@@ -107,11 +107,11 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.SetNextItemWidth(200);
 
                 if (usingTags) {
-                    string str = stat.BaseParam.Name;
+                    string str = stat.BaseParam.Name.ToString();
                     ImGui.InputText($"###statSearchFilterSelectStat{i++}", ref str, 50, ImGuiInputTextFlags.ReadOnly);
                 } else {
                     ImGui.SameLine();
-                    if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name).ToArray(), baseParams.Length, 20)) {
+                    if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name.ToString()).ToArray(), baseParams.Length, 20)) {
                         stat.BaseParamIndex = selectedParam;
                         stat.BaseParam = baseParams[selectedParam];
                         Modified = true;

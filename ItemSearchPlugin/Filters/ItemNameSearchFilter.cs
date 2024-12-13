@@ -1,4 +1,4 @@
-﻿using Lumina.Excel.GeneratedSheets;
+﻿using Lumina.Excel.Sheets;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace ItemSearchPlugin.Filters {
 
         public override bool CheckFilter(Item item) {
             if (searchRegex != null) {
-                return searchRegex.IsMatch(item.Name);
+                return searchRegex.IsMatch(item.Name.ToString());
             }
 
             return
@@ -60,7 +60,7 @@ namespace ItemSearchPlugin.Filters {
         
         public override bool CheckFilter(EventItem item) {
             if (searchRegex != null) {
-                return searchRegex.IsMatch(item.Name);
+                return searchRegex.IsMatch(item.Name.ToString());
             }
 
             return
