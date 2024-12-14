@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Dalamud.Utility;
 
 namespace ItemSearchPlugin.Filters {
     class ItemNameSearchFilter : SearchFilter {
@@ -53,7 +54,7 @@ namespace ItemSearchPlugin.Filters {
 
             return
                 item.Name.ToString().ToLower().Contains(parsedSearchText.ToLower())
-                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToString().ToLower().Contains(t)))
+                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToDalamudString().TextValue.Replace("\u0002\u001F\u0001\u0003", "-").ToLower().Contains(t)))
                 || (int.TryParse(parsedSearchText, out var parsedId) && parsedId == item.RowId)
                 || searchText.StartsWith("$") && item.Description.ToString().ToLower().Contains(parsedSearchText.Substring(1).ToLower());
         }
@@ -65,7 +66,7 @@ namespace ItemSearchPlugin.Filters {
 
             return
                 item.Name.ToString().ToLower().Contains(parsedSearchText.ToLower())
-                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToString().ToLower().Contains(t)))
+                || (searchTokens != null && searchTokens.Length > 0 && searchTokens.All(t => item.Name.ToDalamudString().TextValue.Replace("\u0002\u001F\u0001\u0003", "-").ToLower().Contains(t)))
                 || (int.TryParse(parsedSearchText, out var parsedId) && parsedId == item.RowId);
                 //|| searchText.StartsWith("$") && item.Description.ToString().ToLower().Contains(parsedSearchText.Substring(1).ToLower());
         }

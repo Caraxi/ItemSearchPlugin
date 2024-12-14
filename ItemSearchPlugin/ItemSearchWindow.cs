@@ -238,7 +238,7 @@ namespace ItemSearchPlugin {
                 
                 PushStyle(ImGuiStyleVar.WindowMinSize, new Vector2(350, 400));
 
-                ImGui.Begin(Loc.Localize("ItemSearchPlguinMainWindowHeader", $"Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.None);
+                ImGui.Begin(Loc.Localize("ItemSearchPluginMainWindowHeader", $"Item Search") + "###itemSearchPluginMainWindow", ref isOpen, ImGuiWindowFlags.None);
                 if (!isOpen) {
                     ResetStyle();
                     ImGui.End();
@@ -831,7 +831,7 @@ namespace ItemSearchPlugin {
                         ImGui.BeginChild($"###ItemContainer{j++}", rowSize, false);
                         
                         
-                        ImGui.Text($" {itemList[i].Name}");
+                        ImGui.Text($" {itemList[i].Name.Replace("\u00AD", "").Replace("\u00A0", "")}");
                         if (itemList[i].GenericItemType == GenericItem.ItemType.EventItem) {
                             ImGui.SameLine();
                             ImGui.TextDisabled(" [Key Item]");

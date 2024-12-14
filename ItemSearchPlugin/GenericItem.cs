@@ -29,7 +29,7 @@ namespace ItemSearchPlugin {
             get {
                 return itemType switch {
                     ItemType.EventItem => eventItem.Name.ToString(),
-                    ItemType.Item => item.Name.ToString(),
+                    ItemType.Item => item.Name.ExtractText().Replace("\u00AD", string.Empty), //Remove the SoftHyphens from FR/DE
                     _ => string.Empty
                 };
             }
