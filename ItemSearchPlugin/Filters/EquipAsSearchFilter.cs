@@ -146,7 +146,7 @@ namespace ItemSearchPlugin.Filters {
                     changed = true;
                 }
                 
-                ImGui.Columns(Math.Max(3, (int) (wWidth / (70 * ImGui.GetIO().FontGlobalScale))), "###equipAsClassList", false);
+                ImGui.Columns(Math.Max(3, (int) (wWidth / (80 * ImGui.GetIO().FontGlobalScale))), "###equipAsClassList", false);
                 ImGui.SetColumnWidth(0, firstColumnWith);
                 try {
                     foreach (ClassJob cj in classJobs) {

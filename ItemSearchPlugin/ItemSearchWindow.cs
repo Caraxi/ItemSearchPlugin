@@ -317,7 +317,7 @@ namespace ItemSearchPlugin {
                         if (ImGui.Button("Support on Ko-Fi")) {
                             Process.Start(new ProcessStartInfo(){
                                 UseShellExecute = true,
-                                FileName = "https://ko-fi.com/Caraxi"
+                                FileName = "https://ko-fi.com/Khayle"
                             });
                         }
                         ImGui.PopStyleColor(3);
@@ -953,8 +953,9 @@ namespace ItemSearchPlugin {
                     selectedItem = itemList[selectedItemIndex];
                     if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
                         if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ClientState.LocalContentId != 0) {
-                            if (selectedItem.ClassJobCategory.RowId != 0) {
-                                plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0);
+                            if (selectedItem.ClassJobCategory.RowId != 0)
+                            {
+                                plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0, selectedStain2?.RowId ?? 0);
                             }
                         }
                         
@@ -963,7 +964,9 @@ namespace ItemSearchPlugin {
                             plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
                         }
                     }
-                    
+
+                    keyStateUp = false;
+                    keyStateDown = false;
                 }
             } catch (Exception ex) {
                 PluginLog.Error($"{ex}");

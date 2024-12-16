@@ -13,7 +13,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.10.0.3</Version>
+		<Version>1.10.0.4</Version>
 	</PropertyGroup>
 	<ItemGroup Label="Resources">
 		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
