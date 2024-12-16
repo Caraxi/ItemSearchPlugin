@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.Sheets;
+using static ItemSearchPlugin.Filters.PatchSearchFilter;
 
 namespace ItemSearchPlugin.Filters {
     internal class StatSearchFilter : SearchFilter {
@@ -116,6 +117,10 @@ namespace ItemSearchPlugin.Filters {
                         stat.BaseParam = baseParams[selectedParam];
                         Modified = true;
                     }
+                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                    {
+                        doRemove = stat;
+                    }
                 }
             }
 
@@ -124,11 +129,13 @@ namespace ItemSearchPlugin.Filters {
                 Modified = true;
             }
 
-            if (!usingTags && ImGui.Button("+", btnSize)) {
+            if (!usingTags && ImGui.Button("+###StatSearchFilterPlus", btnSize)) {
                 var stat = new Stat();
                 Stats.Add(stat);
                 Modified = true;
             }
+
+            Stats = Stats.DistinctBy(p => p.BaseParam).OrderByDescending(p => p.BaseParamIndex).ToList();
 
             if (Stats.Count > 1) {
                 ImGui.SameLine();

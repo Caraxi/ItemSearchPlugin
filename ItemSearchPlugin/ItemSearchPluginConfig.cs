@@ -286,7 +286,7 @@ namespace ItemSearchPlugin {
 
             ImGui.Text("Show Filters: ");
 
-            ImGui.BeginChild("###scrollingFilterSelection", new Vector2(0, 180), true);
+            ImGui.BeginChild("###scrollingFilterSelection", new Vector2(0, 260), true);
 
             ImGui.Columns(2, "###itemSearchToggleFilters", false);
             foreach (var (localizationKey, englishName) in FilterNames) {
