@@ -126,7 +126,7 @@ namespace ItemSearchPlugin {
                 new LevelItemSearchFilter(pluginConfig),    
                 new PatchSearchFilter(pluginConfig),
                 new RaritySearchFilter(pluginConfig),
-                new EquipAsSearchFilter(pluginConfig, data, pluginInterface),
+                new EquipAsSearchFilter(pluginConfig, data),
                 new RaceSexSearchFilter(pluginConfig, data, pluginInterface),
                 new CraftableSearchFilter(pluginConfig, data),
                 new DesynthableSearchFilter(pluginConfig, data),

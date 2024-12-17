@@ -117,11 +117,11 @@ namespace ItemSearchPlugin.Filters
                 {
                     string stringTruePatch = ClassExtensions.GetPatch(item.RowId);
                     string stringPatch = stringTruePatch.Length > 3 ? stringTruePatch.Substring(0, 3) : stringTruePatch;
-
+#if DEBUG
                     //Patch patch = ExpansionsPatches.FirstOrDefault(p => p.ShortName == stringPatch);
-
-                    //if (patch.Expansion) requiredShortName.Substring(0, 1);
-                    //PluginLog.Debug($"{ClassExtensions.GetPatch(item.RowId)} - {stringTruePatch} -> {requiredShortName} = {patch.ShortName}");
+                    //if (patch.Expansion) selectedPatch.ShortName.Substring(0, 1);
+                    //PluginLog.Debug($"{ClassExtensions.GetPatch(item.RowId)} - {stringTruePatch} -> {selectedPatch.ShortName} = {patch.ShortName}");
+#endif
                     if (stringPatch == selectedPatch.ShortName && selectedPatches.Contains(selectedPatch)) return true;
                 }
             }
@@ -213,7 +213,7 @@ namespace ItemSearchPlugin.Filters
             if(selectedPatches.RemoveAll(p => p.Expansion == true) > 0) selectedPatches.RemoveAll(p => p.Id == 0);
             selectedPatches = selectedPatches.DistinctBy(p => p.Name).OrderByDescending(p => p.ShortName).ToList();
 
-            if (ImGui.Button("+###PatchSearchFilterPlus", btnSize))            {
+            if (ImGui.Button("+###PatchSearchFilterPlus", btnSize)) {
                 selectedPatches.Add(new Patch { Id = 0});
                 Altered = true;
             }

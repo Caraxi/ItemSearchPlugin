@@ -261,6 +261,11 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.EndCombo();
             }
 
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+            {
+                selectedCurrencyOption = null;
+            }
+
             if (selectedCurrencyOption != null && selectedCurrencyOption.SubOptions.Count > 0) {
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(-1);

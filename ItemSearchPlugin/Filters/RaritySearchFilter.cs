@@ -86,6 +86,12 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.EndCombo();
             }
 
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+            {
+                selectedValue = 0;
+                Modified = true;
+            }
+
             if (setBg) {
                 ImGui.PopStyleColor(3);
             }

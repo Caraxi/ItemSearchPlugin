@@ -68,6 +68,10 @@ namespace ItemSearchPlugin.Filters {
             if (ImGui.Combo("###desynthableSearchFilter_selection", ref selectedOption, options, options.Length, 14)) {
                 Modified = true;
             }
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+            {
+                selectedOption = 0;
+            }
             ImGui.EndChild();
         }
 

@@ -76,7 +76,8 @@ namespace ItemSearchPlugin.Filters {
             if (PluginConfig.AutoFocus && ImGui.IsWindowAppearing()) {
                 ImGui.SetKeyboardFocusHere();
             }
-            ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
+            var input = ImGui.InputText("##ItemNameSearchFilter", ref searchText, 256);
+
             ImGui.SameLine();
             ImGui.TextDisabled("(?)");
             if (ImGui.IsItemHovered()) {

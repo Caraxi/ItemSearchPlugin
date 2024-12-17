@@ -9,7 +9,6 @@ using Dalamud.Plugin.Services;
 
 namespace ItemSearchPlugin.Filters {
     class EquipAsSearchFilter : SearchFilter {
-        private readonly IDalamudPluginInterface pluginInterface;
         private List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
         private readonly List<ClassJob> classJobs;
@@ -17,8 +16,7 @@ namespace ItemSearchPlugin.Filters {
         private bool selectingClasses;
         private int selectedMode;
 
-        public EquipAsSearchFilter(ItemSearchPluginConfig config, IDataManager data, IDalamudPluginInterface pluginInterface) : base(config) {
-            this.pluginInterface = pluginInterface;
+        public EquipAsSearchFilter(ItemSearchPluginConfig config, IDataManager data) : base(config) {
             selectedClassJobs = new List<uint>();
             classJobCategories = data.GetExcelSheet<ClassJobCategory>().ToList();
             classJobs = data.GetExcelSheet<ClassJob>()

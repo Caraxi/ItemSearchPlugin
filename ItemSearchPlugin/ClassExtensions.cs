@@ -2121,7 +2121,8 @@ namespace ItemSearchPlugin {
                 case >= 38560 and <= 38569:
                 case >= 38571 and <= 38585:
                 case 38587:
-                case >= 38589 and <= 38591:
+                case 38589:
+                case 38591:
                 case >= 38593 and <= 38594:
                 case 38599:
                 case >= 38604 and <= 38620:
@@ -2249,6 +2250,7 @@ namespace ItemSearchPlugin {
                 case >= 15134 and <= 15142:
                 case 37415:
                 case 38449:
+                case 38590:
                 case 40357:
                 case 40658:
                 case 40661:
@@ -2428,8 +2430,41 @@ namespace ItemSearchPlugin {
                 case 41813:
                 case 43564:
                 case 43589:
-                case >= 44339 and <= 45590:
+                case >= 44339 and <= 44490:
+                case >= 44493 and <= 44499:
+                case >= 44502 and <= 44506:
+                case >= 44508 and <= 44604:
+                case >= 44640 and <= 44654:
+                case >= 44661 and <= 44720:
+                case >= 44744 and <= 44849:
+                case >= 44865 and <= 44867:
+                case >= 44870 and <= 44887:
+                case >= 44895 and <= 44914:
+                case >= 44925 and <= 44929:
+                case >= 44934 and <= 45017:
+                case >= 45021 and <= 45073:
+                case >= 45079 and <= 45576:
+                case >= 45579 and <= 45590:
                     return "7.1";
+                case >= 44721 and <= 44743:
+                case >= 45019 and <= 45020:
+                case 45577:
+                    return "7.11";
+                case 40666:
+                case 41472:
+                case >= 44334 and <= 44338:
+                case 44492:
+                case >= 44500 and <= 44501:
+                case 44507:
+                case >= 44605 and <= 44639:
+                case >= 44655 and <= 44660:
+                case >= 44850 and <= 44864:
+                case >= 44868 and <= 44869:
+                case >= 44888 and <= 44892:
+                case >= 44915 and <= 44924:
+                case >= 44930 and <= 44933:
+                case >= 45074 and <= 45078:
+                    return "7.15";
             }
 
             return "0";

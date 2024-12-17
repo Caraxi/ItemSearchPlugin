@@ -62,7 +62,7 @@ namespace ItemSearchPlugin.Filters {
                 ImGui.InputTextWithHint("###ItemUiCategorySearchFilterFilter", "Filter", ref categorySearchInput,  60);
                 var isFocused = ImGui.IsItemActive();
                 if (!focused) {
-                    ImGui.SetKeyboardFocusHere();
+                    ImGui.SetKeyboardFocusHere(-1);
                 }
 
                 ImGui.BeginChild("###ItemUiCategorySearchFilterDisplay", popupSize, true);
@@ -97,7 +97,12 @@ namespace ItemSearchPlugin.Filters {
                 focused = false;
                 categorySearchInput = string.Empty;
             }
-            
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+            {
+                selectedCategory = 0;
+                taggedCategory = 0;
+            }
+
             ImGui.PopItemWidth();
         }
 

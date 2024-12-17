@@ -76,6 +76,13 @@ namespace ItemSearchPlugin.Filters {
             
             ImGui.Combo("##RaceSexSearchFilter", ref selectedOption, options.Select(a => a.text).ToArray(), options.Count);
 
+            if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+            {
+                selectedOption = nonTagSelection;
+                usingTags = false;
+                Modified = true;
+            }
+
             if (ClientState?.LocalContentId != 0 && !usingTags) {
                 ImGui.SameLine();
                 
