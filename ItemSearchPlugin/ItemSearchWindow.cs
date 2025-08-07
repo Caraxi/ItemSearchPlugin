@@ -12,7 +12,7 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
 using Lumina.Excel.Sheets;
@@ -215,9 +215,9 @@ namespace ItemSearchPlugin {
             });
         }
 
-        public Vector4 HSVtoRGB(Vector4 hsv) {
-            
-            ImGui.ColorConvertHSVtoRGB(hsv.X, hsv.Y, hsv.Z, out var r, out var g, out var b);
+        public unsafe Vector4 HSVtoRGB(Vector4 hsv) {
+            float r, g, b;
+            ImGui.ColorConvertHSVtoRGB(hsv.X, hsv.Y, hsv.Z, &r, &g, &b);
             return new Vector4(r, g, b, hsv.W);
         }
 
@@ -620,15 +620,15 @@ namespace ItemSearchPlugin {
                                     using (ImRaii.Group()) {
                                         var p = ImGui.GetCursorPos();
                                         if (shade.Key == 10) {
-                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0, 0.647f), new Vector2(0.3333f, 1f));
+                                            ImGui.Image(texture.Handle, new Vector2(size), new Vector2(0, 0.647f), new Vector2(0.3333f, 1f));
                                         } else {
-                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0, 0), new Vector2(0.3333f, 0.3529f), shade.Value);
+                                            ImGui.Image(texture.Handle, new Vector2(size), new Vector2(0, 0), new Vector2(0.3333f, 0.3529f), shade.Value);
                                         }
                                         ImGui.SetCursorPos(p);
                                         if (selectedStainTab == shade.Key || ImGui.IsItemHovered()) {
-                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0.6666f, 0), new Vector2(1, 0.3529f));
+                                            ImGui.Image(texture.Handle, new Vector2(size), new Vector2(0.6666f, 0), new Vector2(1, 0.3529f));
                                         } else {
-                                            ImGui.Image(texture.ImGuiHandle, new Vector2(size), new Vector2(0.3333f, 0), new Vector2(0.6666f, 0.3529f));
+                                            ImGui.Image(texture.Handle, new Vector2(size), new Vector2(0.3333f, 0), new Vector2(0.6666f, 0.3529f));
                                         }
                                         
                                     }
@@ -701,7 +701,7 @@ namespace ItemSearchPlugin {
             }
         }
 
-        private bool StainButton(Stain? stainMaybe, Vector2 size, bool showSelectedHighlight = true) {
+        private unsafe bool StainButton(Stain? stainMaybe, Vector2 size, bool showSelectedHighlight = true) {
             ImGui.Dummy(size);
             
             var drawOffset = size / 1.5f;
@@ -713,10 +713,10 @@ namespace ItemSearchPlugin {
             if (texture == null) return ImGui.IsItemClicked();
             
             if (stainMaybe == null) {
-                dl.AddImage(texture.ImGuiHandle, center - drawOffset2, center + drawOffset2, new Vector2(0.8333333f, 0.3529412f), new Vector2(0.9444444f, 0.47058824f), 0x80FFFFFF);
-                dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
+                dl.AddImage(texture.Handle, center - drawOffset2, center + drawOffset2, new Vector2(0.8333333f, 0.3529412f), new Vector2(0.9444444f, 0.47058824f), 0x80FFFFFF);
+                dl.AddImage(texture.Handle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
                 if (ImGui.IsItemHovered()) {
-                    dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
+                    dl.AddImage(texture.Handle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
                 }
                 return ImGui.IsItemClicked();
             }
@@ -728,12 +728,13 @@ namespace ItemSearchPlugin {
             var stainVec4 = new Vector4(r / 255f, g / 255f, b / 255f, 1f);
             var stainColor = ImGui.GetColorU32(stainVec4);
             
-            dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0, 0.3529f), new Vector2(0.27777f, 0.6470f), stainColor);
+            dl.AddImage(texture.Handle, center - drawOffset, center + drawOffset, new Vector2(0, 0.3529f), new Vector2(0.27777f, 0.6470f), stainColor);
             if (stain.Unknown1) {
                 dl.PushClipRect(center - drawOffset2, center + drawOffset2);
-                ImGui.ColorConvertRGBtoHSV(stainVec4.X, stainVec4.Y, stainVec4.Z, out var h, out var s, out var v);
-                ImGui.ColorConvertHSVtoRGB(h, s, v - 0.5f, out var dR, out var dG, out var dB);
-                ImGui.ColorConvertHSVtoRGB(h, s, v + 0.8f, out var bR, out var bG, out var bB);
+                float h, s, v, dR, dG, dB, bR, bG, bB;
+                ImGui.ColorConvertRGBtoHSV(stainVec4.X, stainVec4.Y, stainVec4.Z, &h, &s, &v);
+                ImGui.ColorConvertHSVtoRGB(h, s, v - 0.5f, &dR, &dG, &dB);
+                ImGui.ColorConvertHSVtoRGB(h, s, v + 0.8f, &bR, &bG, &bB);
                 var dColor = ImGui.GetColorU32(new Vector4(dR, dG, dB, 1));
                 var bColor = ImGui.GetColorU32(new Vector4(bR, bG, bB, 1));
                 var tr = pos + size with { Y = 0 };
@@ -747,9 +748,9 @@ namespace ItemSearchPlugin {
                 dl.PopClipRect();
             }
             
-            dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
+            dl.AddImage(texture.Handle, center - drawOffset, center + drawOffset, new Vector2(0.27777f, 0.3529f), new Vector2(0.55555f, 0.64705f));
             if ((showSelectedHighlight && selectedStain.HasValue && selectedStain.Value.RowId == stain.RowId) || ImGui.IsItemHovered()) {
-                dl.AddImage(texture.ImGuiHandle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
+                dl.AddImage(texture.Handle, center - drawOffset, center + drawOffset, new Vector2(0.55555f, 0.3529f), new Vector2(0.83333f, 0.64705f));
             }
             
             return ImGui.IsItemClicked();

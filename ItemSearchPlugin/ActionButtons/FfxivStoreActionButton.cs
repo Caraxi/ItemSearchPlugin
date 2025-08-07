@@ -7,7 +7,7 @@ using System.Net;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Data;
 using Lumina.Excel.Sheets;
 using Newtonsoft.Json;

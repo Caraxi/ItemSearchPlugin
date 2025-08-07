@@ -3,7 +3,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using static ItemSearchPlugin.Filters.PatchSearchFilter;
 
@@ -112,7 +112,7 @@ namespace ItemSearchPlugin.Filters {
                     ImGui.InputText($"###statSearchFilterSelectStat{i++}", ref str, 50, ImGuiInputTextFlags.ReadOnly);
                 } else {
                     ImGui.SameLine();
-                    if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name.ToString()).ToArray(), baseParams.Length, 20)) {
+                    if (ImGui.Combo($"###statSearchFilterSelectStat{i++}", ref selectedParam, baseParams.Select(bp => bp.RowId == 0 ? Loc.Localize("StatSearchFilterSelectStat", "Select a stat...") : bp.Name.ToString()).ToArray(), 20)) {
                         stat.BaseParamIndex = selectedParam;
                         stat.BaseParam = baseParams[selectedParam];
                         Modified = true;
