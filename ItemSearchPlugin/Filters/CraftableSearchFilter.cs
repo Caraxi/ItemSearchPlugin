@@ -2,7 +2,7 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.Filters {
@@ -73,7 +73,7 @@ namespace ItemSearchPlugin.Filters {
         public override void DrawEditor() {
             ImGui.BeginChild($"###{NameLocalizationKey}Child", new Vector2(-1, 23 * ImGui.GetIO().FontGlobalScale), false, usingTags ? ImGuiWindowFlags.NoInputs : ImGuiWindowFlags.None);
             ImGui.SetNextItemWidth(-1);
-            if (ImGui.Combo("###craftableSearchFilter_selection", ref selectedOption, options, options.Length, 14)) {
+            if (ImGui.Combo("###craftableSearchFilter_selection", ref selectedOption, options, 14)) {
                 Modified = true;
             }
             if (ImGui.IsItemClicked(ImGuiMouseButton.Right))

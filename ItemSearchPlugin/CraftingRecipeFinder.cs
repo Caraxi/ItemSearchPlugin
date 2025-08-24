@@ -19,7 +19,7 @@ namespace ItemSearchPlugin {
                     return;
                 }
 
-                AgentRecipeNote.Instance()->OpenRecipeByItemId(itemID);
+                AgentRecipeNote.Instance()->SearchRecipeByItemId(itemID);
             } catch (NullReferenceException) { }
         }
 

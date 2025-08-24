@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using Lumina.Excel.Sheets;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace ItemSearchPlugin.Filters {
     class LevelItemSearchFilter : SearchFilter {

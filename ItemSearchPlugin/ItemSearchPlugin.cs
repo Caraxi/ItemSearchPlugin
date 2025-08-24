@@ -18,7 +18,7 @@ using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.Sheets;
 using HousingUnitedExterior = Lumina.Excel.Sheets.HousingUnitedExterior;
@@ -205,7 +205,7 @@ namespace ItemSearchPlugin {
         internal void DrawIcon(ushort icon, Vector2 size) {
             if (icon < 65000) {
                 var tex = TextureProvider.GetFromGameIcon(new GameIconLookup(icon, false, false, ClientLanguage.English)).GetWrapOrDefault();
-                if (tex == null || tex.ImGuiHandle == nint.Zero) {
+                if (tex == null || tex.Handle == nint.Zero) {
                     if (iconFailTime.ElapsedMilliseconds > 1000) {
                         ImGui.BeginChild("FailedTexture", size, true);
                         ImGui.Text(icon.ToString());
@@ -216,7 +216,7 @@ namespace ItemSearchPlugin {
                     }
                 } else {
                     iconFailTime.Reset();
-                    ImGui.Image(tex.ImGuiHandle, size);
+                    ImGui.Image(tex.Handle, size);
                 }
             } else {
                 ImGui.BeginChild("NoIcon", size, true);

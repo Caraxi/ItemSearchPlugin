@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;

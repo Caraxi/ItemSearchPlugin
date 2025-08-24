@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.ActionButtons {
