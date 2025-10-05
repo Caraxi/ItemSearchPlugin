@@ -54,7 +54,7 @@ namespace ItemSearchPlugin {
         internal List<GenericItem> LuminaItems { get; set; }
         internal ClientLanguage LuminaItemsClientLanguage { get; set; }
         
-        public static DataSite[] DataSites { get; private set; } = new DataSite[] { new GarlandToolsDataSite() }; 
+        public static DataSite[] DataSites { get; private set; } = new DataSite[] { new GarlandToolsDataSite(ClientState) }; 
         public string Version { get; private set; }
 
         public void Dispose() {
@@ -70,7 +70,7 @@ namespace ItemSearchPlugin {
             PluginConfig = (ItemSearchPluginConfig) PluginInterface.GetPluginConfig() ?? new ItemSearchPluginConfig();
 
             DataSites = [
-                new GarlandToolsDataSite(),
+                new GarlandToolsDataSite(ClientState),
                 new TeamcraftDataSite(PluginConfig),
                 new GamerEscapeDatasite()
             ];

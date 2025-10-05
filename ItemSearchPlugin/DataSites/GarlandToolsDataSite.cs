@@ -1,11 +1,16 @@
-﻿using Lumina.Excel.Sheets;
+using Dalamud.Game;
+using Lumina.Excel.Sheets;
+using Dalamud.Plugin.Services;
 
 namespace ItemSearchPlugin.DataSites {
-    public class GarlandToolsDataSite : DataSite {
+    public class GarlandToolsDataSite(IClientState clientState) : DataSite {
         public override string Name => "Garland Tools";
 
         public override string NameTranslationKey => "GarlandToolsDataSite";
 
-        public override string GetItemUrl(Item item) => $"https://www.garlandtools.org/db/#item/{item.RowId}";
+        private bool Language => clientState.ClientLanguage == ClientLanguage.ChineseSimplified;
+        private string Suffix => Language ? "cn" : "org";
+
+        public override string GetItemUrl(Item item) => $"https://www.garlandtools.{Suffix}/db/#item/{item.RowId}";
     }
 }
