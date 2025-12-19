@@ -1,7 +1,7 @@
-﻿<Project Sdk="Dalamud.NET.Sdk/13.0.0">
+﻿<Project Sdk="Dalamud.NET.Sdk/14.0.1">
 	<PropertyGroup Label="Target">
 		<PlatformTarget>x64</PlatformTarget>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Platforms>x64</Platforms>
 	</PropertyGroup>
@@ -13,7 +13,7 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.10.3.0</Version>
+		<Version>1.10.4.0</Version>
 	</PropertyGroup>
 	<ItemGroup Label="Resources">
 		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
@@ -41,7 +41,7 @@
 		<Compile Remove="Filters\CollectableSearchFilter.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Linq.Async" Version="6.0.1" PrivateAssets="all" />
+		<PackageReference Include="System.Linq.Async" Version="7.0.0" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Localization\de.json" />

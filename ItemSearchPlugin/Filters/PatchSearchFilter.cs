@@ -83,7 +83,8 @@ namespace ItemSearchPlugin.Filters
             new Patch { Id = 38, Index = 71, Name = "Dawntrail", ShortName = "7.0" },
             new Patch { Id = 39, Index = 72, Name = "Crossroads", ShortName = "7.1" },
             new Patch { Id = 40, Index = 73, Name = "Seekers of Eternity", ShortName = "7.2" },
-            new Patch { Id = 41, Index = 71, Name = "Promises of Tomorrow", ShortName = "7.3" }
+            new Patch { Id = 41, Index = 74, Name = "Promises of Tomorrow", ShortName = "7.3" },
+            new Patch { Id = 42, Index = 75, Name = "Into the Mist", ShortName = "7.4" }
         };
 
 

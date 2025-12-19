@@ -477,7 +477,7 @@ namespace ItemSearchPlugin {
                     ImGui.SameLine();
 
 
-                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Value.Unknown1 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Value.IsMetallic ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
                     PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
 
                     if (StainButton(selectedStain, new Vector2(ImGui.GetItemRectSize().Y), false)) {
@@ -509,7 +509,7 @@ namespace ItemSearchPlugin {
                     ImGui.SameLine();
 
 
-                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Value.Unknown1 ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
+                    ImGui.PushStyleColor(ImGuiCol.Border, selectedStain != null && selectedStain.Value.IsMetallic ? new Vector4(1, 1, 0, 1) : new Vector4(1, 1, 1, 1));
                     PushStyle(ImGuiStyleVar.FrameBorderSize, 2f);
 
                     if (StainButton(selectedStain2, new Vector2(ImGui.GetItemRectSize().Y), false)) {
@@ -729,7 +729,7 @@ namespace ItemSearchPlugin {
             var stainColor = ImGui.GetColorU32(stainVec4);
             
             dl.AddImage(texture.Handle, center - drawOffset, center + drawOffset, new Vector2(0, 0.3529f), new Vector2(0.27777f, 0.6470f), stainColor);
-            if (stain.Unknown1) {
+            if (stain.IsMetallic) {
                 dl.PushClipRect(center - drawOffset2, center + drawOffset2);
                 float h, s, v, dR, dG, dB, bR, bG, bB;
                 ImGui.ColorConvertRGBtoHSV(stainVec4.X, stainVec4.Y, stainVec4.Z, &h, &s, &v);

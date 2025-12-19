@@ -130,6 +130,7 @@ namespace ItemSearchPlugin {
                 id %= 500000;
 			switch (id)
 			{
+
 				case >= 1 and <= 24:
 				case >= 366 and <= 1675:
 				case 1677:
@@ -2386,7 +2387,8 @@ namespace ItemSearchPlugin {
 				case 44256:
 				case >= 44258 and <= 44259:
 				case >= 44261 and <= 44268:
-				case >= 44270 and <= 44304:
+				case >= 44270 and <= 44271:
+				case >= 44273 and <= 44304:
 				case >= 44310 and <= 44322:
 				case >= 44324 and <= 44333:
 					return "7.0";
@@ -2448,16 +2450,19 @@ namespace ItemSearchPlugin {
 				case 43564:
 				case 43589:
 				case >= 44339 and <= 44352:
-				case >= 44365 and <= 44490:
+				case >= 44365 and <= 44483:
+				case >= 44485 and <= 44490:
 				case >= 44493 and <= 44497:
 				case 44499:
 				case 44502:
 				case 44506:
 				case 44508:
-				case >= 44510 and <= 44604:
+				case >= 44510 and <= 44512:
+				case >= 44514 and <= 44604:
 				case >= 44640 and <= 44654:
 				case >= 44661 and <= 44666:
-				case >= 44676 and <= 44720:
+				case >= 44676 and <= 44691:
+				case >= 44694 and <= 44720:
 				case >= 44744 and <= 44849:
 				case >= 44865 and <= 44867:
 				case >= 44870 and <= 44887:
@@ -2504,7 +2509,8 @@ namespace ItemSearchPlugin {
 				case >= 48086 and <= 48089:
 				case >= 48097 and <= 48104:
 				case >= 48106 and <= 48135:
-				case >= 48145 and <= 48152:
+				case 48145:
+				case >= 48149 and <= 48152:
 				case 48155:
 				case 48159:
 				case >= 48173 and <= 48193:
@@ -2518,7 +2524,9 @@ namespace ItemSearchPlugin {
 				case >= 48737 and <= 48741:
 					return "7.2";
 				case >= 45041 and <= 45044:
-				case >= 47728 and <= 47905:
+				case >= 47728 and <= 47741:
+				case >= 47743 and <= 47862:
+				case >= 47864 and <= 47905:
 				case >= 47924 and <= 47927:
 				case 47962:
 				case >= 47967 and <= 47970:
@@ -2549,19 +2557,35 @@ namespace ItemSearchPlugin {
 				case >= 45591 and <= 45967:
 				case >= 46181 and <= 46184:
 				case >= 46279 and <= 46282:
-				case >= 46849 and <= 46859:
+				case 46849:
+				case 46851:
+				case 46853:
+				case >= 46858 and <= 46859:
 				case >= 46972 and <= 46973:
 				case 46975:
 				case 46977:
 				case 46983:
-				case >= 47096 and <= 47107:
+				case >= 47096 and <= 47097:
+				case 47099:
+				case 47103:
+				case 47107:
 				case >= 47220 and <= 47221:
 				case 47223:
 				case 47225:
 				case 47229:
 				case >= 47344 and <= 47345:
-				case >= 47347 and <= 47603:
-				case >= 47716 and <= 47723:
+				case 47347:
+				case 47351:
+				case 47353:
+				case >= 47468 and <= 47475:
+				case >= 47592 and <= 47593:
+				case 47595:
+				case 47601:
+				case 47603:
+				case >= 47716 and <= 47717:
+				case 47719:
+				case 47721:
+				case 47723:
 				case >= 47929 and <= 47937:
 				case 47966:
 				case 47985:
@@ -2580,28 +2604,140 @@ namespace ItemSearchPlugin {
 				case 48750:
 					return "7.21";
 				case 43605:
-				case >= 46087 and <= 46179:
-				case >= 46185 and <= 46262:
-				case >= 46736 and <= 46848:
+				case >= 46087 and <= 46088:
+				case 46090:
+				case >= 46100 and <= 46120:
+				case >= 46130 and <= 46133:
+				case >= 46135 and <= 46148:
+				case 46171:
+				case 46179:
+				case 46185:
+				case >= 46188 and <= 46196:
+				case >= 46243 and <= 46244:
+				case >= 46246 and <= 46254:
+				case >= 46260 and <= 46262:
+				case >= 46736 and <= 46766:
+				case >= 46773 and <= 46779:
+				case 46789:
+				case 46792:
+				case 46794:
+				case >= 46796 and <= 46797:
+				case >= 46803 and <= 46815:
+				case 46822:
+				case >= 46826 and <= 46829:
+				case >= 46835 and <= 46837:
+				case >= 46842 and <= 46843:
+				case >= 46845 and <= 46846:
+				case 46848:
 				case >= 46860 and <= 46971:
 				case 46974:
 				case 46976:
 				case >= 46978 and <= 46982:
 				case >= 46984 and <= 47005:
-				case >= 47108 and <= 47219:
+				case >= 47108 and <= 47206:
+				case >= 47212 and <= 47219:
 				case 47222:
 				case 47224:
 				case >= 47226 and <= 47228:
-				case >= 47230 and <= 47340:
+				case >= 47230 and <= 47262:
+				case >= 47270 and <= 47278:
+				case >= 47301 and <= 47311:
+				case >= 47338 and <= 47340:
 				case 47346:
-				case >= 47604 and <= 47715:
+				case >= 47604 and <= 47608:
+				case 47701:
+				case 47704:
+				case >= 47706 and <= 47715:
 				case >= 47725 and <= 47727:
 				case 47960:
 				case >= 47963 and <= 47965:
 				case 48005:
 				case >= 48194 and <= 48198:
-				case >= 48994 and <= 49121:
+				case >= 48994 and <= 49008:
+				case 49121:
 					return "7.3";
+				case >= 46155 and <= 46156:
+				case >= 46173 and <= 46177:
+				case 46768:
+				case 46782:
+				case 46795:
+				case >= 46816 and <= 46817:
+				case 46825:
+				case >= 46838 and <= 46840:
+				case 46850:
+				case 46852:
+				case >= 46854 and <= 46857:
+				case >= 47006 and <= 47027:
+				case 47095:
+				case >= 47279 and <= 47287:
+				case 47336:
+				case 47343:
+				case >= 47354 and <= 47467:
+				case >= 47480 and <= 47584:
+				case 47594:
+				case >= 47596 and <= 47600:
+				case 47602:
+				case >= 47609 and <= 47700:
+				case >= 47702 and <= 47703:
+				case 47718:
+				case 47720:
+				case 47973:
+				case 48093:
+				case 48146:
+				case >= 48751 and <= 48993:
+				case >= 49009 and <= 49120:
+					return "7.31";
+				case >= 46124 and <= 46129:
+				case 46134:
+				case >= 46149 and <= 46154:
+				case >= 46157 and <= 46170:
+				case 46172:
+				case 46178:
+				case >= 46186 and <= 46187:
+				case >= 46197 and <= 46242:
+				case 46245:
+				case >= 46255 and <= 46259:
+				case 46263:
+				case 46767:
+				case >= 46769 and <= 46772:
+				case >= 46780 and <= 46781:
+				case >= 46783 and <= 46788:
+				case 46790:
+				case 46793:
+				case >= 46798 and <= 46802:
+				case >= 46818 and <= 46821:
+				case >= 46830 and <= 46834:
+				case 46844:
+				case 46847:
+				case >= 47028 and <= 47094:
+				case 47098:
+				case >= 47100 and <= 47102:
+				case >= 47104 and <= 47106:
+				case >= 47207 and <= 47211:
+				case >= 47288 and <= 47300:
+				case >= 47312 and <= 47335:
+				case 47337:
+				case >= 47341 and <= 47342:
+				case >= 47476 and <= 47478:
+				case 47705:
+				case 47722:
+				case 47724:
+				case 47742:
+					return "7.35";
+				case 49:
+				case 44272:
+				case 44484:
+				case 44513:
+				case 44692:
+				case 46089:
+				case >= 46091 and <= 46099:
+				case >= 46121 and <= 46123:
+				case >= 47263 and <= 47269:
+				case >= 47348 and <= 47350:
+				case 47352:
+				case 47863:
+				case >= 49122 and <= 50852:
+					return "7.4";
 			}
 
 			return "0";
