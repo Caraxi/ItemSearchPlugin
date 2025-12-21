@@ -136,6 +136,7 @@ namespace ItemSearchPlugin {
                 new BooleanSearchFilter(pluginConfig, "Unique", "Unique", "Not Unique", BooleanSearchFilter.CheckFunc("IsUnique")),
                 new BooleanSearchFilter(pluginConfig, "Tradable", "Tradable", "Not Tradable", BooleanSearchFilter.CheckFunc("IsUntradable", true)),
                 new BooleanSearchFilter(pluginConfig, "Key Item", "Key Item", "Normal Item", ((item, t, f) => !t), ((item, t, f) => !f)),
+                new BooleanSearchFilter(pluginConfig, "Multi-slot", "Multi-slot", "Not Multi-slot", (i, t, f) => (i.EquipSlotCategory.RowId >= 15 && i.EquipSlotCategory.RowId <= 22 && i.EquipSlotCategory.RowId != 17) ? t : f),
                 new BooleanSearchFilter(pluginConfig, "Favourites", "Favourite", "Not Favourite", (i, t, f) => pluginConfig.Favorites.Contains(i.RowId) ? t : f),
                 new BooleanSearchFilter(pluginConfig, "Store Item", "On Store", "Not On Store", (item, t, f) => {
                     if (t) {
