@@ -177,12 +177,12 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
-            } else if(usingTags == false && ClientState.LocalContentId != 0) {
+            } else if(usingTags == false && PlayerState.ContentId != 0) {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Current Class")) {
-                    if (ClientState?.LocalPlayer != null) {
+                    if (ObjectTable.LocalPlayer != null) {
                         selectedClassJobs.Clear();
-                        selectedClassJobs.Add(ClientState.LocalPlayer.ClassJob.RowId);
+                        selectedClassJobs.Add(ObjectTable.LocalPlayer.ClassJob.RowId);
                         changed = true;
                     }
                 }
@@ -206,8 +206,8 @@ namespace ItemSearchPlugin.Filters {
         public override bool ParseTag(string tag) {
             var t = tag.ToLower().Trim();
             var selfTag = false;
-            if (t == "self" && ClientState?.LocalPlayer != null) {
-                t = ClientState.LocalPlayer.ClassJob.Value.Abbreviation.ToString().ToLower();
+            if (t == "self" && ObjectTable.LocalPlayer != null) {
+                t = ObjectTable.LocalPlayer.ClassJob.Value.Abbreviation.ToString().ToLower();
                 selfTag = true;
             }
 

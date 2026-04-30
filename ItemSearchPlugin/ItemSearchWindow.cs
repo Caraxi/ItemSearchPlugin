@@ -467,7 +467,7 @@ namespace ItemSearchPlugin {
                     ImGui.Text(Loc.Localize("DalamudItemNotLinkable", "This item is not linkable."));
                 }
 
-                if (pluginConfig.ShowTryOn && ClientState?.LocalContentId != 0) {
+                if (pluginConfig.ShowTryOn && PlayerState.ContentId != 0) {
                     ImGui.SameLine();
                     if (ImGui.Checkbox(Loc.Localize("ItemSearchTryOnButton", "Try On"), ref autoTryOn)) {
                         pluginConfig.TryOnEnabled = autoTryOn;
@@ -540,7 +540,7 @@ namespace ItemSearchPlugin {
                     
                 }
 
-                if (pluginConfig.ShowPreviewHousing && ClientState?.LocalContentId != 0) {
+                if (pluginConfig.ShowPreviewHousing && PlayerState.ContentId != 0) {
                     if (GameGui.GetAddonByName("HousingEditInterior", 1) != IntPtr.Zero || GameGui.GetAddonByName("HousingEditExterior", 1) != IntPtr.Zero) {
                         ImGui.SameLine();
                         ImGui.Dummy(new Vector2(15, 0));
@@ -868,13 +868,13 @@ namespace ItemSearchPlugin {
                             }
 
                             if (selectedItem!.GenericItemType == GenericItem.ItemType.Item) {
-                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ClientState.LocalContentId != 0) {
+                                if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && PlayerState.ContentId != 0) {
                                     if (selectedItem.ClassJobCategory.RowId != 0) {
                                         plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0, selectedStain2?.RowId ?? 0);
                                     }
                                 }
 
-                                if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ClientState.LocalContentId != 0) {
+                                if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && PlayerState.ContentId != 0) {
                                     plugin.PreviewHousingItem(selectedItem);
                                     plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
                                 }
@@ -957,14 +957,14 @@ namespace ItemSearchPlugin {
                     doSearchScroll = true;
                     selectedItem = itemList[selectedItemIndex];
                     if (selectedItem.GenericItemType == GenericItem.ItemType.Item) {
-                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && ClientState.LocalContentId != 0) {
+                        if ((autoTryOn = autoTryOn && pluginConfig.ShowTryOn) && plugin.TryOn.CanUseTryOn && PlayerState.ContentId != 0) {
                             if (selectedItem.ClassJobCategory.RowId != 0)
                             {
                                 plugin.TryOn.TryOnItem((Item)selectedItem, selectedStain?.RowId ?? 0, selectedStain2?.RowId ?? 0);
                             }
                         }
                         
-                        if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && ClientState.LocalContentId != 0) {
+                        if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && PlayerState.ContentId != 0) {
                             plugin.PreviewHousingItem(selectedItem);
                             plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
                         }
