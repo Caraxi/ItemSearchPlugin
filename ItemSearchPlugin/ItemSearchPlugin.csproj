@@ -1,4 +1,4 @@
-﻿<Project Sdk="Dalamud.NET.Sdk/14.0.1">
+﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
 	<PropertyGroup Label="Target">
 		<PlatformTarget>x64</PlatformTarget>
 		<TargetFramework>net10.0-windows</TargetFramework>
@@ -13,31 +13,9 @@
 	</PropertyGroup>
 	<PropertyGroup Label="Feature">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>1.10.4.0</Version>
-	</PropertyGroup>
-	<ItemGroup Label="Resources">
-		<None Include="$(SolutionDir)/Resources/**/*" CopyToOutputDirectory="PreserveNewest" Visible="false" />
-	</ItemGroup>
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
-		<PathMap>$(AppOutputBase)=F:\repo\ItemSearch\ItemSearchPlugin</PathMap>
-		<Deterministic>true</Deterministic>
-	</PropertyGroup>
-	<PropertyGroup>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<AssemblyName>ItemSearchPlugin</AssemblyName>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<Version>1.10.5.0</Version>
 	</PropertyGroup>
 	<ItemGroup>
-		<Compile Remove="Resources\**" />
-		<EmbeddedResource Remove="Resources\**" />
-		<None Remove="Resources\**" />
-		<Compile Remove="Publish\**" />
-		<EmbeddedResource Remove="Publish\**" />
-		<Compile Remove="lib\**" />
-		<EmbeddedResource Remove="lib\**" />
 		<Compile Remove="Filters\CollectableSearchFilter.cs" />
 	</ItemGroup>
 	<ItemGroup>

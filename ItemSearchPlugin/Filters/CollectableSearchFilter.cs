@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Logging;
-using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Dalamud.Bindings.ImGui;
+using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin.Filters {
     class CollectableSearchFilter : SearchFilter {
@@ -31,8 +31,8 @@ namespace ItemSearchPlugin.Filters {
         }
         public override string Name => "Collectable";
         public override string NameLocalizationKey => "CollectableSearchFilter";
-        public override bool IsSet => ItemSearchPlugin.ClientState.LocalContentId != 0 && SelectedMode != Mode.NotSelected;
-        public override bool ShowFilter => ItemSearchPlugin.ClientState.LocalContentId != 0 && base.ShowFilter;
+        public override bool IsSet => PlayerState.ContentId != 0 && SelectedMode != Mode.NotSelected;
+        public override bool ShowFilter => PlayerState.ContentId != 0 && base.ShowFilter;
 
         private ushort[] collectableActionType = { 853, 1013, 1322, 2136, 2633, 3357, 4107, 25183, 20086 };
         private ItemSearchPlugin plugin;
@@ -58,11 +58,11 @@ namespace ItemSearchPlugin.Filters {
             var isCollectable = false;
             var isOwned = false;
 
-            if (item == null) return (false, false);
-            if (item.ItemAction == null || item.ItemAction.Row == 0) return (false, false);
+            if (item.RowId == null) return (false, false);
+            if (item.ItemAction.IsValid == null || item.ItemAction.RowId == 0) return (false, false);
 
-            var actionId = item.ItemAction.Row;
-            var actionType = item.ItemAction.Value.Type;
+            var actionId = item.ItemAction.RowId;
+            var actionType = item.ItemAction.Value.Kind;
             
             if (collectableActionType.Contains(actionType)) {
                 isCollectable = true;

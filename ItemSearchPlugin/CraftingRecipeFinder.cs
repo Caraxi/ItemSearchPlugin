@@ -13,7 +13,7 @@ namespace ItemSearchPlugin {
         private unsafe void OnFrameworkUpdate(IFramework framework) {
             try {
                 if (disposed) return;
-                if (ClientState.LocalContentId == 0) return;
+                if (PlayerState.ContentId == 0) return;
                 if (!searchQueue.TryDequeue(out var itemID)) {
                     Framework.Update -= OnFrameworkUpdate;
                     return;

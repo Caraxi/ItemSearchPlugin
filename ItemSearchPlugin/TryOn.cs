@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dalamud.Game;
+using Dalamud.Game.Chat;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
@@ -80,8 +81,8 @@ namespace ItemSearchPlugin {
             }
         }
 
-        private void HandleChat(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled) {
-            if (type != XivChatType.SystemMessage || message.Payloads.Count <= 1 || (ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Payloads[message.Payloads.Count - 1] : message.Payloads[0]) is not TextPayload a) return;
+        private void HandleChat(IHandleableChatMessage message) {
+            if (message.LogKind != XivChatType.SystemMessage || message.Message.Payloads.Count <= 1 || (ClientState.ClientLanguage == ClientLanguage.Japanese ? message.Message.Payloads[message.Message.Payloads.Count - 1] : message.Message.Payloads[0]) is not TextPayload a) return;
             var handle = ClientState.ClientLanguage switch {
                 ClientLanguage.English => a.Text?.StartsWith("You try on ") ?? false,
                 ClientLanguage.German => a.Text?.StartsWith("Da hast ") ?? false,
@@ -89,7 +90,7 @@ namespace ItemSearchPlugin {
                 ClientLanguage.Japanese => a.Text?.EndsWith("を試着した。") ?? false,
                 _ => false,
             };
-            if (handle) isHandled = true;
+            if (handle) message.PreventOriginal();
         }
 
         public void Dispose() {

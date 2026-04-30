@@ -1,5 +1,4 @@
-﻿using Dalamud.Plugin;
-using Dalamud.Bindings.ImGui;
+﻿using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Text;
 using Dalamud.Plugin.Services;
 
 namespace ItemSearchPlugin.Filters {
-    class EquipAsSearchFilter : SearchFilter {
+    internal class EquipAsSearchFilter : SearchFilter {
         private List<uint> selectedClassJobs;
         private readonly List<ClassJobCategory> classJobCategories;
         private readonly List<ClassJob> classJobs;
@@ -177,12 +176,12 @@ namespace ItemSearchPlugin.Filters {
 
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, firstColumnWith);
-            } else if(usingTags == false && ClientState.LocalContentId != 0) {
+            } else if(usingTags == false && PlayerState.ContentId != 0) {
                 ImGui.SameLine();
                 if (ImGui.SmallButton("Current Class")) {
-                    if (ClientState?.LocalPlayer != null) {
+                    if (PlayerState.IsLoaded) {
                         selectedClassJobs.Clear();
-                        selectedClassJobs.Add(ClientState.LocalPlayer.ClassJob.RowId);
+                        selectedClassJobs.Add(PlayerState.ClassJob.RowId);
                         changed = true;
                     }
                 }
@@ -190,15 +189,15 @@ namespace ItemSearchPlugin.Filters {
         }
 
 
-        private bool usingTags = false;
+        private bool usingTags;
 
-        private List<uint> nonTagSelection;
+        private List<uint>? nonTagSelection;
 
-        public override void ClearTags() {
-            if (usingTags) {
-                selectedClassJobs = nonTagSelection;
-                usingTags = false;
-            }
+        public override void ClearTags()
+        {
+            if (!usingTags) return;
+            if (nonTagSelection != null) selectedClassJobs = nonTagSelection;
+            usingTags = false;
         }
 
         public override bool IsFromTag => usingTags;
@@ -206,8 +205,8 @@ namespace ItemSearchPlugin.Filters {
         public override bool ParseTag(string tag) {
             var t = tag.ToLower().Trim();
             var selfTag = false;
-            if (t == "self" && ClientState?.LocalPlayer != null) {
-                t = ClientState.LocalPlayer.ClassJob.Value.Abbreviation.ToString().ToLower();
+            if (t == "self" && PlayerState.IsLoaded) {
+                t = PlayerState.ClassJob.Value.Abbreviation.ToString().ToLower();
                 selfTag = true;
             }
 

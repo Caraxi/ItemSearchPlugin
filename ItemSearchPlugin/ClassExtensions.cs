@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Reflection;
 using Lumina.Excel.Sheets;
 
@@ -124,2624 +124,2614 @@ namespace ItemSearchPlugin {
         }
 
         // Absolutely shamelessly stolen from https://raw.githubusercontent.com/Kouzukii/ffxiv-whichpatchwasthat/refs/heads/main/WhichPatchWasThat/ItemPatchMapper.cs
-        public static string? GetPatch(ulong id)
-        {
-            if (id < 2000000)
-                id %= 500000;
-			switch (id)
-			{
+        public static string? GetPatch(ulong id) {
+            if (id > uint.MaxValue) return null;
 
-				case >= 1 and <= 24:
-				case >= 366 and <= 1675:
-				case 1677:
-				case >= 1680 and <= 1746:
-				case >= 1749 and <= 1816:
-				case >= 1819 and <= 1886:
-				case >= 1889 and <= 1955:
-				case >= 1958 and <= 2052:
-				case >= 2055 and <= 2104:
-				case >= 2106 and <= 2140:
-				case >= 2142 and <= 2192:
-				case >= 2195 and <= 2206:
-				case >= 2209 and <= 2214:
-				case 2219:
-				case >= 2221 and <= 2300:
-				case >= 2302 and <= 2306:
-				case >= 2314 and <= 2649:
-				case >= 2651 and <= 2945:
-				case 2951:
-				case >= 2958 and <= 2992:
-				case >= 2994 and <= 3262:
-				case >= 3274 and <= 3503:
-				case >= 3515 and <= 3728:
-				case >= 3740 and <= 3947:
-				case >= 3959 and <= 4079:
-				case >= 4091 and <= 4183:
-				case >= 4196 and <= 4288:
-				case >= 4301 and <= 4390:
-				case >= 4404 and <= 4529:
-				case >= 4542 and <= 5607:
-				case >= 5609 and <= 5612:
-				case >= 5614 and <= 5617:
-				case >= 5619 and <= 5622:
-				case >= 5624 and <= 5627:
-				case >= 5629 and <= 5632:
-				case >= 5634 and <= 5637:
-				case >= 5639 and <= 5642:
-				case >= 5644 and <= 5647:
-				case >= 5649 and <= 5652:
-				case >= 5654 and <= 5657:
-				case >= 5659 and <= 5662:
-				case >= 5664 and <= 5667:
-				case >= 5669 and <= 5672:
-				case >= 5674 and <= 5677:
-				case >= 5679 and <= 5682:
-				case >= 5684 and <= 5687:
-				case >= 5689 and <= 5692:
-				case >= 5694 and <= 5697:
-				case >= 5699 and <= 5702:
-				case >= 5704 and <= 5707:
-				case >= 5709 and <= 5712:
-				case >= 5714 and <= 5717:
-				case >= 5719 and <= 5722:
-				case >= 5724 and <= 5735:
-				case >= 5737 and <= 5740:
-				case >= 5742 and <= 5743:
-				case >= 5745 and <= 5748:
-				case 5752:
-				case 5754:
-				case >= 5756 and <= 5757:
-				case >= 5760 and <= 5762:
-				case >= 5764 and <= 5765:
-				case >= 5768 and <= 5769:
-				case 5771:
-				case 5774:
-				case 5776:
-				case 5780:
-				case 5783:
-				case >= 5787 and <= 5789:
-				case 5794:
-				case 5796:
-				case >= 5801 and <= 5802:
-				case 5804:
-				case 5806:
-				case >= 5809 and <= 5810:
-				case >= 5813 and <= 5941:
-				case >= 5946 and <= 6031:
-				case >= 6049 and <= 6108:
-				case >= 6138 and <= 6158:
-				case 6160:
-				case 6162:
-				case >= 6164 and <= 6179:
-				case 6183:
-				case >= 6185 and <= 6187:
-				case >= 6189 and <= 6195:
-				case >= 6197 and <= 6205:
-				case 6207:
-				case >= 6209 and <= 6210:
-				case >= 6212 and <= 6216:
-				case >= 6218 and <= 6224:
-				case >= 6231 and <= 6269:
-				case 13004:
-					return "1.0";
-				case 1678:
-				case 1747:
-				case 1817:
-				case 1887:
-				case 1956:
-				case 2053:
-				case 2105:
-				case >= 2215 and <= 2216:
-				case >= 2308 and <= 2309:
-				case >= 2946 and <= 2950:
-				case >= 3263 and <= 3267:
-				case >= 3504 and <= 3508:
-				case >= 3729 and <= 3733:
-				case >= 3948 and <= 3952:
-				case >= 4080 and <= 4084:
-				case >= 4184 and <= 4189:
-				case >= 4289 and <= 4294:
-				case >= 4391 and <= 4396:
-				case >= 4530 and <= 4535:
-				case >= 6225 and <= 6230:
-				case >= 6270 and <= 6319:
-					return "2.0";
-				case >= 5942 and <= 5945:
-				case >= 6033 and <= 6048:
-					return "2.05";
-				case 25:
-				case 1679:
-				case 1748:
-				case 1818:
-				case 1888:
-				case 1957:
-				case 2054:
-				case 2141:
-				case >= 2207 and <= 2208:
-				case >= 2217 and <= 2218:
-				case 2301:
-				case 2311:
-				case >= 2952 and <= 2957:
-				case >= 3268 and <= 3273:
-				case >= 3509 and <= 3514:
-				case >= 3734 and <= 3739:
-				case >= 3953 and <= 3958:
-				case >= 4085 and <= 4090:
-				case >= 4190 and <= 4195:
-				case >= 4295 and <= 4300:
-				case >= 4397 and <= 4403:
-				case >= 4536 and <= 4541:
-				case 5744:
-				case 5749:
-				case 5751:
-				case 5753:
-				case 5755:
-				case 5759:
-				case 5767:
-				case 5770:
-				case 5773:
-				case 5777:
-				case 5779:
-				case 5781:
-				case 5786:
-				case >= 5790 and <= 5791:
-				case >= 5797 and <= 5799:
-				case 5807:
-				case 5812:
-				case 6110:
-				case 6112:
-				case >= 6114 and <= 6115:
-				case 6159:
-				case 6161:
-				case 6163:
-				case 6180:
-				case 6184:
-				case 6188:
-				case 6196:
-				case 6208:
-				case 6211:
-				case 6217:
-				case >= 6320 and <= 6498:
-				case 6501:
-				case >= 6503 and <= 6540:
-				case >= 6542 and <= 6599:
-				case >= 6601 and <= 6692:
-				case >= 6704 and <= 7005:
-				case >= 7007 and <= 7056:
-					return "2.1";
-				case 6111:
-				case >= 6116 and <= 6137:
-					return "2.16";
-				case 6502:
-				case 6600:
-				case 7006:
-					return "2.15";
-				case 26:
-				case >= 2193 and <= 2194:
-				case 5736:
-				case 5741:
-				case 5750:
-				case 5758:
-				case 5763:
-				case 5766:
-				case 5772:
-				case 5775:
-				case 5778:
-				case 5782:
-				case >= 5784 and <= 5785:
-				case >= 5792 and <= 5793:
-				case 5795:
-				case 5800:
-				case 5803:
-				case 5805:
-				case 5808:
-				case 5811:
-				case >= 6499 and <= 6500:
-				case >= 6693 and <= 6703:
-				case >= 7059 and <= 7101:
-				case >= 7108 and <= 7117:
-				case >= 7122 and <= 7123:
-				case >= 7126 and <= 7157:
-				case >= 7159 and <= 7359:
-				case >= 7444 and <= 7564:
-				case 7566:
-				case >= 7568 and <= 7798:
-				case >= 7802 and <= 7862:
-					return "2.2";
-				case >= 7863 and <= 7885:
-					return "2.28";
-				case >= 7360 and <= 7443:
-					return "2.25";
-				case 27:
-				case 6206:
-				case >= 7102 and <= 7107:
-				case >= 7118 and <= 7121:
-				case 7158:
-				case 7799:
-				case >= 7894 and <= 7951:
-				case 7958:
-				case >= 7964 and <= 7967:
-				case >= 7969 and <= 8051:
-				case >= 8135 and <= 8156:
-				case >= 8165 and <= 8173:
-				case >= 8182 and <= 8188:
-				case >= 8190 and <= 8199:
-				case >= 8201 and <= 8205:
-				case 8207:
-				case >= 8209 and <= 8218:
-				case >= 8224 and <= 8561:
-				case >= 8563 and <= 8567:
-				case >= 8570 and <= 8572:
-					return "2.3";
-				case 6113:
-				case >= 7124 and <= 7125:
-				case >= 8052 and <= 8110:
-				case >= 8112 and <= 8115:
-				case >= 8117 and <= 8118:
-				case >= 8120 and <= 8123:
-				case >= 8125 and <= 8127:
-				case >= 8129 and <= 8134:
-				case >= 8157 and <= 8163:
-				case >= 8174 and <= 8180:
-				case 8189:
-				case 8208:
-				case 8222:
-				case 8562:
-				case >= 8568 and <= 8569:
-				case >= 8576 and <= 8581:
-					return "2.35";
-				case >= 8649 and <= 8659:
-				case >= 8703 and <= 8716:
-				case >= 8718 and <= 8720:
-				case >= 8722 and <= 8724:
-				case 8726:
-				case >= 8732 and <= 8733:
-				case >= 8743 and <= 8744:
-					return "2.38";
-				case 28:
-				case 1676:
-				case 7567:
-				case >= 7886 and <= 7893:
-				case >= 7952 and <= 7957:
-				case >= 7959 and <= 7963:
-				case 8200:
-				case >= 8582 and <= 8648:
-				case >= 8660 and <= 8668:
-				case 8717:
-				case >= 8752 and <= 8784:
-				case >= 8786 and <= 8790:
-				case >= 8793 and <= 8798:
-				case >= 8805 and <= 8809:
-				case >= 8811 and <= 8821:
-				case >= 8831 and <= 8836:
-				case 8841:
-				case >= 8876 and <= 9031:
-				case >= 9036 and <= 9047:
-				case >= 9052 and <= 9057:
-				case >= 9062 and <= 9067:
-				case >= 9072 and <= 9077:
-				case >= 9093 and <= 9267:
-				case >= 9283 and <= 9289:
-				case >= 9291 and <= 9317:
-				case >= 9322 and <= 9344:
-				case >= 9346 and <= 9350:
-				case >= 9352 and <= 9372:
-				case >= 9374 and <= 9375:
-				case >= 9377 and <= 9378:
-				case >= 9380 and <= 9461:
-				case >= 9467 and <= 9490:
-					return "2.4";
-				case 8111:
-				case 8116:
-				case 8119:
-				case 8124:
-				case 8128:
-				case 8164:
-				case 8575:
-				case >= 8669 and <= 8702:
-				case 8721:
-				case 8725:
-				case 8745:
-				case 8748:
-				case 8750:
-				case >= 8791 and <= 8792:
-				case >= 8799 and <= 8802:
-				case 8804:
-				case 8810:
-				case >= 8823 and <= 8828:
-				case 8830:
-				case >= 9268 and <= 9282:
-				case 9290:
-				case >= 9318 and <= 9321:
-				case 9345:
-				case >= 9491 and <= 9559:
-					return "2.45";
-				case 8734:
-				case 8737:
-				case 8739:
-				case 8741:
-				case 8785:
-				case >= 8837 and <= 8838:
-				case >= 8844 and <= 8875:
-				case >= 9032 and <= 9035:
-				case >= 9048 and <= 9051:
-				case >= 9058 and <= 9061:
-				case >= 9068 and <= 9071:
-				case >= 9078 and <= 9092:
-				case 9373:
-				case 9376:
-				case 9379:
-				case >= 9717 and <= 9724:
-				case >= 9726 and <= 9737:
-				case >= 9739 and <= 9740:
-				case >= 9743 and <= 9771:
-				case >= 9901 and <= 10004:
-				case >= 10032 and <= 10041:
-				case >= 10047 and <= 10050:
-				case >= 10052 and <= 10053:
-				case >= 10071 and <= 10073:
-				case 10076:
-				case >= 10080 and <= 10082:
-				case 10086:
-				case >= 10090 and <= 10093:
-				case 10096:
-				case >= 10099 and <= 10110:
-				case >= 10112 and <= 10124:
-				case 10127:
-				case >= 10132 and <= 10146:
-				case >= 10152 and <= 10154:
-					return "2.5";
-				case 9725:
-				case >= 10067 and <= 10070:
-				case 10077:
-				case 10087:
-				case 10111:
-					return "2.55";
-				case 29:
-				case 2307:
-				case 6181:
-				case 7565:
-				case 9351:
-				case >= 9560 and <= 9629:
-				case 9738:
-				case >= 9741 and <= 9742:
-				case >= 9772 and <= 9853:
-				case >= 9855 and <= 9856:
-				case >= 9858 and <= 9859:
-				case >= 9861 and <= 9862:
-				case >= 9864 and <= 9865:
-				case >= 9867 and <= 9868:
-				case >= 9870 and <= 9871:
-				case >= 9873 and <= 9874:
-				case >= 9876 and <= 9877:
-				case >= 9879 and <= 9880:
-				case >= 9882 and <= 9885:
-				case >= 9887 and <= 9890:
-				case >= 9892 and <= 9893:
-				case >= 9895 and <= 9900:
-				case >= 10005 and <= 10024:
-				case >= 10026 and <= 10031:
-				case >= 10042 and <= 10046:
-				case 10051:
-				case >= 10054 and <= 10066:
-				case >= 10078 and <= 10079:
-				case >= 10083 and <= 10085:
-				case >= 10088 and <= 10089:
-				case >= 10094 and <= 10095:
-				case >= 10097 and <= 10098:
-				case 10125:
-				case >= 10128 and <= 10131:
-				case >= 10147 and <= 10151:
-					return "2.51";
-				case 30:
-				case 2220:
-				case 2650:
-				case 2993:
-				case 5608:
-				case 5613:
-				case 5618:
-				case 5623:
-				case 5628:
-				case 5633:
-				case 5638:
-				case 5643:
-				case 5648:
-				case 5653:
-				case 5658:
-				case 5663:
-				case 5668:
-				case 5673:
-				case 5678:
-				case 5683:
-				case 5688:
-				case 5693:
-				case 5698:
-				case 5703:
-				case 5708:
-				case 5713:
-				case 5718:
-				case 5723:
-				case 6032:
-				case 6109:
-				case 7968:
-				case 8574:
-				case >= 8727 and <= 8731:
-				case >= 8839 and <= 8840:
-				case >= 9462 and <= 9463:
-				case >= 9645 and <= 9668:
-				case >= 9670 and <= 9700:
-				case >= 9702 and <= 9716:
-				case 10025:
-				case 10074:
-				case >= 10155 and <= 10179:
-				case >= 10307 and <= 10308:
-				case 10310:
-				case >= 10322 and <= 10324:
-				case >= 10329 and <= 10331:
-				case >= 10335 and <= 10373:
-				case >= 10386 and <= 10675:
-				case >= 10677 and <= 10682:
-				case >= 10684 and <= 10689:
-				case >= 10691 and <= 10696:
-				case >= 10698 and <= 10703:
-				case >= 10705 and <= 10710:
-				case >= 10712 and <= 10717:
-				case >= 10719 and <= 10724:
-				case >= 10726 and <= 10731:
-				case >= 10733 and <= 10738:
-				case >= 10740 and <= 10745:
-				case >= 10747 and <= 10752:
-				case >= 10754 and <= 10759:
-				case >= 10761 and <= 10766:
-				case >= 10768 and <= 10773:
-				case >= 10775 and <= 10780:
-				case >= 10782 and <= 10787:
-				case >= 10789 and <= 10794:
-				case >= 10796 and <= 10801:
-				case >= 10803 and <= 10808:
-				case >= 10810 and <= 10815:
-				case >= 10817 and <= 10822:
-				case >= 10824 and <= 10829:
-				case >= 10831 and <= 10836:
-				case >= 10838 and <= 10843:
-				case >= 10845 and <= 10850:
-				case >= 10852 and <= 10857:
-				case >= 10859 and <= 10864:
-				case >= 10866 and <= 10871:
-				case >= 10873 and <= 10878:
-				case >= 10880 and <= 10885:
-				case >= 10887 and <= 10892:
-				case >= 10894 and <= 10899:
-				case >= 10901 and <= 10906:
-				case >= 10908 and <= 10913:
-				case >= 10915 and <= 10920:
-				case >= 10922 and <= 10927:
-				case >= 10929 and <= 10934:
-				case >= 10936 and <= 10941:
-				case >= 10943 and <= 10948:
-				case >= 10950 and <= 10955:
-				case >= 10957 and <= 10962:
-				case >= 10964 and <= 11447:
-				case >= 11586 and <= 11737:
-				case >= 11871 and <= 11917:
-				case >= 11919 and <= 11921:
-				case >= 11923 and <= 11925:
-				case >= 11927 and <= 11929:
-				case >= 11931 and <= 11933:
-				case >= 11935 and <= 11937:
-				case >= 11939 and <= 11941:
-				case >= 11943 and <= 11945:
-				case >= 11947 and <= 11949:
-				case >= 11951 and <= 11953:
-				case >= 11955 and <= 11971:
-				case >= 11973 and <= 11999:
-				case >= 12001 and <= 12012:
-				case >= 12014 and <= 12015:
-				case >= 12017 and <= 12018:
-				case >= 12020 and <= 12021:
-				case >= 12023 and <= 12024:
-				case >= 12026 and <= 12027:
-				case >= 12029 and <= 12030:
-				case >= 12032 and <= 12033:
-				case >= 12035 and <= 12039:
-				case 12041:
-				case >= 12044 and <= 12046:
-				case >= 12048 and <= 12049:
-				case >= 12051 and <= 12059:
-				case 12061:
-				case >= 12063 and <= 12064:
-				case >= 12066 and <= 12069:
-				case >= 12072 and <= 12075:
-				case >= 12077 and <= 12092:
-				case >= 12094 and <= 12103:
-				case >= 12108 and <= 12123:
-				case >= 12125 and <= 12132:
-				case >= 12134 and <= 12141:
-				case >= 12143 and <= 12150:
-				case >= 12152 and <= 12159:
-				case >= 12161 and <= 12168:
-				case >= 12170 and <= 12177:
-				case >= 12179 and <= 12186:
-				case >= 12188 and <= 12195:
-				case >= 12197 and <= 12204:
-				case >= 12206 and <= 12212:
-				case >= 12214 and <= 12253:
-				case >= 12256 and <= 12279:
-				case >= 12356 and <= 12511:
-				case >= 12518 and <= 12522:
-				case >= 12524 and <= 12526:
-				case >= 12528 and <= 12566:
-				case >= 12568 and <= 12572:
-				case >= 12574 and <= 12583:
-				case >= 12585 and <= 12592:
-				case >= 12594 and <= 12616:
-				case >= 12622 and <= 12632:
-				case >= 12634 and <= 12651:
-				case >= 12653 and <= 12673:
-				case >= 12698 and <= 12710:
-				case >= 12713 and <= 12837:
-				case >= 12841 and <= 12929:
-				case >= 12936 and <= 12945:
-				case >= 12966 and <= 12973:
-				case >= 12985 and <= 12989:
-				case >= 12991 and <= 13003:
-					return "3.0";
-				case 10075:
-				case >= 11448 and <= 11509:
-				case 12047:
-				case 12062:
-				case 12104:
-				case 12106:
-				case 12254:
-				case 12652:
-				case >= 12674 and <= 12680:
-					return "3.01";
-				case 8803:
-				case 8822:
-				case 8829:
-				case >= 10316 and <= 10321:
-				case >= 10332 and <= 10333:
-				case 12042:
-				case 12065:
-				case 12093:
-				case >= 12711 and <= 12712:
-				case 12990:
-				case >= 13062 and <= 13063:
-				case 13079:
-				case >= 13098 and <= 13102:
-				case >= 13111 and <= 13113:
-					return "3.07";
-				case 31:
-				case 8573:
-				case >= 8842 and <= 8843:
-				case >= 9630 and <= 9644:
-				case >= 10180 and <= 10306:
-				case 10309:
-				case 10311:
-				case >= 10325 and <= 10327:
-				case >= 10374 and <= 10385:
-				case 10676:
-				case 10683:
-				case 10690:
-				case 10697:
-				case 10704:
-				case 10711:
-				case 10718:
-				case 10725:
-				case 10732:
-				case 10739:
-				case 10746:
-				case 10753:
-				case 10760:
-				case 10767:
-				case 10774:
-				case 10781:
-				case 10788:
-				case 10795:
-				case 10802:
-				case 10809:
-				case 10816:
-				case 10823:
-				case 10830:
-				case 10837:
-				case 10844:
-				case 10851:
-				case 10858:
-				case 10865:
-				case 10872:
-				case 10879:
-				case 10886:
-				case 10893:
-				case 10900:
-				case 10907:
-				case 10914:
-				case 10921:
-				case 10928:
-				case 10935:
-				case 10942:
-				case 10949:
-				case 10956:
-				case 10963:
-				case >= 11510 and <= 11585:
-				case >= 11738 and <= 11870:
-				case 11918:
-				case 11922:
-				case 11926:
-				case 11930:
-				case 11934:
-				case 11938:
-				case 11942:
-				case 11946:
-				case 11950:
-				case 11954:
-				case 11972:
-				case 12000:
-				case 12013:
-				case 12016:
-				case 12019:
-				case 12022:
-				case 12025:
-				case 12028:
-				case 12031:
-				case 12034:
-				case 12040:
-				case 12060:
-				case 12076:
-				case 12105:
-				case 12107:
-				case 12255:
-				case >= 12280 and <= 12355:
-				case >= 12513 and <= 12517:
-				case 12523:
-				case 12527:
-				case 12567:
-				case 12573:
-				case 12584:
-				case 12593:
-				case >= 12617 and <= 12621:
-				case 12633:
-				case >= 12681 and <= 12684:
-				case 12838:
-				case 12840:
-				case >= 12931 and <= 12935:
-				case >= 12946 and <= 12965:
-				case >= 12974 and <= 12984:
-				case >= 13005 and <= 13052:
-					return "3.05";
-				case 8738:
-				case 8740:
-				case 8742:
-				case 8749:
-				case 8751:
-				case 9464:
-				case 12050:
-				case 12071:
-				case >= 13055 and <= 13058:
-				case >= 13064 and <= 13078:
-				case 13084:
-				case >= 13090 and <= 13097:
-				case >= 13114 and <= 13222:
-				case >= 13237 and <= 13284:
-				case >= 13286 and <= 13297:
-				case >= 13321 and <= 13334:
-				case >= 13354 and <= 13566:
-				case >= 13625 and <= 13631:
-				case >= 13637 and <= 13638:
-				case >= 13640 and <= 13708:
-				case >= 13711 and <= 13717:
-				case >= 13720 and <= 13723:
-				case >= 13726 and <= 13740:
-				case >= 13742 and <= 13775:
-					return "3.1";
-				case 12124:
-				case 12133:
-				case 12142:
-				case 12151:
-				case 12160:
-				case 12169:
-				case 12178:
-				case 12187:
-				case 12196:
-				case 12205:
-				case 12213:
-				case >= 13080 and <= 13083:
-				case >= 13223 and <= 13236:
-				case >= 13298 and <= 13299:
-				case >= 13567 and <= 13624:
-				case >= 13632 and <= 13636:
-				case >= 13987 and <= 13990:
-					return "3.15";
-				case 32:
-				case 9465:
-				case >= 13059 and <= 13061:
-				case >= 13085 and <= 13089:
-				case 13285:
-				case >= 13300 and <= 13320:
-				case 13639:
-				case >= 13724 and <= 13725:
-				case 13741:
-				case >= 13790 and <= 13877:
-				case >= 14003 and <= 14006:
-				case >= 14014 and <= 14053:
-				case >= 14058 and <= 14070:
-				case >= 14080 and <= 14083:
-				case >= 14085 and <= 14103:
-				case >= 14106 and <= 14164:
-				case >= 14176 and <= 14840:
-				case >= 14850 and <= 14853:
-				case >= 14868 and <= 14869:
-				case >= 14884 and <= 14898:
-				case >= 14900 and <= 14903:
-				case >= 14924 and <= 14944:
-				case >= 14955 and <= 14957:
-				case >= 14959 and <= 14981:
-				case >= 15097 and <= 15112:
-					return "3.2";
-				case 8206:
-				case 9854:
-				case 9857:
-				case 9860:
-				case 9863:
-				case 9866:
-				case 9869:
-				case 9872:
-				case 9875:
-				case 9878:
-				case 9881:
-				case 9886:
-				case 9891:
-				case 9894:
-				case 13104:
-				case >= 13335 and <= 13337:
-				case >= 13341 and <= 13342:
-				case >= 13776 and <= 13789:
-				case 14054:
-				case 14084:
-				case >= 14861 and <= 14867:
-				case >= 14870 and <= 14883:
-				case 14899:
-				case >= 14904 and <= 14923:
-				case 14958:
-				case >= 15115 and <= 15129:
-					return "3.25";
-				case 15156:
-				case 15163:
-				case >= 15167 and <= 15222:
-				case 15266:
-				case 15422:
-				case >= 15424 and <= 15425:
-				case >= 15430 and <= 15431:
-				case 15434:
-				case 15443:
-				case 15446:
-				case 15448:
-				case >= 15467 and <= 15471:
-				case >= 15612 and <= 15614:
-				case >= 15811 and <= 15812:
-				case >= 15842 and <= 15844:
-				case 15933:
-				case >= 15938 and <= 15944:
-				case 15946:
-				case >= 16147 and <= 16151:
-					return "3.35";
-				case 9466:
-				case 9669:
-				case 9701:
-				case 12839:
-				case >= 13892 and <= 13926:
-				case >= 14007 and <= 14013:
-				case >= 14055 and <= 14057:
-				case >= 14071 and <= 14079:
-				case >= 14104 and <= 14105:
-				case >= 14841 and <= 14849:
-				case >= 15130 and <= 15133:
-				case 15143:
-				case >= 15145 and <= 15155:
-				case >= 15157 and <= 15161:
-				case >= 15164 and <= 15166:
-				case >= 15223 and <= 15236:
-				case 15265:
-				case >= 15267 and <= 15283:
-				case 15287:
-				case 15291:
-				case 15295:
-				case 15299:
-				case >= 15303 and <= 15421:
-				case 15423:
-				case 15427:
-				case 15429:
-				case >= 15432 and <= 15433:
-				case >= 15435 and <= 15440:
-				case 15442:
-				case >= 15444 and <= 15445:
-				case 15447:
-				case >= 15450 and <= 15461:
-				case >= 15472 and <= 15475:
-				case >= 15478 and <= 15479:
-				case >= 15505 and <= 15583:
-				case >= 15615 and <= 15638:
-				case >= 15645 and <= 15771:
-				case 15779:
-				case 15783:
-				case 15787:
-				case 15791:
-				case 15795:
-				case >= 15799 and <= 15810:
-				case >= 15813 and <= 15841:
-				case >= 15854 and <= 15872:
-				case >= 15893 and <= 15918:
-				case >= 15921 and <= 15932:
-				case >= 15935 and <= 15936:
-				case 15945:
-				case >= 15947 and <= 15949:
-					return "3.3";
-				case 33:
-				case >= 8735 and <= 8736:
-				case >= 13709 and <= 13710:
-				case >= 14171 and <= 14175:
-				case >= 14854 and <= 14860:
-				case >= 14945 and <= 14954:
-				case 15095:
-				case 15284:
-				case 15288:
-				case 15292:
-				case 15296:
-				case 15300:
-				case >= 15462 and <= 15466:
-				case >= 15476 and <= 15477:
-				case >= 15495 and <= 15504:
-				case >= 15584 and <= 15611:
-				case >= 15639 and <= 15644:
-				case >= 15772 and <= 15778:
-				case 15780:
-				case 15784:
-				case 15788:
-				case 15792:
-				case 15796:
-				case >= 15873 and <= 15892:
-				case >= 15950 and <= 15956:
-				case >= 15964 and <= 15965:
-				case >= 15967 and <= 15977:
-				case >= 15979 and <= 15984:
-				case >= 15988 and <= 15991:
-				case 16002:
-				case 16009:
-				case >= 16013 and <= 16026:
-				case >= 16028 and <= 16030:
-				case 16040:
-				case 16049:
-				case >= 16065 and <= 16066:
-				case >= 16152 and <= 16165:
-				case >= 16170 and <= 16558:
-				case >= 16562 and <= 16564:
-				case >= 16568 and <= 16575:
-				case >= 16596 and <= 16611:
-				case 16613:
-				case >= 16616 and <= 16735:
-				case >= 16742 and <= 16771:
-				case >= 16778 and <= 16796:
-				case >= 16799 and <= 16811:
-				case >= 16816 and <= 16828:
-				case >= 16831 and <= 16911:
-				case >= 16926 and <= 16929:
-					return "3.4";
-				case 13339:
-				case >= 15237 and <= 15250:
-				case 15966:
-				case 15978:
-				case >= 15985 and <= 15987:
-				case >= 15992 and <= 16001:
-				case >= 16003 and <= 16008:
-				case 16010:
-				case 16064:
-				case >= 16166 and <= 16169:
-				case 16612:
-				case >= 16614 and <= 16615:
-				case >= 16736 and <= 16741:
-				case 16777:
-				case >= 16797 and <= 16798:
-				case >= 16812 and <= 16815:
-				case >= 16829 and <= 16830:
-				case >= 16912 and <= 16925:
-					return "3.45";
-				case 10328:
-				case >= 14982 and <= 14983:
-				case 15096:
-				case >= 15251 and <= 15264:
-				case 15285:
-				case 15289:
-				case 15293:
-				case 15297:
-				case 15301:
-				case 15428:
-				case >= 15487 and <= 15491:
-				case 15781:
-				case 15785:
-				case 15789:
-				case 15793:
-				case 15797:
-				case >= 15957 and <= 15963:
-				case 16027:
-				case >= 16042 and <= 16048:
-				case >= 16067 and <= 16145:
-				case >= 16559 and <= 16560:
-				case >= 16565 and <= 16567:
-				case >= 16772 and <= 16775:
-				case 16930:
-				case >= 16932 and <= 16933:
-				case >= 16935 and <= 16985:
-				case 17000:
-				case >= 17003 and <= 17041:
-				case >= 17043 and <= 17136:
-				case >= 17138 and <= 17164:
-				case >= 17343 and <= 17469:
-				case >= 17476 and <= 17490:
-				case >= 17495 and <= 17499:
-				case >= 17522 and <= 17523:
-				case >= 17525 and <= 17527:
-				case >= 17529 and <= 17548:
-				case >= 17572 and <= 17574:
-				case >= 17577 and <= 17593:
-				case >= 17595 and <= 17603:
-				case >= 17618 and <= 17625:
-				case >= 17630 and <= 17656:
-				case >= 17663 and <= 17664:
-				case >= 17679 and <= 17683:
-				case >= 17685 and <= 17686:
-				case 17688:
-				case >= 17690 and <= 17717:
-					return "3.5";
-				case >= 13878 and <= 13891:
-				case 15286:
-				case 15290:
-				case 15294:
-				case 15298:
-				case 15302:
-				case 15441:
-				case >= 15480 and <= 15481:
-				case 15782:
-				case 15786:
-				case 15790:
-				case 15794:
-				case 15798:
-				case >= 16050 and <= 16063:
-				case 16776:
-				case 16934:
-				case >= 16986 and <= 16999:
-				case 17042:
-				case >= 17244 and <= 17342:
-				case >= 17471 and <= 17474:
-				case >= 17500 and <= 17521:
-				case 17524:
-				case 17528:
-				case >= 17549 and <= 17571:
-				case 17575:
-				case 17594:
-				case 17626:
-				case >= 17657 and <= 17662:
-				case >= 17665 and <= 17678:
-				case 17684:
-				case 17687:
-				case 17689:
-				case >= 17723 and <= 17725:
-				case >= 17727 and <= 17730:
-					return "3.55";
-				case >= 17165 and <= 17243:
-				case >= 17491 and <= 17494:
-				case 17576:
-				case >= 17627 and <= 17629:
-					return "3.56";
-				case >= 15919 and <= 15920:
-					return "3.57";
-				case 35:
-				case 16041:
-				case >= 17844 and <= 17846:
-				case >= 17861 and <= 17863:
-				case >= 17868 and <= 17876:
-				case 17966:
-				case >= 17975 and <= 17976:
-				case 17978:
-				case >= 17996 and <= 18005:
-				case >= 18969 and <= 19046:
-				case >= 19104 and <= 19107:
-				case >= 19118 and <= 19121:
-				case >= 19203 and <= 19436:
-				case >= 19499 and <= 19505:
-				case 19810:
-				case 19818:
-				case 19836:
-				case 19840:
-				case 19876:
-				case >= 19896 and <= 19900:
-				case 19929:
-				case 19935:
-				case >= 19948 and <= 19949:
-				case >= 19960 and <= 19961:
-				case 19990:
-				case 19992:
-				case 19998:
-				case 20005:
-				case >= 20261 and <= 20271:
-				case 20304:
-				case >= 20475 and <= 20478:
-				case 20532:
-				case 20534:
-				case 20537:
-				case 20548:
-				case 20556:
-				case >= 20564 and <= 20566:
-				case >= 20622 and <= 20625:
-				case >= 20628 and <= 20636:
-					return "4.05";
-				case 34:
-				case 13991:
-				case >= 16031 and <= 16039:
-				case 17137:
-				case 17726:
-				case >= 17740 and <= 17843:
-				case >= 17847 and <= 17860:
-				case >= 17864 and <= 17865:
-				case >= 17877 and <= 17962:
-				case 17965:
-				case >= 17967 and <= 17974:
-				case 17977:
-				case >= 17979 and <= 17980:
-				case >= 17982 and <= 17995:
-				case >= 18006 and <= 18968:
-				case >= 19047 and <= 19103:
-				case >= 19109 and <= 19110:
-				case >= 19123 and <= 19202:
-				case >= 19506 and <= 19589:
-				case >= 19612 and <= 19661:
-				case >= 19727 and <= 19756:
-				case >= 19767 and <= 19769:
-				case >= 19771 and <= 19809:
-				case >= 19811 and <= 19817:
-				case >= 19819 and <= 19835:
-				case >= 19837 and <= 19839:
-				case >= 19841 and <= 19875:
-				case >= 19877 and <= 19895:
-				case >= 19901 and <= 19928:
-				case >= 19930 and <= 19934:
-				case >= 19936 and <= 19947:
-				case >= 19950 and <= 19959:
-				case >= 19962 and <= 19989:
-				case 19991:
-				case >= 19993 and <= 19997:
-				case >= 19999 and <= 20004:
-				case >= 20006 and <= 20260:
-				case >= 20272 and <= 20303:
-				case >= 20306 and <= 20309:
-				case >= 20311 and <= 20439:
-				case >= 20442 and <= 20474:
-				case >= 20489 and <= 20531:
-				case 20533:
-				case 20536:
-				case >= 20538 and <= 20542:
-				case >= 20544 and <= 20547:
-				case >= 20549 and <= 20555:
-				case >= 20557 and <= 20562:
-				case >= 20568 and <= 20621:
-				case 20627:
-				case >= 20637 and <= 20639:
-				case >= 20642 and <= 20674:
-				case 20677:
-					return "4.0";
-				case 19108:
-				case >= 19111 and <= 19117:
-				case 19122:
-				case >= 19437 and <= 19498:
-				case >= 19590 and <= 19600:
-				case >= 19662 and <= 19716:
-				case 20543:
-				case >= 20675 and <= 20676:
-					return "4.01";
-				case 20305:
-				case >= 20678 and <= 20679:
-				case >= 21027 and <= 21032:
-				case 21051:
-				case 21192:
-				case 21277:
-				case 21307:
-					return "4.15";
-				case >= 8746 and <= 8747:
-				case >= 13718 and <= 13719:
-				case >= 15482 and <= 15486:
-				case 15934:
-				case 16561:
-				case >= 16588 and <= 16595:
-				case 16931:
-				case 17002:
-				case >= 17604 and <= 17617:
-				case >= 17731 and <= 17739:
-				case 17963:
-				case 17981:
-				case >= 19601 and <= 19611:
-				case >= 19717 and <= 19726:
-				case >= 19757 and <= 19766:
-				case 19770:
-				case 20310:
-				case >= 20440 and <= 20441:
-				case >= 20680 and <= 20745:
-				case >= 20747 and <= 20817:
-				case >= 20819 and <= 20922:
-				case >= 20943 and <= 20958:
-				case >= 20975 and <= 21026:
-				case >= 21033 and <= 21034:
-				case >= 21042 and <= 21048:
-				case 21050:
-				case >= 21052 and <= 21060:
-				case >= 21062 and <= 21188:
-				case >= 21193 and <= 21196:
-				case >= 21198 and <= 21207:
-				case >= 21274 and <= 21276:
-				case >= 21278 and <= 21306:
-				case >= 21317 and <= 21320:
-					return "4.1";
-				case 20818:
-				case >= 20959 and <= 20974:
-				case 21197:
-					return "4.11";
-				case 36:
-				case >= 16578 and <= 16587:
-				case >= 20479 and <= 20488:
-				case 20535:
-				case 20563:
-				case 20567:
-				case 20641:
-				case 20746:
-				case 21049:
-				case >= 21189 and <= 21190:
-				case >= 21208 and <= 21273:
-				case >= 21321 and <= 21800:
-				case >= 21804 and <= 21813:
-				case >= 21815 and <= 21830:
-				case >= 21833 and <= 21836:
-				case >= 21839 and <= 21851:
-				case >= 21854 and <= 21869:
-				case >= 21871 and <= 21873:
-				case >= 21875 and <= 21901:
-				case >= 21903 and <= 21906:
-				case >= 21908 and <= 21909:
-				case >= 21911 and <= 21914:
-				case 21916:
-				case >= 21920 and <= 21941:
-				case >= 22307 and <= 22356:
-				case >= 22361 and <= 22366:
-				case >= 22377 and <= 22404:
-				case >= 22411 and <= 22451:
-				case 22459:
-				case >= 22462 and <= 22478:
-				case >= 22481 and <= 22498:
-				case >= 22500 and <= 22507:
-					return "4.2";
-				case 21035:
-				case 21191:
-				case >= 21801 and <= 21803:
-				case >= 21831 and <= 21832:
-				case 21852:
-				case 21870:
-				case 21874:
-				case 21907:
-				case >= 21917 and <= 21919:
-				case >= 21942 and <= 22306:
-				case >= 22358 and <= 22360:
-				case >= 22452 and <= 22456:
-				case 22461:
-				case >= 22479 and <= 22480:
-				case 22499:
-				case >= 22508 and <= 22519:
-				case 22522:
-					return "4.25";
-				case 22532:
-				case >= 22538 and <= 22541:
-				case 22566:
-				case 22579:
-				case >= 22581 and <= 22582:
-				case >= 22977 and <= 22996:
-				case >= 23023 and <= 23024:
-				case 23029:
-				case 23033:
-				case >= 23044 and <= 23045:
-				case 23048:
-				case >= 23163 and <= 23164:
-				case 23166:
-				case 23177:
-				case >= 23223 and <= 23225:
-				case >= 23227 and <= 23228:
-				case >= 23318 and <= 23320:
-				case 23365:
-				case 23369:
-				case 23381:
-					return "4.35";
-				case 6541:
-				case 17470:
-				case 20640:
-				case 21838:
-				case 21902:
-				case 21915:
-				case >= 22367 and <= 22376:
-				case 22460:
-				case >= 22520 and <= 22521:
-				case >= 22525 and <= 22531:
-				case >= 22533 and <= 22537:
-				case >= 22543 and <= 22560:
-				case >= 22562 and <= 22564:
-				case >= 22567 and <= 22570:
-				case >= 22572 and <= 22578:
-				case 22580:
-				case >= 22584 and <= 22598:
-				case >= 22616 and <= 22745:
-				case >= 22748 and <= 22867:
-				case >= 22884 and <= 22924:
-				case >= 23001 and <= 23002:
-				case >= 23013 and <= 23020:
-				case 23022:
-				case >= 23025 and <= 23026:
-				case >= 23030 and <= 23032:
-				case >= 23034 and <= 23037:
-				case 23043:
-				case 23047:
-				case >= 23051 and <= 23075:
-				case >= 23097 and <= 23119:
-				case 23124:
-				case >= 23143 and <= 23162:
-				case 23165:
-				case >= 23167 and <= 23174:
-				case 23176:
-				case >= 23178 and <= 23210:
-				case >= 23220 and <= 23222:
-				case 23226:
-				case >= 23230 and <= 23308:
-				case >= 23315 and <= 23317:
-				case >= 23321 and <= 23341:
-				case 23360:
-				case 23364:
-				case 23367:
-				case >= 23370 and <= 23376:
-				case 23380:
-				case 23382:
-					return "4.3";
-				case 22542:
-				case 22561:
-				case 22571:
-				case 22583:
-				case >= 22599 and <= 22615:
-				case >= 22925 and <= 22976:
-				case >= 22997 and <= 23000:
-				case >= 23027 and <= 23028:
-				case 23046:
-				case >= 23049 and <= 23050:
-				case >= 23126 and <= 23142:
-				case >= 23213 and <= 23219:
-				case 23229:
-				case 23309:
-				case >= 23342 and <= 23359:
-				case 23366:
-				case >= 23377 and <= 23379:
-				case >= 23383 and <= 23393:
-					return "4.36";
-				case 22565:
-				case >= 22868 and <= 22883:
-				case >= 23120 and <= 23123:
-				case 23175:
-					return "4.31";
-				case 21814:
-				case >= 22457 and <= 22458:
-				case 23858:
-				case >= 23881 and <= 23882:
-				case >= 23888 and <= 23890:
-				case 23907:
-				case >= 23912 and <= 23913:
-				case 23915:
-				case >= 24000 and <= 24001:
-				case >= 24007 and <= 24142:
-				case 24144:
-				case 24163:
-				case 24219:
-				case 24224:
-				case 24233:
-				case 24283:
-				case >= 24285 and <= 24287:
-				case >= 24312 and <= 24313:
-				case 24339:
-				case 24343:
-					return "4.45";
-				case 37:
-				case 15449:
-				case >= 21308 and <= 21316:
-				case 21910:
-				case >= 23003 and <= 23012:
-				case 23021:
-				case >= 23038 and <= 23042:
-				case >= 23076 and <= 23096:
-				case >= 23361 and <= 23362:
-				case >= 23394 and <= 23857:
-				case >= 23859 and <= 23865:
-				case >= 23867 and <= 23880:
-				case >= 23883 and <= 23887:
-				case >= 23891 and <= 23906:
-				case >= 23908 and <= 23911:
-				case 23914:
-				case >= 23916 and <= 23981:
-				case >= 23984 and <= 23986:
-				case >= 23989 and <= 23991:
-				case >= 23993 and <= 23994:
-				case >= 23997 and <= 23999:
-				case >= 24002 and <= 24006:
-				case 24143:
-				case >= 24145 and <= 24147:
-				case >= 24158 and <= 24162:
-				case >= 24165 and <= 24218:
-				case 24222:
-				case >= 24226 and <= 24232:
-				case 24234:
-				case >= 24240 and <= 24265:
-				case >= 24274 and <= 24282:
-				case 24284:
-				case >= 24288 and <= 24311:
-				case >= 24316 and <= 24338:
-				case >= 24340 and <= 24342:
-					return "4.4";
-				case 15144:
-				case >= 17718 and <= 17722:
-				case 21061:
-				case 22405:
-				case >= 22407 and <= 22410:
-				case >= 22746 and <= 22747:
-				case >= 23310 and <= 23314:
-				case 23363:
-				case 23983:
-				case >= 23987 and <= 23988:
-				case >= 23995 and <= 23996:
-				case >= 24220 and <= 24221:
-				case >= 24314 and <= 24315:
-				case >= 24344 and <= 24347:
-				case >= 24368 and <= 24487:
-				case >= 24489 and <= 24534:
-				case 24536:
-				case >= 24538 and <= 24593:
-				case >= 24599 and <= 24607:
-				case >= 24612 and <= 24615:
-				case >= 24622 and <= 24623:
-				case 24625:
-				case >= 24627 and <= 24628:
-				case 24634:
-				case 24636:
-				case 24639:
-				case 24642:
-				case >= 24796 and <= 24799:
-				case 24801:
-				case >= 24803 and <= 24805:
-				case >= 24821 and <= 24831:
-				case >= 24859 and <= 24869:
-				case 24872:
-				case >= 24874 and <= 24876:
-				case >= 24878 and <= 24879:
-				case >= 24881 and <= 24900:
-				case >= 24902 and <= 24903:
-				case 24908:
-				case >= 24910 and <= 24989:
-				case >= 24999 and <= 25000:
-				case 25002:
-				case >= 25005 and <= 25006:
-				case >= 25008 and <= 25037:
-				case >= 25054 and <= 25056:
-				case >= 25058 and <= 25066:
-				case >= 25070 and <= 25077:
-				case >= 25084 and <= 25086:
-					return "4.5";
-				case >= 20931 and <= 20932:
-				case 24488:
-				case 24535:
-				case 24626:
-				case >= 24630 and <= 24631:
-				case 24635:
-				case 24640:
-				case >= 24643 and <= 24792:
-				case >= 24806 and <= 24820:
-				case >= 24832 and <= 24858:
-				case >= 24870 and <= 24871:
-				case 24873:
-				case >= 24904 and <= 24907:
-				case >= 24996 and <= 24998:
-				case 25001:
-				case >= 25067 and <= 25069:
-					return "4.55";
-				case 24164:
-				case 24537:
-				case >= 24594 and <= 24598:
-				case >= 24608 and <= 24611:
-				case >= 24617 and <= 24621:
-				case 24624:
-				case >= 24637 and <= 24638:
-				case 24641:
-				case 24794:
-				case 24800:
-				case 24802:
-				case 24877:
-				case 24880:
-				case 24901:
-				case 24909:
-				case >= 24990 and <= 24995:
-				case 25007:
-				case >= 25078 and <= 25083:
-				case >= 27919 and <= 27920:
-					return "4.56";
-				case 38:
-				case 15162:
-				case 23982:
-				case 23992:
-				case >= 24148 and <= 24157:
-				case 24629:
-				case >= 24632 and <= 24633:
-				case 25057:
-				case >= 25180 and <= 25467:
-				case >= 25628 and <= 26427:
-				case >= 26533 and <= 26778:
-				case >= 26780 and <= 26781:
-				case >= 26783 and <= 26784:
-				case >= 26787 and <= 26788:
-				case >= 26790 and <= 26794:
-				case >= 26796 and <= 26801:
-				case >= 26803 and <= 26810:
-				case >= 26819 and <= 26891:
-				case >= 26903 and <= 26934:
-				case >= 27077 and <= 27286:
-				case >= 27288 and <= 27291:
-				case >= 27294 and <= 27305:
-				case >= 27312 and <= 27392:
-				case >= 27410 and <= 27693:
-				case >= 27696 and <= 27715:
-				case >= 27720 and <= 27736:
-				case >= 27738 and <= 27742:
-				case >= 27745 and <= 27759:
-				case 27761:
-				case >= 27763 and <= 27790:
-				case >= 27797 and <= 27843:
-				case >= 27849 and <= 27882:
-				case >= 27893 and <= 27914:
-				case 27917:
-				case >= 27921 and <= 27937:
-				case >= 27940 and <= 27955:
-				case >= 27957 and <= 27975:
-				case >= 27978 and <= 27983:
-				case >= 27985 and <= 27990:
-				case >= 27992 and <= 27994:
-				case 28062:
-					return "5.0";
-				case 39:
-				case >= 24266 and <= 24273:
-				case >= 24348 and <= 24367:
-				case >= 25468 and <= 25627:
-				case >= 26428 and <= 26532:
-				case 26779:
-				case 26782:
-				case 26785:
-				case 26789:
-				case 26802:
-				case >= 26811 and <= 26818:
-				case >= 26892 and <= 26902:
-				case >= 26935 and <= 27014:
-				case 27287:
-				case >= 27292 and <= 27293:
-				case >= 27306 and <= 27311:
-				case >= 27400 and <= 27403:
-				case >= 27405 and <= 27408:
-				case >= 27694 and <= 27695:
-				case >= 27716 and <= 27719:
-				case 27737:
-				case >= 27743 and <= 27744:
-				case 27760:
-				case 27762:
-				case >= 27791 and <= 27796:
-				case >= 27844 and <= 27848:
-				case >= 27883 and <= 27892:
-				case 27918:
-				case >= 27938 and <= 27939:
-				case 27956:
-				case >= 27976 and <= 27977:
-				case 27984:
-				case 27991:
-				case >= 27995 and <= 27999:
-					return "5.05";
-				case 26795:
-				case >= 27015 and <= 27076:
-				case >= 27393 and <= 27399:
-				case 27404:
-				case 27409:
-				case >= 27915 and <= 27916:
-				case 28061:
-					return "5.01";
-				case 22406:
-				case 23866:
-				case >= 24236 and <= 24239:
-				case >= 28063 and <= 28072:
-				case >= 28081 and <= 28115:
-				case 28117:
-				case 28121:
-				case 28123:
-				case >= 28126 and <= 28136:
-				case >= 28139 and <= 28147:
-				case 28149:
-				case >= 28151 and <= 28156:
-				case 28158:
-				case >= 28162 and <= 28186:
-				case >= 28189 and <= 28481:
-				case >= 28501 and <= 28507:
-				case >= 28509 and <= 28555:
-				case >= 28558 and <= 28594:
-				case 28612:
-				case >= 28614 and <= 28622:
-				case >= 28624 and <= 28627:
-				case >= 28629 and <= 28634:
-				case >= 28636 and <= 28641:
-				case >= 28648 and <= 28650:
-				case >= 28652 and <= 28889:
-				case >= 28892 and <= 28895:
-				case >= 28897 and <= 28924:
-					return "5.1";
-				case 28116:
-				case 28120:
-				case 28148:
-				case 28150:
-				case >= 28160 and <= 28161:
-				case >= 28492 and <= 28496:
-				case 28613:
-				case 28623:
-				case 28635:
-				case >= 28642 and <= 28647:
-				case >= 28890 and <= 28891:
-				case >= 29980 and <= 29982:
-					return "5.15";
-				case 28079:
-				case 28118:
-					return "5.18";
-				case >= 28124 and <= 28125:
-				case 28628:
-				case >= 28963 and <= 28964:
-				case 28971:
-				case 28979:
-				case 28989:
-				case 28995:
-				case 29403:
-				case 29707:
-				case >= 29792 and <= 29947:
-				case 29992:
-				case >= 29994 and <= 30033:
-				case >= 30047 and <= 30054:
-				case 30089:
-				case >= 30094 and <= 30095:
-				case 30100:
-				case 30104:
-				case >= 30110 and <= 30130:
-				case >= 30259 and <= 30262:
-				case 30267:
-				case >= 30269 and <= 30271:
-				case >= 30278 and <= 30281:
-					return "5.21";
-				case 40:
-				case 24235:
-				case >= 25003 and <= 25004:
-				case 26786:
-				case >= 28073 and <= 28078:
-				case 28080:
-				case 28119:
-				case 28122:
-				case 28137:
-				case 28187:
-				case 28508:
-				case >= 28595 and <= 28599:
-				case >= 28925 and <= 28962:
-				case >= 28965 and <= 28967:
-				case >= 28969 and <= 28970:
-				case 28972:
-				case >= 28974 and <= 28977:
-				case >= 28980 and <= 28981:
-				case >= 28983 and <= 28988:
-				case >= 28990 and <= 28994:
-				case >= 28996 and <= 29402:
-				case >= 29404 and <= 29611:
-				case >= 29681 and <= 29706:
-				case >= 29708 and <= 29791:
-				case >= 29948 and <= 29979:
-				case >= 29983 and <= 29991:
-				case >= 30034 and <= 30046:
-				case >= 30055 and <= 30088:
-				case >= 30090 and <= 30093:
-				case >= 30096 and <= 30098:
-				case 30101:
-				case 30103:
-				case >= 30105 and <= 30109:
-				case >= 30131 and <= 30135:
-				case >= 30246 and <= 30258:
-				case >= 30263 and <= 30266:
-				case 30268:
-				case 30272:
-				case >= 30274 and <= 30277:
-					return "5.2";
-				case 28968:
-				case 28973:
-				case 28978:
-				case 28982:
-				case >= 29612 and <= 29680:
-				case 29993:
-				case >= 30136 and <= 30245:
-				case 30273:
-					return "5.25";
-				case 28188:
-				case 30341:
-				case 30362:
-				case >= 30364 and <= 30412:
-				case >= 30424 and <= 30594:
-				case >= 30596 and <= 30714:
-				case >= 30750 and <= 30758:
-				case >= 30803 and <= 30860:
-				case >= 30863 and <= 30869:
-				case >= 30872 and <= 30874:
-				case >= 30877 and <= 30883:
-				case >= 30970 and <= 31100:
-				case >= 31136 and <= 31183:
-				case >= 31320 and <= 31323:
-				case >= 31329 and <= 31338:
-				case 31340:
-				case >= 31342 and <= 31343:
-				case >= 31346 and <= 31350:
-				case >= 31394 and <= 31397:
-				case 31400:
-				case >= 31404 and <= 31405:
-				case >= 31408 and <= 31572:
-				case 31577:
-				case >= 31649 and <= 31663:
-				case >= 31670 and <= 31673:
-				case >= 31676 and <= 31681:
-				case >= 31684 and <= 31713:
-					return "5.3";
-				case 30102:
-				case >= 30282 and <= 30340:
-				case >= 30342 and <= 30361:
-				case 30363:
-				case >= 30419 and <= 30423:
-				case >= 30715 and <= 30749:
-				case >= 30767 and <= 30802:
-				case 30861:
-				case 30870:
-				case 30876:
-				case >= 30884 and <= 30969:
-				case >= 31101 and <= 31135:
-				case 31326:
-				case >= 31344 and <= 31345:
-				case >= 31351 and <= 31393:
-				case 31402:
-				case 31407:
-				case >= 31573 and <= 31576:
-				case >= 31631 and <= 31648:
-				case >= 31664 and <= 31669:
-					return "5.35";
-				case >= 30413 and <= 30418:
-				case >= 30762 and <= 30766:
-				case 30862:
-				case 30871:
-				case 30875:
-				case >= 31184 and <= 31319:
-				case >= 31324 and <= 31325:
-				case >= 31327 and <= 31328:
-				case 31341:
-				case 31401:
-				case 31406:
-				case >= 31578 and <= 31630:
-				case >= 31674 and <= 31675:
-					return "5.31";
-				case 41:
-				case >= 25038 and <= 25053:
-				case 28157:
-				case >= 28556 and <= 28557:
-				case >= 28600 and <= 28610:
-				case 28651:
-				case 30099:
-				case 31398:
-				case >= 31682 and <= 31683:
-				case >= 31772 and <= 31912:
-				case >= 32049 and <= 32161:
-				case >= 32202 and <= 32209:
-				case 32212:
-				case 32214:
-				case 32219:
-				case >= 32221 and <= 32224:
-				case >= 32227 and <= 32228:
-				case >= 32230 and <= 32237:
-				case >= 32241 and <= 32249:
-				case >= 32252 and <= 32639:
-				case >= 32798 and <= 32803:
-				case >= 32806 and <= 32823:
-				case 32825:
-				case 32830:
-				case >= 32836 and <= 32837:
-				case 32839:
-				case >= 32843 and <= 32845:
-				case >= 32847 and <= 32849:
-				case 32856:
-				case >= 32858 and <= 32865:
-				case >= 32875 and <= 32881:
-				case >= 32934 and <= 32955:
-				case >= 32961 and <= 33013:
-				case 33015:
-				case >= 33021 and <= 33036:
-				case 33038:
-				case >= 33040 and <= 33042:
-				case 33110:
-				case >= 33115 and <= 33125:
-				case >= 33129 and <= 33135:
-				case >= 33139 and <= 33143:
-				case >= 33145 and <= 33153:
-					return "5.4";
-				case >= 30759 and <= 30761:
-				case 31339:
-				case 31403:
-				case >= 31714 and <= 31771:
-				case >= 31913 and <= 32048:
-				case >= 32162 and <= 32201:
-				case >= 32210 and <= 32211:
-				case 32213:
-				case >= 32215 and <= 32218:
-				case >= 32225 and <= 32226:
-				case 32229:
-				case >= 32239 and <= 32240:
-				case >= 32250 and <= 32251:
-				case >= 32640 and <= 32797:
-				case 32824:
-				case >= 32826 and <= 32827:
-				case 32829:
-				case >= 32831 and <= 32835:
-				case >= 32840 and <= 32841:
-				case 32846:
-				case 32855:
-				case 32857:
-				case >= 32866 and <= 32869:
-				case >= 32871 and <= 32874:
-				case >= 32882 and <= 32933:
-				case >= 32956 and <= 32960:
-				case 33014:
-				case >= 33016 and <= 33020:
-				case 33037:
-				case 33039:
-				case >= 33043 and <= 33109:
-				case >= 33111 and <= 33114:
-				case >= 33126 and <= 33128:
-				case >= 33136 and <= 33137:
-				case 33144:
-					return "5.41";
-				case 32828:
-				case >= 33239 and <= 33244:
-				case 33254:
-				case >= 33257 and <= 33259:
-				case 33265:
-				case 33271:
-				case >= 33281 and <= 33285:
-				case 33291:
-				case >= 33294 and <= 33297:
-				case >= 33335 and <= 33337:
-				case 33340:
-				case >= 33462 and <= 33479:
-				case >= 33613 and <= 33647:
-				case 33672:
-				case 33676:
-				case 33684:
-				case 33689:
-				case 33700:
-				case 33706:
-				case >= 33710 and <= 33711:
-				case >= 33715 and <= 33750:
-				case >= 33757 and <= 33817:
-				case >= 33820 and <= 33837:
-				case 33840:
-				case 33845:
-				case 33884:
-				case 33886:
-					return "5.55";
-				case 28896:
-				case 30595:
-				case 31399:
-				case 32220:
-				case 32838:
-				case 32850:
-				case >= 32852 and <= 32854:
-				case >= 33154 and <= 33238:
-				case >= 33245 and <= 33253:
-				case >= 33255 and <= 33256:
-				case >= 33260 and <= 33264:
-				case >= 33266 and <= 33270:
-				case >= 33272 and <= 33280:
-				case >= 33286 and <= 33290:
-				case >= 33292 and <= 33293:
-				case >= 33298 and <= 33334:
-				case >= 33338 and <= 33339:
-				case 33341:
-				case >= 33356 and <= 33461:
-				case >= 33480 and <= 33612:
-				case >= 33648 and <= 33671:
-				case >= 33673 and <= 33675:
-				case 33677:
-				case >= 33685 and <= 33688:
-				case >= 33690 and <= 33699:
-				case >= 33701 and <= 33705:
-				case >= 33707 and <= 33709:
-				case >= 33712 and <= 33714:
-				case >= 33751 and <= 33756:
-				case >= 33818 and <= 33819:
-				case >= 33838 and <= 33839:
-				case >= 33841 and <= 33844:
-				case >= 33846 and <= 33883:
-				case 33885:
-				case >= 33887 and <= 33912:
-					return "5.5";
-				case 42:
-				case 24225:
-				case 32238:
-				case >= 32804 and <= 32805:
-				case 32842:
-				case 32851:
-				case 32870:
-				case >= 33354 and <= 33355:
-				case >= 33913 and <= 35019:
-				case >= 35320 and <= 35555:
-				case 35558:
-				case >= 35560 and <= 35567:
-				case >= 35569 and <= 35571:
-				case >= 35573 and <= 35574:
-				case >= 35576 and <= 35577:
-				case >= 35579 and <= 35583:
-				case >= 35588 and <= 35607:
-				case >= 35626 and <= 35733:
-				case >= 35744 and <= 35794:
-				case >= 35797 and <= 35822:
-				case 35827:
-				case >= 35831 and <= 35852:
-				case >= 35857 and <= 35867:
-				case >= 35872 and <= 36007:
-				case >= 36009 and <= 36028:
-				case >= 36036 and <= 36066:
-				case >= 36077 and <= 36098:
-				case >= 36104 and <= 36108:
-				case >= 36114 and <= 36117:
-				case >= 36121 and <= 36172:
-				case >= 36174 and <= 36186:
-				case >= 36188 and <= 36200:
-				case >= 36202 and <= 36212:
-				case >= 36214 and <= 36217:
-				case >= 36223 and <= 36231:
-				case >= 36237 and <= 36251:
-				case >= 36253 and <= 36340:
-				case >= 36342 and <= 36367:
-				case >= 36370 and <= 36627:
-				case >= 36629 and <= 36631:
-				case >= 36633 and <= 36636:
-				case >= 36638 and <= 36654:
-					return "6.0";
-				case 43:
-				case >= 35020 and <= 35319:
-				case >= 35556 and <= 35557:
-				case 35559:
-				case 35568:
-				case 35572:
-				case 35575:
-				case 35578:
-				case >= 35584 and <= 35587:
-				case >= 35618 and <= 35625:
-				case >= 35734 and <= 35743:
-				case 35796:
-				case >= 35823 and <= 35826:
-				case >= 35828 and <= 35830:
-				case >= 35868 and <= 35871:
-				case 36008:
-				case >= 36029 and <= 36035:
-				case >= 36067 and <= 36076:
-				case >= 36099 and <= 36103:
-				case >= 36109 and <= 36113:
-				case 36173:
-				case 36187:
-				case 36201:
-				case 36213:
-				case >= 36218 and <= 36222:
-				case >= 36232 and <= 36236:
-				case 36252:
-				case 36341:
-				case >= 36368 and <= 36369:
-				case 36628:
-				case 36637:
-					return "6.05";
-				case >= 35608 and <= 35617:
-				case >= 36118 and <= 36120:
-				case 36656:
-				case 36658:
-				case >= 36679 and <= 36809:
-				case >= 36811 and <= 36843:
-				case >= 36849 and <= 36850:
-				case >= 36852 and <= 36860:
-				case >= 36863 and <= 36904:
-				case 36906:
-				case >= 36909 and <= 36910:
-				case >= 36912 and <= 36913:
-				case >= 36916 and <= 36942:
-				case >= 36963 and <= 37334:
-				case >= 37337 and <= 37349:
-				case >= 37353 and <= 37357:
-				case >= 37359 and <= 37363:
-				case >= 37365 and <= 37366:
-				case >= 37368 and <= 37382:
-				case >= 37386 and <= 37389:
-				case >= 37391 and <= 37399:
-				case >= 37401 and <= 37413:
-				case >= 37416 and <= 37418:
-				case >= 37420 and <= 37492:
-					return "6.1";
-				case 36657:
-				case >= 36659 and <= 36678:
-				case >= 36844 and <= 36848:
-				case 36851:
-				case 36907:
-				case >= 37335 and <= 37336:
-				case >= 37351 and <= 37352:
-				case 37358:
-				case 37364:
-				case 37367:
-				case >= 37383 and <= 37385:
-				case 37400:
-				case 37414:
-				case 37419:
-				case 37493:
-					return "6.15";
-				case 36810:
-				case >= 36943 and <= 36962:
-					return "6.11";
-				case 44:
-				case >= 33678 and <= 33680:
-				case 36632:
-				case 36862:
-				case 36905:
-				case 36915:
-				case >= 37549 and <= 37853:
-				case >= 37856 and <= 38210:
-				case >= 38212 and <= 38222:
-				case >= 38228 and <= 38232:
-				case >= 38238 and <= 38275:
-				case >= 38348 and <= 38399:
-				case >= 38421 and <= 38428:
-				case >= 38433 and <= 38434:
-				case >= 38436 and <= 38444:
-				case >= 38446 and <= 38448:
-				case 38450:
-				case >= 38454 and <= 38455:
-				case 38457:
-				case 38460:
-				case >= 38463 and <= 38464:
-				case >= 38467 and <= 38532:
-				case 38536:
-				case 38538:
-				case >= 38540 and <= 38558:
-				case >= 38560 and <= 38569:
-				case >= 38571 and <= 38585:
-				case 38587:
-				case 38589:
-				case 38591:
-				case >= 38593 and <= 38594:
-				case 38599:
-				case >= 38604 and <= 38620:
-				case >= 38622 and <= 38631:
-				case >= 38633 and <= 38638:
-				case >= 38640 and <= 38690:
-				case >= 38697 and <= 38714:
-					return "6.2";
-				case 37854:
-				case >= 38223 and <= 38227:
-				case >= 38276 and <= 38347:
-				case >= 38400 and <= 38420:
-				case >= 38429 and <= 38432:
-				case 38435:
-				case 38445:
-				case >= 38451 and <= 38452:
-				case 38456:
-				case >= 38461 and <= 38462:
-				case >= 38465 and <= 38466:
-				case >= 38533 and <= 38535:
-				case 38537:
-				case 38539:
-				case 38559:
-				case 38570:
-				case 38586:
-				case 38588:
-				case 38592:
-				case >= 38595 and <= 38598:
-				case >= 38600 and <= 38603:
-				case 38621:
-				case 38632:
-				case 38639:
-				case 38691:
-					return "6.25";
-				case >= 35853 and <= 35856:
-				case 37390:
-					return "6.28";
-				case 23125:
-				case 38211:
-				case >= 38233 and <= 38237:
-				case 38453:
-				case >= 38458 and <= 38459:
-				case >= 38810 and <= 38841:
-				case >= 38890 and <= 38939:
-				case >= 38948 and <= 38950:
-				case >= 38953 and <= 39143:
-				case >= 39224 and <= 39302:
-				case >= 39308 and <= 39328:
-				case >= 39349 and <= 39367:
-				case >= 39369 and <= 39370:
-				case >= 39373 and <= 39375:
-				case >= 39379 and <= 39387:
-				case 39390:
-				case >= 39392 and <= 39395:
-				case >= 39401 and <= 39419:
-				case >= 39421 and <= 39425:
-				case >= 39427 and <= 39470:
-				case 39472:
-				case >= 39474 and <= 39478:
-				case >= 39481 and <= 39484:
-				case >= 39487 and <= 39495:
-				case >= 39497 and <= 39503:
-				case >= 39509 and <= 39575:
-				case >= 39578 and <= 39579:
-				case >= 39582 and <= 39596:
-				case 39598:
-				case >= 39600 and <= 39612:
-				case >= 39616 and <= 39629:
-					return "6.3";
-				case 38951:
-				case >= 39164 and <= 39183:
-					return "6.31";
-				case 36911:
-				case >= 38715 and <= 38809:
-				case >= 38842 and <= 38889:
-				case >= 38940 and <= 38947:
-				case 38952:
-				case >= 39144 and <= 39163:
-				case >= 39184 and <= 39223:
-				case >= 39329 and <= 39348:
-				case 39368:
-				case >= 39371 and <= 39372:
-				case >= 39376 and <= 39378:
-				case >= 39388 and <= 39389:
-				case 39391:
-				case >= 39396 and <= 39400:
-				case 39420:
-				case 39426:
-				case 39471:
-				case 39473:
-				case >= 39479 and <= 39480:
-				case >= 39485 and <= 39486:
-				case >= 39504 and <= 39508:
-				case >= 39576 and <= 39577:
-				case 39580:
-				case 39597:
-				case 39599:
-				case >= 39613 and <= 39615:
-					return "6.35";
-				case 45:
-				case >= 33681 and <= 33683:
-				case 36861:
-				case >= 39303 and <= 39307:
-				case 39496:
-				case >= 39630 and <= 40356:
-				case >= 40358 and <= 40361:
-				case >= 40363 and <= 40385:
-				case >= 40387 and <= 40451:
-				case >= 40456 and <= 40499:
-				case >= 40502 and <= 40657:
-				case >= 40659 and <= 40660:
-				case >= 40662 and <= 40663:
-				case 40665:
-				case >= 40671 and <= 40704:
-				case >= 40706 and <= 40752:
-				case 40754:
-				case >= 40756 and <= 40764:
-					return "6.4";
-				case 40386:
-				case >= 40500 and <= 40501:
-				case 40664:
-				case 40705:
-				case 40755:
-					return "6.48";
-				case >= 15134 and <= 15142:
-				case 37415:
-				case 38449:
-				case 38590:
-				case 40357:
-				case 40658:
-				case 40661:
-				case 40667:
-				case 40753:
-				case >= 40765 and <= 40931:
-				case >= 41033 and <= 41077:
-				case >= 41082 and <= 41087:
-				case 41089:
-				case >= 41091 and <= 41097:
-				case >= 41102 and <= 41105:
-				case >= 41107 and <= 41108:
-				case 41111:
-				case 41113:
-				case >= 41130 and <= 41136:
-				case >= 41138 and <= 41139:
-				case >= 41141 and <= 41142:
-				case >= 41149 and <= 41179:
-				case >= 41307 and <= 41315:
-				case >= 41322 and <= 41348:
-				case >= 41367 and <= 41369:
-				case >= 41371 and <= 41375:
-				case 41380:
-				case >= 41386 and <= 41394:
-				case 41396:
-				case >= 41401 and <= 41406:
-				case >= 41413 and <= 41424:
-				case >= 41426 and <= 41428:
-				case >= 41458 and <= 41460:
-				case 41468:
-				case >= 41473 and <= 41477:
-				case >= 41481 and <= 41483:
-				case >= 41489 and <= 41490:
-				case >= 41493 and <= 41494:
-				case >= 41496 and <= 41497:
-				case >= 41501 and <= 41502:
-				case >= 41507 and <= 41553:
-				case >= 41565 and <= 41586:
-				case >= 41592 and <= 41618:
-				case >= 41630 and <= 41657:
-				case >= 41659 and <= 41661:
-				case >= 41664 and <= 41677:
-				case 41709:
-					return "6.5";
-				case >= 41078 and <= 41080:
-				case >= 41180 and <= 41304:
-				case >= 41376 and <= 41379:
-				case >= 41381 and <= 41383:
-				case 41385:
-				case >= 41430 and <= 41442:
-				case >= 41462 and <= 41463:
-				case >= 41465 and <= 41467:
-				case 41471:
-				case >= 41479 and <= 41480:
-				case 41486:
-				case 41491:
-				case 41495:
-				case >= 41499 and <= 41500:
-				case >= 41560 and <= 41564:
-				case >= 41587 and <= 41591:
-				case >= 41628 and <= 41629:
-				case >= 41662 and <= 41663:
-				case >= 41679 and <= 41700:
-				case >= 41707 and <= 41708:
-				case 41796:
-					return "6.51";
-				case 36908:
-				case >= 40932 and <= 41032:
-				case 41088:
-				case 41106:
-				case 41114:
-				case >= 41144 and <= 41145:
-				case >= 41305 and <= 41306:
-				case 41370:
-				case 41384:
-				case 41395:
-				case >= 41407 and <= 41412:
-				case 41425:
-				case 41429:
-				case 41457:
-				case >= 41469 and <= 41470:
-				case >= 41503 and <= 41506:
-				case 41658:
-					return "6.55";
-				case 41081:
-				case 41397:
-				case 41478:
-				case 41484:
-				case 41487:
-				case >= 41555 and <= 41559:
-				case >= 41619 and <= 41622:
-				case >= 41701 and <= 41706:
-				case 41797:
-					return "6.58";
-				case 46:
-				case 41090:
-				case >= 41109 and <= 41110:
-				case >= 41115 and <= 41129:
-				case 41143:
-				case >= 41146 and <= 41147:
-				case >= 41316 and <= 41318:
-				case >= 41349 and <= 41357:
-				case >= 41398 and <= 41400:
-				case >= 41455 and <= 41456:
-				case 41485:
-				case 41488:
-				case 41492:
-				case 41678:
-				case >= 41717 and <= 41793:
-				case >= 41801 and <= 41804:
-				case >= 41806 and <= 41812:
-				case >= 41814 and <= 41821:
-				case 41823:
-				case >= 41829 and <= 42814:
-				case >= 43178 and <= 43526:
-				case >= 43537 and <= 43540:
-				case >= 43556 and <= 43563:
-				case >= 43565 and <= 43571:
-				case >= 43573 and <= 43585:
-				case >= 43587 and <= 43588:
-				case >= 43590 and <= 43596:
-				case >= 43598 and <= 43599:
-				case >= 43601 and <= 43604:
-				case >= 43606 and <= 43871:
-				case >= 43873 and <= 43945:
-				case >= 43953 and <= 44122:
-				case >= 44131 and <= 44132:
-				case >= 44134 and <= 44140:
-				case >= 44157 and <= 44161:
-				case >= 44167 and <= 44169:
-				case >= 44185 and <= 44239:
-				case >= 44241 and <= 44250:
-				case 44256:
-				case >= 44258 and <= 44259:
-				case >= 44261 and <= 44268:
-				case >= 44270 and <= 44271:
-				case >= 44273 and <= 44304:
-				case >= 44310 and <= 44322:
-				case >= 44324 and <= 44333:
-					return "7.0";
-				case 47:
-				case 40362:
-				case >= 41099 and <= 41101:
-				case 41112:
-				case 41137:
-				case 41140:
-				case 41464:
-				case 41805:
-				case 41822:
-				case >= 41824 and <= 41828:
-				case >= 42870 and <= 43177:
-				case >= 43527 and <= 43536:
-				case >= 43549 and <= 43555:
-				case 43572:
-				case 43597:
-				case 43600:
-				case >= 43946 and <= 43952:
-				case >= 44123 and <= 44130:
-				case 44133:
-				case >= 44141 and <= 44156:
-				case >= 44162 and <= 44166:
-				case >= 44170 and <= 44184:
-				case 44240:
-				case >= 44251 and <= 44255:
-				case 44257:
-				case 44269:
-				case 44309:
-				case 44323:
-					return "7.05";
-				case >= 42815 and <= 42869:
-				case >= 43541 and <= 43548:
-				case 43586:
-				case 43872:
-				case >= 44305 and <= 44308:
-					return "7.01";
-				case 40666:
-				case 41472:
-				case >= 44334 and <= 44338:
-				case 44492:
-				case >= 44500 and <= 44501:
-				case 44507:
-				case >= 44605 and <= 44639:
-				case >= 44655 and <= 44660:
-				case >= 44850 and <= 44864:
-				case >= 44868 and <= 44869:
-				case >= 44888 and <= 44892:
-				case >= 44915 and <= 44924:
-				case >= 44930 and <= 44933:
-				case >= 45074 and <= 45078:
-					return "7.15";
-				case >= 40452 and <= 40455:
-				case >= 41319 and <= 41321:
-				case >= 41358 and <= 41366:
-				case 41461:
-				case 41813:
-				case 43564:
-				case 43589:
-				case >= 44339 and <= 44352:
-				case >= 44365 and <= 44483:
-				case >= 44485 and <= 44490:
-				case >= 44493 and <= 44497:
-				case 44499:
-				case 44502:
-				case 44506:
-				case 44508:
-				case >= 44510 and <= 44512:
-				case >= 44514 and <= 44604:
-				case >= 44640 and <= 44654:
-				case >= 44661 and <= 44666:
-				case >= 44676 and <= 44691:
-				case >= 44694 and <= 44720:
-				case >= 44744 and <= 44849:
-				case >= 44865 and <= 44867:
-				case >= 44870 and <= 44887:
-				case >= 44895 and <= 44914:
-				case >= 44925 and <= 44929:
-				case >= 44934 and <= 45017:
-				case >= 45021 and <= 45040:
-				case >= 45047 and <= 45073:
-				case >= 45079 and <= 45570:
-				case >= 45573 and <= 45576:
-				case 45579:
-				case 45590:
-					return "7.1";
-				case 45018:
-					return "7.16";
-				case >= 44721 and <= 44743:
-				case >= 45019 and <= 45020:
-				case 45577:
-					return "7.11";
-				case 48:
-				case 22357:
-				case 44260:
-				case >= 44353 and <= 44364:
-				case 44491:
-				case 44498:
-				case 44503:
-				case >= 44668 and <= 44675:
-				case >= 45571 and <= 45572:
-				case >= 45968 and <= 46086:
-				case >= 46283 and <= 46735:
-				case >= 47906 and <= 47923:
-				case 47928:
-				case >= 47938 and <= 47959:
-				case 47961:
-				case 47971:
-				case 47974:
-				case 47976:
-				case >= 47980 and <= 47981:
-				case 47984:
-				case 47986:
-				case >= 47988 and <= 47999:
-				case 48004:
-				case >= 48006 and <= 48007:
-				case >= 48086 and <= 48089:
-				case >= 48097 and <= 48104:
-				case >= 48106 and <= 48135:
-				case 48145:
-				case >= 48149 and <= 48152:
-				case 48155:
-				case 48159:
-				case >= 48173 and <= 48193:
-				case 48201:
-				case 48203:
-				case >= 48214 and <= 48219:
-				case >= 48222 and <= 48226:
-				case >= 48228 and <= 48229:
-				case 48231:
-				case >= 48727 and <= 48731:
-				case >= 48737 and <= 48741:
-					return "7.2";
-				case >= 45041 and <= 45044:
-				case >= 47728 and <= 47741:
-				case >= 47743 and <= 47862:
-				case >= 47864 and <= 47905:
-				case >= 47924 and <= 47927:
-				case 47962:
-				case >= 47967 and <= 47970:
-				case 47972:
-				case 47975:
-				case >= 47977 and <= 47979:
-				case 47983:
-				case 47987:
-				case >= 48000 and <= 48003:
-				case >= 48008 and <= 48085:
-				case 48090:
-				case 48096:
-				case 48105:
-				case >= 48137 and <= 48144:
-				case >= 48156 and <= 48157:
-				case >= 48161 and <= 48162:
-				case 48202:
-				case >= 48204 and <= 48209:
-				case 48230:
-				case 48736:
-				case 48742:
-				case >= 48745 and <= 48749:
-					return "7.25";
-				case 44505:
-				case 44509:
-				case 45046:
-				case >= 45586 and <= 45587:
-				case >= 45591 and <= 45967:
-				case >= 46181 and <= 46184:
-				case >= 46279 and <= 46282:
-				case 46849:
-				case 46851:
-				case 46853:
-				case >= 46858 and <= 46859:
-				case >= 46972 and <= 46973:
-				case 46975:
-				case 46977:
-				case 46983:
-				case >= 47096 and <= 47097:
-				case 47099:
-				case 47103:
-				case 47107:
-				case >= 47220 and <= 47221:
-				case 47223:
-				case 47225:
-				case 47229:
-				case >= 47344 and <= 47345:
-				case 47347:
-				case 47351:
-				case 47353:
-				case >= 47468 and <= 47475:
-				case >= 47592 and <= 47593:
-				case 47595:
-				case 47601:
-				case 47603:
-				case >= 47716 and <= 47717:
-				case 47719:
-				case 47721:
-				case 47723:
-				case >= 47929 and <= 47937:
-				case 47966:
-				case 47985:
-				case >= 48091 and <= 48092:
-				case 48136:
-				case >= 48153 and <= 48154:
-				case 48158:
-				case 48160:
-				case >= 48163 and <= 48172:
-				case >= 48210 and <= 48213:
-				case >= 48220 and <= 48221:
-				case 48227:
-				case >= 48232 and <= 48726:
-				case >= 48732 and <= 48735:
-				case >= 48743 and <= 48744:
-				case 48750:
-					return "7.21";
-				case 43605:
-				case >= 46087 and <= 46088:
-				case 46090:
-				case >= 46100 and <= 46120:
-				case >= 46130 and <= 46133:
-				case >= 46135 and <= 46148:
-				case 46171:
-				case 46179:
-				case 46185:
-				case >= 46188 and <= 46196:
-				case >= 46243 and <= 46244:
-				case >= 46246 and <= 46254:
-				case >= 46260 and <= 46262:
-				case >= 46736 and <= 46766:
-				case >= 46773 and <= 46779:
-				case 46789:
-				case 46792:
-				case 46794:
-				case >= 46796 and <= 46797:
-				case >= 46803 and <= 46815:
-				case 46822:
-				case >= 46826 and <= 46829:
-				case >= 46835 and <= 46837:
-				case >= 46842 and <= 46843:
-				case >= 46845 and <= 46846:
-				case 46848:
-				case >= 46860 and <= 46971:
-				case 46974:
-				case 46976:
-				case >= 46978 and <= 46982:
-				case >= 46984 and <= 47005:
-				case >= 47108 and <= 47206:
-				case >= 47212 and <= 47219:
-				case 47222:
-				case 47224:
-				case >= 47226 and <= 47228:
-				case >= 47230 and <= 47262:
-				case >= 47270 and <= 47278:
-				case >= 47301 and <= 47311:
-				case >= 47338 and <= 47340:
-				case 47346:
-				case >= 47604 and <= 47608:
-				case 47701:
-				case 47704:
-				case >= 47706 and <= 47715:
-				case >= 47725 and <= 47727:
-				case 47960:
-				case >= 47963 and <= 47965:
-				case 48005:
-				case >= 48194 and <= 48198:
-				case >= 48994 and <= 49008:
-				case 49121:
-					return "7.3";
-				case >= 46155 and <= 46156:
-				case >= 46173 and <= 46177:
-				case 46768:
-				case 46782:
-				case 46795:
-				case >= 46816 and <= 46817:
-				case 46825:
-				case >= 46838 and <= 46840:
-				case 46850:
-				case 46852:
-				case >= 46854 and <= 46857:
-				case >= 47006 and <= 47027:
-				case 47095:
-				case >= 47279 and <= 47287:
-				case 47336:
-				case 47343:
-				case >= 47354 and <= 47467:
-				case >= 47480 and <= 47584:
-				case 47594:
-				case >= 47596 and <= 47600:
-				case 47602:
-				case >= 47609 and <= 47700:
-				case >= 47702 and <= 47703:
-				case 47718:
-				case 47720:
-				case 47973:
-				case 48093:
-				case 48146:
-				case >= 48751 and <= 48993:
-				case >= 49009 and <= 49120:
-					return "7.31";
-				case >= 46124 and <= 46129:
-				case 46134:
-				case >= 46149 and <= 46154:
-				case >= 46157 and <= 46170:
-				case 46172:
-				case 46178:
-				case >= 46186 and <= 46187:
-				case >= 46197 and <= 46242:
-				case 46245:
-				case >= 46255 and <= 46259:
-				case 46263:
-				case 46767:
-				case >= 46769 and <= 46772:
-				case >= 46780 and <= 46781:
-				case >= 46783 and <= 46788:
-				case 46790:
-				case 46793:
-				case >= 46798 and <= 46802:
-				case >= 46818 and <= 46821:
-				case >= 46830 and <= 46834:
-				case 46844:
-				case 46847:
-				case >= 47028 and <= 47094:
-				case 47098:
-				case >= 47100 and <= 47102:
-				case >= 47104 and <= 47106:
-				case >= 47207 and <= 47211:
-				case >= 47288 and <= 47300:
-				case >= 47312 and <= 47335:
-				case 47337:
-				case >= 47341 and <= 47342:
-				case >= 47476 and <= 47478:
-				case 47705:
-				case 47722:
-				case 47724:
-				case 47742:
-					return "7.35";
-				case 49:
-				case 44272:
-				case 44484:
-				case 44513:
-				case 44692:
-				case 46089:
-				case >= 46091 and <= 46099:
-				case >= 46121 and <= 46123:
-				case >= 47263 and <= 47269:
-				case >= 47348 and <= 47350:
-				case 47352:
-				case 47863:
-				case >= 49122 and <= 50852:
-					return "7.4";
-			}
+            var itemId = (uint)id;
+            var min = 0;
+            var max = PatchRanges.Length - 1;
 
-			return "0";
+            while (min <= max) {
+                var index = min + ((max - min) / 2);
+                var range = PatchRanges[index];
+
+                if (itemId < range.Start) {
+                    max = index - 1;
+                } else if (itemId > range.End) {
+                    min = index + 1;
+                } else {
+                    return range.Patch;
+                }
+            }
+
+            return null;
         }
+
+        private readonly record struct PatchRange(uint Start, uint End, string Patch);
+
+        private static readonly PatchRange[] PatchRanges = {
+            new(1, 24, "1.0"),
+            new(25, 25, "2.1"),
+            new(26, 26, "2.2"),
+            new(27, 27, "2.3"),
+            new(28, 28, "2.4"),
+            new(29, 29, "2.51"),
+            new(30, 30, "3.0"),
+            new(31, 31, "3.05"),
+            new(32, 32, "3.2"),
+            new(33, 33, "3.4"),
+            new(34, 34, "4.0"),
+            new(35, 35, "4.05"),
+            new(36, 36, "4.2"),
+            new(37, 37, "4.4"),
+            new(38, 38, "5.0"),
+            new(39, 39, "5.05"),
+            new(40, 40, "5.2"),
+            new(41, 41, "5.4"),
+            new(42, 42, "6.0"),
+            new(43, 43, "6.05"),
+            new(44, 44, "6.2"),
+            new(45, 45, "6.4"),
+            new(46, 46, "7.0"),
+            new(47, 47, "7.05"),
+            new(48, 48, "7.2"),
+            new(49, 49, "7.4"),
+            new(366, 1675, "1.0"),
+            new(1676, 1676, "2.4"),
+            new(1677, 1677, "1.0"),
+            new(1678, 1678, "2.0"),
+            new(1679, 1679, "2.1"),
+            new(1680, 1746, "1.0"),
+            new(1747, 1747, "2.0"),
+            new(1748, 1748, "2.1"),
+            new(1749, 1816, "1.0"),
+            new(1817, 1817, "2.0"),
+            new(1818, 1818, "2.1"),
+            new(1819, 1886, "1.0"),
+            new(1887, 1887, "2.0"),
+            new(1888, 1888, "2.1"),
+            new(1889, 1955, "1.0"),
+            new(1956, 1956, "2.0"),
+            new(1957, 1957, "2.1"),
+            new(1958, 2052, "1.0"),
+            new(2053, 2053, "2.0"),
+            new(2054, 2054, "2.1"),
+            new(2055, 2104, "1.0"),
+            new(2105, 2105, "2.0"),
+            new(2106, 2140, "1.0"),
+            new(2141, 2141, "2.1"),
+            new(2142, 2192, "1.0"),
+            new(2193, 2194, "2.2"),
+            new(2195, 2206, "1.0"),
+            new(2207, 2208, "2.1"),
+            new(2209, 2214, "1.0"),
+            new(2215, 2216, "2.0"),
+            new(2217, 2218, "2.1"),
+            new(2219, 2219, "1.0"),
+            new(2220, 2220, "3.0"),
+            new(2221, 2300, "1.0"),
+            new(2301, 2301, "2.1"),
+            new(2302, 2306, "1.0"),
+            new(2307, 2307, "2.51"),
+            new(2308, 2309, "2.0"),
+            new(2311, 2311, "2.1"),
+            new(2314, 2649, "1.0"),
+            new(2650, 2650, "3.0"),
+            new(2651, 2945, "1.0"),
+            new(2946, 2950, "2.0"),
+            new(2951, 2951, "1.0"),
+            new(2952, 2957, "2.1"),
+            new(2958, 2992, "1.0"),
+            new(2993, 2993, "3.0"),
+            new(2994, 3262, "1.0"),
+            new(3263, 3267, "2.0"),
+            new(3268, 3273, "2.1"),
+            new(3274, 3503, "1.0"),
+            new(3504, 3508, "2.0"),
+            new(3509, 3514, "2.1"),
+            new(3515, 3728, "1.0"),
+            new(3729, 3733, "2.0"),
+            new(3734, 3739, "2.1"),
+            new(3740, 3947, "1.0"),
+            new(3948, 3952, "2.0"),
+            new(3953, 3958, "2.1"),
+            new(3959, 4079, "1.0"),
+            new(4080, 4084, "2.0"),
+            new(4085, 4090, "2.1"),
+            new(4091, 4183, "1.0"),
+            new(4184, 4189, "2.0"),
+            new(4190, 4195, "2.1"),
+            new(4196, 4288, "1.0"),
+            new(4289, 4294, "2.0"),
+            new(4295, 4300, "2.1"),
+            new(4301, 4390, "1.0"),
+            new(4391, 4396, "2.0"),
+            new(4397, 4403, "2.1"),
+            new(4404, 4529, "1.0"),
+            new(4530, 4535, "2.0"),
+            new(4536, 4541, "2.1"),
+            new(4542, 5607, "1.0"),
+            new(5608, 5608, "3.0"),
+            new(5609, 5612, "1.0"),
+            new(5613, 5613, "3.0"),
+            new(5614, 5617, "1.0"),
+            new(5618, 5618, "3.0"),
+            new(5619, 5622, "1.0"),
+            new(5623, 5623, "3.0"),
+            new(5624, 5627, "1.0"),
+            new(5628, 5628, "3.0"),
+            new(5629, 5632, "1.0"),
+            new(5633, 5633, "3.0"),
+            new(5634, 5637, "1.0"),
+            new(5638, 5638, "3.0"),
+            new(5639, 5642, "1.0"),
+            new(5643, 5643, "3.0"),
+            new(5644, 5647, "1.0"),
+            new(5648, 5648, "3.0"),
+            new(5649, 5652, "1.0"),
+            new(5653, 5653, "3.0"),
+            new(5654, 5657, "1.0"),
+            new(5658, 5658, "3.0"),
+            new(5659, 5662, "1.0"),
+            new(5663, 5663, "3.0"),
+            new(5664, 5667, "1.0"),
+            new(5668, 5668, "3.0"),
+            new(5669, 5672, "1.0"),
+            new(5673, 5673, "3.0"),
+            new(5674, 5677, "1.0"),
+            new(5678, 5678, "3.0"),
+            new(5679, 5682, "1.0"),
+            new(5683, 5683, "3.0"),
+            new(5684, 5687, "1.0"),
+            new(5688, 5688, "3.0"),
+            new(5689, 5692, "1.0"),
+            new(5693, 5693, "3.0"),
+            new(5694, 5697, "1.0"),
+            new(5698, 5698, "3.0"),
+            new(5699, 5702, "1.0"),
+            new(5703, 5703, "3.0"),
+            new(5704, 5707, "1.0"),
+            new(5708, 5708, "3.0"),
+            new(5709, 5712, "1.0"),
+            new(5713, 5713, "3.0"),
+            new(5714, 5717, "1.0"),
+            new(5718, 5718, "3.0"),
+            new(5719, 5722, "1.0"),
+            new(5723, 5723, "3.0"),
+            new(5724, 5735, "1.0"),
+            new(5736, 5736, "2.2"),
+            new(5737, 5740, "1.0"),
+            new(5741, 5741, "2.2"),
+            new(5742, 5743, "1.0"),
+            new(5744, 5744, "2.1"),
+            new(5745, 5748, "1.0"),
+            new(5749, 5749, "2.1"),
+            new(5750, 5750, "2.2"),
+            new(5751, 5751, "2.1"),
+            new(5752, 5752, "1.0"),
+            new(5753, 5753, "2.1"),
+            new(5754, 5754, "1.0"),
+            new(5755, 5755, "2.1"),
+            new(5756, 5757, "1.0"),
+            new(5758, 5758, "2.2"),
+            new(5759, 5759, "2.1"),
+            new(5760, 5762, "1.0"),
+            new(5763, 5763, "2.2"),
+            new(5764, 5765, "1.0"),
+            new(5766, 5766, "2.2"),
+            new(5767, 5767, "2.1"),
+            new(5768, 5769, "1.0"),
+            new(5770, 5770, "2.1"),
+            new(5771, 5771, "1.0"),
+            new(5772, 5772, "2.2"),
+            new(5773, 5773, "2.1"),
+            new(5774, 5774, "1.0"),
+            new(5775, 5775, "2.2"),
+            new(5776, 5776, "1.0"),
+            new(5777, 5777, "2.1"),
+            new(5778, 5778, "2.2"),
+            new(5779, 5779, "2.1"),
+            new(5780, 5780, "1.0"),
+            new(5781, 5781, "2.1"),
+            new(5782, 5782, "2.2"),
+            new(5783, 5783, "1.0"),
+            new(5784, 5785, "2.2"),
+            new(5786, 5786, "2.1"),
+            new(5787, 5789, "1.0"),
+            new(5790, 5791, "2.1"),
+            new(5792, 5793, "2.2"),
+            new(5794, 5794, "1.0"),
+            new(5795, 5795, "2.2"),
+            new(5796, 5796, "1.0"),
+            new(5797, 5799, "2.1"),
+            new(5800, 5800, "2.2"),
+            new(5801, 5802, "1.0"),
+            new(5803, 5803, "2.2"),
+            new(5804, 5804, "1.0"),
+            new(5805, 5805, "2.2"),
+            new(5806, 5806, "1.0"),
+            new(5807, 5807, "2.1"),
+            new(5808, 5808, "2.2"),
+            new(5809, 5810, "1.0"),
+            new(5811, 5811, "2.2"),
+            new(5812, 5812, "2.1"),
+            new(5813, 5941, "1.0"),
+            new(5942, 5945, "2.05"),
+            new(5946, 6031, "1.0"),
+            new(6032, 6032, "3.0"),
+            new(6033, 6048, "2.05"),
+            new(6049, 6108, "1.0"),
+            new(6109, 6109, "3.0"),
+            new(6110, 6110, "2.1"),
+            new(6111, 6111, "2.16"),
+            new(6112, 6112, "2.1"),
+            new(6113, 6113, "2.35"),
+            new(6114, 6115, "2.1"),
+            new(6116, 6137, "2.16"),
+            new(6138, 6158, "1.0"),
+            new(6159, 6159, "2.1"),
+            new(6160, 6160, "1.0"),
+            new(6161, 6161, "2.1"),
+            new(6162, 6162, "1.0"),
+            new(6163, 6163, "2.1"),
+            new(6164, 6179, "1.0"),
+            new(6180, 6180, "2.1"),
+            new(6181, 6181, "2.51"),
+            new(6183, 6183, "1.0"),
+            new(6184, 6184, "2.1"),
+            new(6185, 6187, "1.0"),
+            new(6188, 6188, "2.1"),
+            new(6189, 6195, "1.0"),
+            new(6196, 6196, "2.1"),
+            new(6197, 6205, "1.0"),
+            new(6206, 6206, "2.3"),
+            new(6207, 6207, "1.0"),
+            new(6208, 6208, "2.1"),
+            new(6209, 6210, "1.0"),
+            new(6211, 6211, "2.1"),
+            new(6212, 6216, "1.0"),
+            new(6217, 6217, "2.1"),
+            new(6218, 6224, "1.0"),
+            new(6225, 6230, "2.0"),
+            new(6231, 6269, "1.0"),
+            new(6270, 6319, "2.0"),
+            new(6320, 6498, "2.1"),
+            new(6499, 6500, "2.2"),
+            new(6501, 6501, "2.1"),
+            new(6502, 6502, "2.15"),
+            new(6503, 6540, "2.1"),
+            new(6541, 6541, "4.3"),
+            new(6542, 6599, "2.1"),
+            new(6600, 6600, "2.15"),
+            new(6601, 6692, "2.1"),
+            new(6693, 6703, "2.2"),
+            new(6704, 7005, "2.1"),
+            new(7006, 7006, "2.15"),
+            new(7007, 7056, "2.1"),
+            new(7059, 7101, "2.2"),
+            new(7102, 7107, "2.3"),
+            new(7108, 7117, "2.2"),
+            new(7118, 7121, "2.3"),
+            new(7122, 7123, "2.2"),
+            new(7124, 7125, "2.35"),
+            new(7126, 7157, "2.2"),
+            new(7158, 7158, "2.3"),
+            new(7159, 7359, "2.2"),
+            new(7360, 7443, "2.25"),
+            new(7444, 7564, "2.2"),
+            new(7565, 7565, "2.51"),
+            new(7566, 7566, "2.2"),
+            new(7567, 7567, "2.4"),
+            new(7568, 7798, "2.2"),
+            new(7799, 7799, "2.3"),
+            new(7802, 7862, "2.2"),
+            new(7863, 7885, "2.28"),
+            new(7886, 7893, "2.4"),
+            new(7894, 7951, "2.3"),
+            new(7952, 7957, "2.4"),
+            new(7958, 7958, "2.3"),
+            new(7959, 7963, "2.4"),
+            new(7964, 7967, "2.3"),
+            new(7968, 7968, "3.0"),
+            new(7969, 8051, "2.3"),
+            new(8052, 8110, "2.35"),
+            new(8111, 8111, "2.45"),
+            new(8112, 8115, "2.35"),
+            new(8116, 8116, "2.45"),
+            new(8117, 8118, "2.35"),
+            new(8119, 8119, "2.45"),
+            new(8120, 8123, "2.35"),
+            new(8124, 8124, "2.45"),
+            new(8125, 8127, "2.35"),
+            new(8128, 8128, "2.45"),
+            new(8129, 8134, "2.35"),
+            new(8135, 8156, "2.3"),
+            new(8157, 8163, "2.35"),
+            new(8164, 8164, "2.45"),
+            new(8165, 8173, "2.3"),
+            new(8174, 8180, "2.35"),
+            new(8182, 8188, "2.3"),
+            new(8189, 8189, "2.35"),
+            new(8190, 8199, "2.3"),
+            new(8200, 8200, "2.4"),
+            new(8201, 8205, "2.3"),
+            new(8206, 8206, "3.25"),
+            new(8207, 8207, "2.3"),
+            new(8208, 8208, "2.35"),
+            new(8209, 8218, "2.3"),
+            new(8222, 8222, "2.35"),
+            new(8224, 8561, "2.3"),
+            new(8562, 8562, "2.35"),
+            new(8563, 8567, "2.3"),
+            new(8568, 8569, "2.35"),
+            new(8570, 8572, "2.3"),
+            new(8573, 8573, "3.05"),
+            new(8574, 8574, "3.0"),
+            new(8575, 8575, "2.45"),
+            new(8576, 8581, "2.35"),
+            new(8582, 8648, "2.4"),
+            new(8649, 8659, "2.38"),
+            new(8660, 8668, "2.4"),
+            new(8669, 8702, "2.45"),
+            new(8703, 8716, "2.38"),
+            new(8717, 8717, "2.4"),
+            new(8718, 8720, "2.38"),
+            new(8721, 8721, "2.45"),
+            new(8722, 8724, "2.38"),
+            new(8725, 8725, "2.45"),
+            new(8726, 8726, "2.38"),
+            new(8727, 8731, "3.0"),
+            new(8732, 8733, "2.38"),
+            new(8734, 8734, "2.5"),
+            new(8735, 8736, "3.4"),
+            new(8737, 8737, "2.5"),
+            new(8738, 8738, "3.1"),
+            new(8739, 8739, "2.5"),
+            new(8740, 8740, "3.1"),
+            new(8741, 8741, "2.5"),
+            new(8742, 8742, "3.1"),
+            new(8743, 8744, "2.38"),
+            new(8745, 8745, "2.45"),
+            new(8746, 8747, "4.1"),
+            new(8748, 8748, "2.45"),
+            new(8749, 8749, "3.1"),
+            new(8750, 8750, "2.45"),
+            new(8751, 8751, "3.1"),
+            new(8752, 8784, "2.4"),
+            new(8785, 8785, "2.5"),
+            new(8786, 8790, "2.4"),
+            new(8791, 8792, "2.45"),
+            new(8793, 8798, "2.4"),
+            new(8799, 8802, "2.45"),
+            new(8803, 8803, "3.07"),
+            new(8804, 8804, "2.45"),
+            new(8805, 8809, "2.4"),
+            new(8810, 8810, "2.45"),
+            new(8811, 8821, "2.4"),
+            new(8822, 8822, "3.07"),
+            new(8823, 8828, "2.45"),
+            new(8829, 8829, "3.07"),
+            new(8830, 8830, "2.45"),
+            new(8831, 8836, "2.4"),
+            new(8837, 8838, "2.5"),
+            new(8839, 8840, "3.0"),
+            new(8841, 8841, "2.4"),
+            new(8842, 8843, "3.05"),
+            new(8844, 8875, "2.5"),
+            new(8876, 9031, "2.4"),
+            new(9032, 9035, "2.5"),
+            new(9036, 9047, "2.4"),
+            new(9048, 9051, "2.5"),
+            new(9052, 9057, "2.4"),
+            new(9058, 9061, "2.5"),
+            new(9062, 9067, "2.4"),
+            new(9068, 9071, "2.5"),
+            new(9072, 9077, "2.4"),
+            new(9078, 9092, "2.5"),
+            new(9093, 9267, "2.4"),
+            new(9268, 9282, "2.45"),
+            new(9283, 9289, "2.4"),
+            new(9290, 9290, "2.45"),
+            new(9291, 9317, "2.4"),
+            new(9318, 9321, "2.45"),
+            new(9322, 9344, "2.4"),
+            new(9345, 9345, "2.45"),
+            new(9346, 9350, "2.4"),
+            new(9351, 9351, "2.51"),
+            new(9352, 9372, "2.4"),
+            new(9373, 9373, "2.5"),
+            new(9374, 9375, "2.4"),
+            new(9376, 9376, "2.5"),
+            new(9377, 9378, "2.4"),
+            new(9379, 9379, "2.5"),
+            new(9380, 9461, "2.4"),
+            new(9462, 9463, "3.0"),
+            new(9464, 9464, "3.1"),
+            new(9465, 9465, "3.2"),
+            new(9466, 9466, "3.3"),
+            new(9467, 9490, "2.4"),
+            new(9491, 9559, "2.45"),
+            new(9560, 9629, "2.51"),
+            new(9630, 9644, "3.05"),
+            new(9645, 9668, "3.0"),
+            new(9669, 9669, "3.3"),
+            new(9670, 9700, "3.0"),
+            new(9701, 9701, "3.3"),
+            new(9702, 9716, "3.0"),
+            new(9717, 9724, "2.5"),
+            new(9725, 9725, "2.55"),
+            new(9726, 9737, "2.5"),
+            new(9738, 9738, "2.51"),
+            new(9739, 9740, "2.5"),
+            new(9741, 9742, "2.51"),
+            new(9743, 9771, "2.5"),
+            new(9772, 9853, "2.51"),
+            new(9854, 9854, "3.25"),
+            new(9855, 9856, "2.51"),
+            new(9857, 9857, "3.25"),
+            new(9858, 9859, "2.51"),
+            new(9860, 9860, "3.25"),
+            new(9861, 9862, "2.51"),
+            new(9863, 9863, "3.25"),
+            new(9864, 9865, "2.51"),
+            new(9866, 9866, "3.25"),
+            new(9867, 9868, "2.51"),
+            new(9869, 9869, "3.25"),
+            new(9870, 9871, "2.51"),
+            new(9872, 9872, "3.25"),
+            new(9873, 9874, "2.51"),
+            new(9875, 9875, "3.25"),
+            new(9876, 9877, "2.51"),
+            new(9878, 9878, "3.25"),
+            new(9879, 9880, "2.51"),
+            new(9881, 9881, "3.25"),
+            new(9882, 9885, "2.51"),
+            new(9886, 9886, "3.25"),
+            new(9887, 9890, "2.51"),
+            new(9891, 9891, "3.25"),
+            new(9892, 9893, "2.51"),
+            new(9894, 9894, "3.25"),
+            new(9895, 9900, "2.51"),
+            new(9901, 10004, "2.5"),
+            new(10005, 10024, "2.51"),
+            new(10025, 10025, "3.0"),
+            new(10026, 10031, "2.51"),
+            new(10032, 10041, "2.5"),
+            new(10042, 10046, "2.51"),
+            new(10047, 10050, "2.5"),
+            new(10051, 10051, "2.51"),
+            new(10052, 10053, "2.5"),
+            new(10054, 10066, "2.51"),
+            new(10067, 10070, "2.55"),
+            new(10071, 10073, "2.5"),
+            new(10074, 10074, "3.0"),
+            new(10075, 10075, "3.01"),
+            new(10076, 10076, "2.5"),
+            new(10077, 10077, "2.55"),
+            new(10078, 10079, "2.51"),
+            new(10080, 10082, "2.5"),
+            new(10083, 10085, "2.51"),
+            new(10086, 10086, "2.5"),
+            new(10087, 10087, "2.55"),
+            new(10088, 10089, "2.51"),
+            new(10090, 10093, "2.5"),
+            new(10094, 10095, "2.51"),
+            new(10096, 10096, "2.5"),
+            new(10097, 10098, "2.51"),
+            new(10099, 10110, "2.5"),
+            new(10111, 10111, "2.55"),
+            new(10112, 10124, "2.5"),
+            new(10125, 10125, "2.51"),
+            new(10127, 10127, "2.5"),
+            new(10128, 10131, "2.51"),
+            new(10132, 10146, "2.5"),
+            new(10147, 10151, "2.51"),
+            new(10152, 10154, "2.5"),
+            new(10155, 10179, "3.0"),
+            new(10180, 10306, "3.05"),
+            new(10307, 10308, "3.0"),
+            new(10309, 10309, "3.05"),
+            new(10310, 10310, "3.0"),
+            new(10311, 10311, "3.05"),
+            new(10316, 10321, "3.07"),
+            new(10322, 10324, "3.0"),
+            new(10325, 10327, "3.05"),
+            new(10328, 10328, "3.5"),
+            new(10329, 10331, "3.0"),
+            new(10332, 10333, "3.07"),
+            new(10335, 10373, "3.0"),
+            new(10374, 10385, "3.05"),
+            new(10386, 10675, "3.0"),
+            new(10676, 10676, "3.05"),
+            new(10677, 10682, "3.0"),
+            new(10683, 10683, "3.05"),
+            new(10684, 10689, "3.0"),
+            new(10690, 10690, "3.05"),
+            new(10691, 10696, "3.0"),
+            new(10697, 10697, "3.05"),
+            new(10698, 10703, "3.0"),
+            new(10704, 10704, "3.05"),
+            new(10705, 10710, "3.0"),
+            new(10711, 10711, "3.05"),
+            new(10712, 10717, "3.0"),
+            new(10718, 10718, "3.05"),
+            new(10719, 10724, "3.0"),
+            new(10725, 10725, "3.05"),
+            new(10726, 10731, "3.0"),
+            new(10732, 10732, "3.05"),
+            new(10733, 10738, "3.0"),
+            new(10739, 10739, "3.05"),
+            new(10740, 10745, "3.0"),
+            new(10746, 10746, "3.05"),
+            new(10747, 10752, "3.0"),
+            new(10753, 10753, "3.05"),
+            new(10754, 10759, "3.0"),
+            new(10760, 10760, "3.05"),
+            new(10761, 10766, "3.0"),
+            new(10767, 10767, "3.05"),
+            new(10768, 10773, "3.0"),
+            new(10774, 10774, "3.05"),
+            new(10775, 10780, "3.0"),
+            new(10781, 10781, "3.05"),
+            new(10782, 10787, "3.0"),
+            new(10788, 10788, "3.05"),
+            new(10789, 10794, "3.0"),
+            new(10795, 10795, "3.05"),
+            new(10796, 10801, "3.0"),
+            new(10802, 10802, "3.05"),
+            new(10803, 10808, "3.0"),
+            new(10809, 10809, "3.05"),
+            new(10810, 10815, "3.0"),
+            new(10816, 10816, "3.05"),
+            new(10817, 10822, "3.0"),
+            new(10823, 10823, "3.05"),
+            new(10824, 10829, "3.0"),
+            new(10830, 10830, "3.05"),
+            new(10831, 10836, "3.0"),
+            new(10837, 10837, "3.05"),
+            new(10838, 10843, "3.0"),
+            new(10844, 10844, "3.05"),
+            new(10845, 10850, "3.0"),
+            new(10851, 10851, "3.05"),
+            new(10852, 10857, "3.0"),
+            new(10858, 10858, "3.05"),
+            new(10859, 10864, "3.0"),
+            new(10865, 10865, "3.05"),
+            new(10866, 10871, "3.0"),
+            new(10872, 10872, "3.05"),
+            new(10873, 10878, "3.0"),
+            new(10879, 10879, "3.05"),
+            new(10880, 10885, "3.0"),
+            new(10886, 10886, "3.05"),
+            new(10887, 10892, "3.0"),
+            new(10893, 10893, "3.05"),
+            new(10894, 10899, "3.0"),
+            new(10900, 10900, "3.05"),
+            new(10901, 10906, "3.0"),
+            new(10907, 10907, "3.05"),
+            new(10908, 10913, "3.0"),
+            new(10914, 10914, "3.05"),
+            new(10915, 10920, "3.0"),
+            new(10921, 10921, "3.05"),
+            new(10922, 10927, "3.0"),
+            new(10928, 10928, "3.05"),
+            new(10929, 10934, "3.0"),
+            new(10935, 10935, "3.05"),
+            new(10936, 10941, "3.0"),
+            new(10942, 10942, "3.05"),
+            new(10943, 10948, "3.0"),
+            new(10949, 10949, "3.05"),
+            new(10950, 10955, "3.0"),
+            new(10956, 10956, "3.05"),
+            new(10957, 10962, "3.0"),
+            new(10963, 10963, "3.05"),
+            new(10964, 11447, "3.0"),
+            new(11448, 11509, "3.01"),
+            new(11510, 11585, "3.05"),
+            new(11586, 11737, "3.0"),
+            new(11738, 11870, "3.05"),
+            new(11871, 11917, "3.0"),
+            new(11918, 11918, "3.05"),
+            new(11919, 11921, "3.0"),
+            new(11922, 11922, "3.05"),
+            new(11923, 11925, "3.0"),
+            new(11926, 11926, "3.05"),
+            new(11927, 11929, "3.0"),
+            new(11930, 11930, "3.05"),
+            new(11931, 11933, "3.0"),
+            new(11934, 11934, "3.05"),
+            new(11935, 11937, "3.0"),
+            new(11938, 11938, "3.05"),
+            new(11939, 11941, "3.0"),
+            new(11942, 11942, "3.05"),
+            new(11943, 11945, "3.0"),
+            new(11946, 11946, "3.05"),
+            new(11947, 11949, "3.0"),
+            new(11950, 11950, "3.05"),
+            new(11951, 11953, "3.0"),
+            new(11954, 11954, "3.05"),
+            new(11955, 11971, "3.0"),
+            new(11972, 11972, "3.05"),
+            new(11973, 11999, "3.0"),
+            new(12000, 12000, "3.05"),
+            new(12001, 12012, "3.0"),
+            new(12013, 12013, "3.05"),
+            new(12014, 12015, "3.0"),
+            new(12016, 12016, "3.05"),
+            new(12017, 12018, "3.0"),
+            new(12019, 12019, "3.05"),
+            new(12020, 12021, "3.0"),
+            new(12022, 12022, "3.05"),
+            new(12023, 12024, "3.0"),
+            new(12025, 12025, "3.05"),
+            new(12026, 12027, "3.0"),
+            new(12028, 12028, "3.05"),
+            new(12029, 12030, "3.0"),
+            new(12031, 12031, "3.05"),
+            new(12032, 12033, "3.0"),
+            new(12034, 12034, "3.05"),
+            new(12035, 12039, "3.0"),
+            new(12040, 12040, "3.05"),
+            new(12041, 12041, "3.0"),
+            new(12042, 12042, "3.07"),
+            new(12044, 12046, "3.0"),
+            new(12047, 12047, "3.01"),
+            new(12048, 12049, "3.0"),
+            new(12050, 12050, "3.1"),
+            new(12051, 12059, "3.0"),
+            new(12060, 12060, "3.05"),
+            new(12061, 12061, "3.0"),
+            new(12062, 12062, "3.01"),
+            new(12063, 12064, "3.0"),
+            new(12065, 12065, "3.07"),
+            new(12066, 12069, "3.0"),
+            new(12071, 12071, "3.1"),
+            new(12072, 12075, "3.0"),
+            new(12076, 12076, "3.05"),
+            new(12077, 12092, "3.0"),
+            new(12093, 12093, "3.07"),
+            new(12094, 12103, "3.0"),
+            new(12104, 12104, "3.01"),
+            new(12105, 12105, "3.05"),
+            new(12106, 12106, "3.01"),
+            new(12107, 12107, "3.05"),
+            new(12108, 12123, "3.0"),
+            new(12124, 12124, "3.15"),
+            new(12125, 12132, "3.0"),
+            new(12133, 12133, "3.15"),
+            new(12134, 12141, "3.0"),
+            new(12142, 12142, "3.15"),
+            new(12143, 12150, "3.0"),
+            new(12151, 12151, "3.15"),
+            new(12152, 12159, "3.0"),
+            new(12160, 12160, "3.15"),
+            new(12161, 12168, "3.0"),
+            new(12169, 12169, "3.15"),
+            new(12170, 12177, "3.0"),
+            new(12178, 12178, "3.15"),
+            new(12179, 12186, "3.0"),
+            new(12187, 12187, "3.15"),
+            new(12188, 12195, "3.0"),
+            new(12196, 12196, "3.15"),
+            new(12197, 12204, "3.0"),
+            new(12205, 12205, "3.15"),
+            new(12206, 12212, "3.0"),
+            new(12213, 12213, "3.15"),
+            new(12214, 12253, "3.0"),
+            new(12254, 12254, "3.01"),
+            new(12255, 12255, "3.05"),
+            new(12256, 12279, "3.0"),
+            new(12280, 12355, "3.05"),
+            new(12356, 12511, "3.0"),
+            new(12513, 12517, "3.05"),
+            new(12518, 12522, "3.0"),
+            new(12523, 12523, "3.05"),
+            new(12524, 12526, "3.0"),
+            new(12527, 12527, "3.05"),
+            new(12528, 12566, "3.0"),
+            new(12567, 12567, "3.05"),
+            new(12568, 12572, "3.0"),
+            new(12573, 12573, "3.05"),
+            new(12574, 12583, "3.0"),
+            new(12584, 12584, "3.05"),
+            new(12585, 12592, "3.0"),
+            new(12593, 12593, "3.05"),
+            new(12594, 12616, "3.0"),
+            new(12617, 12621, "3.05"),
+            new(12622, 12632, "3.0"),
+            new(12633, 12633, "3.05"),
+            new(12634, 12651, "3.0"),
+            new(12652, 12652, "3.01"),
+            new(12653, 12673, "3.0"),
+            new(12674, 12680, "3.01"),
+            new(12681, 12684, "3.05"),
+            new(12698, 12710, "3.0"),
+            new(12711, 12712, "3.07"),
+            new(12713, 12837, "3.0"),
+            new(12838, 12838, "3.05"),
+            new(12839, 12839, "3.3"),
+            new(12840, 12840, "3.05"),
+            new(12841, 12929, "3.0"),
+            new(12931, 12935, "3.05"),
+            new(12936, 12945, "3.0"),
+            new(12946, 12965, "3.05"),
+            new(12966, 12973, "3.0"),
+            new(12974, 12984, "3.05"),
+            new(12985, 12989, "3.0"),
+            new(12990, 12990, "3.07"),
+            new(12991, 13003, "3.0"),
+            new(13004, 13004, "1.0"),
+            new(13005, 13052, "3.05"),
+            new(13055, 13058, "3.1"),
+            new(13059, 13061, "3.2"),
+            new(13062, 13063, "3.07"),
+            new(13064, 13078, "3.1"),
+            new(13079, 13079, "3.07"),
+            new(13080, 13083, "3.15"),
+            new(13084, 13084, "3.1"),
+            new(13085, 13089, "3.2"),
+            new(13090, 13097, "3.1"),
+            new(13098, 13102, "3.07"),
+            new(13104, 13104, "3.25"),
+            new(13111, 13113, "3.07"),
+            new(13114, 13222, "3.1"),
+            new(13223, 13236, "3.15"),
+            new(13237, 13284, "3.1"),
+            new(13285, 13285, "3.2"),
+            new(13286, 13297, "3.1"),
+            new(13298, 13299, "3.15"),
+            new(13300, 13320, "3.2"),
+            new(13321, 13334, "3.1"),
+            new(13335, 13337, "3.25"),
+            new(13339, 13339, "3.45"),
+            new(13341, 13342, "3.25"),
+            new(13354, 13566, "3.1"),
+            new(13567, 13624, "3.15"),
+            new(13625, 13631, "3.1"),
+            new(13632, 13636, "3.15"),
+            new(13637, 13638, "3.1"),
+            new(13639, 13639, "3.2"),
+            new(13640, 13708, "3.1"),
+            new(13709, 13710, "3.4"),
+            new(13711, 13717, "3.1"),
+            new(13718, 13719, "4.1"),
+            new(13720, 13723, "3.1"),
+            new(13724, 13725, "3.2"),
+            new(13726, 13740, "3.1"),
+            new(13741, 13741, "3.2"),
+            new(13742, 13775, "3.1"),
+            new(13776, 13789, "3.25"),
+            new(13790, 13877, "3.2"),
+            new(13878, 13891, "3.55"),
+            new(13892, 13926, "3.3"),
+            new(13987, 13990, "3.15"),
+            new(13991, 13991, "4.0"),
+            new(14003, 14006, "3.2"),
+            new(14007, 14013, "3.3"),
+            new(14014, 14053, "3.2"),
+            new(14054, 14054, "3.25"),
+            new(14055, 14057, "3.3"),
+            new(14058, 14070, "3.2"),
+            new(14071, 14079, "3.3"),
+            new(14080, 14083, "3.2"),
+            new(14084, 14084, "3.25"),
+            new(14085, 14103, "3.2"),
+            new(14104, 14105, "3.3"),
+            new(14106, 14164, "3.2"),
+            new(14171, 14175, "3.4"),
+            new(14176, 14840, "3.2"),
+            new(14841, 14849, "3.3"),
+            new(14850, 14853, "3.2"),
+            new(14854, 14860, "3.4"),
+            new(14861, 14867, "3.25"),
+            new(14868, 14869, "3.2"),
+            new(14870, 14883, "3.25"),
+            new(14884, 14898, "3.2"),
+            new(14899, 14899, "3.25"),
+            new(14900, 14903, "3.2"),
+            new(14904, 14923, "3.25"),
+            new(14924, 14944, "3.2"),
+            new(14945, 14954, "3.4"),
+            new(14955, 14957, "3.2"),
+            new(14958, 14958, "3.25"),
+            new(14959, 14981, "3.2"),
+            new(14982, 14983, "3.5"),
+            new(15095, 15095, "3.4"),
+            new(15096, 15096, "3.5"),
+            new(15097, 15112, "3.2"),
+            new(15115, 15129, "3.25"),
+            new(15130, 15133, "3.3"),
+            new(15134, 15142, "6.5"),
+            new(15143, 15143, "3.3"),
+            new(15144, 15144, "4.5"),
+            new(15145, 15155, "3.3"),
+            new(15156, 15156, "3.35"),
+            new(15157, 15161, "3.3"),
+            new(15162, 15162, "5.0"),
+            new(15163, 15163, "3.35"),
+            new(15164, 15166, "3.3"),
+            new(15167, 15222, "3.35"),
+            new(15223, 15236, "3.3"),
+            new(15237, 15250, "3.45"),
+            new(15251, 15264, "3.5"),
+            new(15265, 15265, "3.3"),
+            new(15266, 15266, "3.35"),
+            new(15267, 15283, "3.3"),
+            new(15284, 15284, "3.4"),
+            new(15285, 15285, "3.5"),
+            new(15286, 15286, "3.55"),
+            new(15287, 15287, "3.3"),
+            new(15288, 15288, "3.4"),
+            new(15289, 15289, "3.5"),
+            new(15290, 15290, "3.55"),
+            new(15291, 15291, "3.3"),
+            new(15292, 15292, "3.4"),
+            new(15293, 15293, "3.5"),
+            new(15294, 15294, "3.55"),
+            new(15295, 15295, "3.3"),
+            new(15296, 15296, "3.4"),
+            new(15297, 15297, "3.5"),
+            new(15298, 15298, "3.55"),
+            new(15299, 15299, "3.3"),
+            new(15300, 15300, "3.4"),
+            new(15301, 15301, "3.5"),
+            new(15302, 15302, "3.55"),
+            new(15303, 15421, "3.3"),
+            new(15422, 15422, "3.35"),
+            new(15423, 15423, "3.3"),
+            new(15424, 15425, "3.35"),
+            new(15427, 15427, "3.3"),
+            new(15428, 15428, "3.5"),
+            new(15429, 15429, "3.3"),
+            new(15430, 15431, "3.35"),
+            new(15432, 15433, "3.3"),
+            new(15434, 15434, "3.35"),
+            new(15435, 15440, "3.3"),
+            new(15441, 15441, "3.55"),
+            new(15442, 15442, "3.3"),
+            new(15443, 15443, "3.35"),
+            new(15444, 15445, "3.3"),
+            new(15446, 15446, "3.35"),
+            new(15447, 15447, "3.3"),
+            new(15448, 15448, "3.35"),
+            new(15449, 15449, "4.4"),
+            new(15450, 15461, "3.3"),
+            new(15462, 15466, "3.4"),
+            new(15467, 15471, "3.35"),
+            new(15472, 15475, "3.3"),
+            new(15476, 15477, "3.4"),
+            new(15478, 15479, "3.3"),
+            new(15480, 15481, "3.55"),
+            new(15482, 15486, "4.1"),
+            new(15487, 15491, "3.5"),
+            new(15495, 15504, "3.4"),
+            new(15505, 15583, "3.3"),
+            new(15584, 15611, "3.4"),
+            new(15612, 15614, "3.35"),
+            new(15615, 15638, "3.3"),
+            new(15639, 15644, "3.4"),
+            new(15645, 15771, "3.3"),
+            new(15772, 15778, "3.4"),
+            new(15779, 15779, "3.3"),
+            new(15780, 15780, "3.4"),
+            new(15781, 15781, "3.5"),
+            new(15782, 15782, "3.55"),
+            new(15783, 15783, "3.3"),
+            new(15784, 15784, "3.4"),
+            new(15785, 15785, "3.5"),
+            new(15786, 15786, "3.55"),
+            new(15787, 15787, "3.3"),
+            new(15788, 15788, "3.4"),
+            new(15789, 15789, "3.5"),
+            new(15790, 15790, "3.55"),
+            new(15791, 15791, "3.3"),
+            new(15792, 15792, "3.4"),
+            new(15793, 15793, "3.5"),
+            new(15794, 15794, "3.55"),
+            new(15795, 15795, "3.3"),
+            new(15796, 15796, "3.4"),
+            new(15797, 15797, "3.5"),
+            new(15798, 15798, "3.55"),
+            new(15799, 15810, "3.3"),
+            new(15811, 15812, "3.35"),
+            new(15813, 15841, "3.3"),
+            new(15842, 15844, "3.35"),
+            new(15854, 15872, "3.3"),
+            new(15873, 15892, "3.4"),
+            new(15893, 15918, "3.3"),
+            new(15919, 15920, "3.57"),
+            new(15921, 15932, "3.3"),
+            new(15933, 15933, "3.35"),
+            new(15934, 15934, "4.1"),
+            new(15935, 15936, "3.3"),
+            new(15938, 15944, "3.35"),
+            new(15945, 15945, "3.3"),
+            new(15946, 15946, "3.35"),
+            new(15947, 15949, "3.3"),
+            new(15950, 15956, "3.4"),
+            new(15957, 15963, "3.5"),
+            new(15964, 15965, "3.4"),
+            new(15966, 15966, "3.45"),
+            new(15967, 15977, "3.4"),
+            new(15978, 15978, "3.45"),
+            new(15979, 15984, "3.4"),
+            new(15985, 15987, "3.45"),
+            new(15988, 15991, "3.4"),
+            new(15992, 16001, "3.45"),
+            new(16002, 16002, "3.4"),
+            new(16003, 16008, "3.45"),
+            new(16009, 16009, "3.4"),
+            new(16010, 16010, "3.45"),
+            new(16013, 16026, "3.4"),
+            new(16027, 16027, "3.5"),
+            new(16028, 16030, "3.4"),
+            new(16031, 16039, "4.0"),
+            new(16040, 16040, "3.4"),
+            new(16041, 16041, "4.05"),
+            new(16042, 16048, "3.5"),
+            new(16049, 16049, "3.4"),
+            new(16050, 16063, "3.55"),
+            new(16064, 16064, "3.45"),
+            new(16065, 16066, "3.4"),
+            new(16067, 16145, "3.5"),
+            new(16147, 16151, "3.35"),
+            new(16152, 16165, "3.4"),
+            new(16166, 16169, "3.45"),
+            new(16170, 16558, "3.4"),
+            new(16559, 16560, "3.5"),
+            new(16561, 16561, "4.1"),
+            new(16562, 16564, "3.4"),
+            new(16565, 16567, "3.5"),
+            new(16568, 16575, "3.4"),
+            new(16578, 16587, "4.2"),
+            new(16588, 16595, "4.1"),
+            new(16596, 16611, "3.4"),
+            new(16612, 16612, "3.45"),
+            new(16613, 16613, "3.4"),
+            new(16614, 16615, "3.45"),
+            new(16616, 16735, "3.4"),
+            new(16736, 16741, "3.45"),
+            new(16742, 16771, "3.4"),
+            new(16772, 16775, "3.5"),
+            new(16776, 16776, "3.55"),
+            new(16777, 16777, "3.45"),
+            new(16778, 16796, "3.4"),
+            new(16797, 16798, "3.45"),
+            new(16799, 16811, "3.4"),
+            new(16812, 16815, "3.45"),
+            new(16816, 16828, "3.4"),
+            new(16829, 16830, "3.45"),
+            new(16831, 16911, "3.4"),
+            new(16912, 16925, "3.45"),
+            new(16926, 16929, "3.4"),
+            new(16930, 16930, "3.5"),
+            new(16931, 16931, "4.1"),
+            new(16932, 16933, "3.5"),
+            new(16934, 16934, "3.55"),
+            new(16935, 16985, "3.5"),
+            new(16986, 16999, "3.55"),
+            new(17000, 17000, "3.5"),
+            new(17002, 17002, "4.1"),
+            new(17003, 17041, "3.5"),
+            new(17042, 17042, "3.55"),
+            new(17043, 17136, "3.5"),
+            new(17137, 17137, "4.0"),
+            new(17138, 17164, "3.5"),
+            new(17165, 17243, "3.56"),
+            new(17244, 17342, "3.55"),
+            new(17343, 17469, "3.5"),
+            new(17470, 17470, "4.3"),
+            new(17471, 17474, "3.55"),
+            new(17476, 17490, "3.5"),
+            new(17491, 17494, "3.56"),
+            new(17495, 17499, "3.5"),
+            new(17500, 17521, "3.55"),
+            new(17522, 17523, "3.5"),
+            new(17524, 17524, "3.55"),
+            new(17525, 17527, "3.5"),
+            new(17528, 17528, "3.55"),
+            new(17529, 17548, "3.5"),
+            new(17549, 17571, "3.55"),
+            new(17572, 17574, "3.5"),
+            new(17575, 17575, "3.55"),
+            new(17576, 17576, "3.56"),
+            new(17577, 17593, "3.5"),
+            new(17594, 17594, "3.55"),
+            new(17595, 17603, "3.5"),
+            new(17604, 17617, "4.1"),
+            new(17618, 17625, "3.5"),
+            new(17626, 17626, "3.55"),
+            new(17627, 17629, "3.56"),
+            new(17630, 17656, "3.5"),
+            new(17657, 17662, "3.55"),
+            new(17663, 17664, "3.5"),
+            new(17665, 17678, "3.55"),
+            new(17679, 17683, "3.5"),
+            new(17684, 17684, "3.55"),
+            new(17685, 17686, "3.5"),
+            new(17687, 17687, "3.55"),
+            new(17688, 17688, "3.5"),
+            new(17689, 17689, "3.55"),
+            new(17690, 17717, "3.5"),
+            new(17718, 17722, "4.5"),
+            new(17723, 17725, "3.55"),
+            new(17726, 17726, "4.0"),
+            new(17727, 17730, "3.55"),
+            new(17731, 17739, "4.1"),
+            new(17740, 17843, "4.0"),
+            new(17844, 17846, "4.05"),
+            new(17847, 17860, "4.0"),
+            new(17861, 17863, "4.05"),
+            new(17864, 17865, "4.0"),
+            new(17868, 17876, "4.05"),
+            new(17877, 17962, "4.0"),
+            new(17963, 17963, "4.1"),
+            new(17965, 17965, "4.0"),
+            new(17966, 17966, "4.05"),
+            new(17967, 17974, "4.0"),
+            new(17975, 17976, "4.05"),
+            new(17977, 17977, "4.0"),
+            new(17978, 17978, "4.05"),
+            new(17979, 17980, "4.0"),
+            new(17981, 17981, "4.1"),
+            new(17982, 17995, "4.0"),
+            new(17996, 18005, "4.05"),
+            new(18006, 18968, "4.0"),
+            new(18969, 19046, "4.05"),
+            new(19047, 19103, "4.0"),
+            new(19104, 19107, "4.05"),
+            new(19108, 19108, "4.01"),
+            new(19109, 19110, "4.0"),
+            new(19111, 19117, "4.01"),
+            new(19118, 19121, "4.05"),
+            new(19122, 19122, "4.01"),
+            new(19123, 19202, "4.0"),
+            new(19203, 19436, "4.05"),
+            new(19437, 19498, "4.01"),
+            new(19499, 19505, "4.05"),
+            new(19506, 19589, "4.0"),
+            new(19590, 19600, "4.01"),
+            new(19601, 19611, "4.1"),
+            new(19612, 19661, "4.0"),
+            new(19662, 19716, "4.01"),
+            new(19717, 19726, "4.1"),
+            new(19727, 19756, "4.0"),
+            new(19757, 19766, "4.1"),
+            new(19767, 19769, "4.0"),
+            new(19770, 19770, "4.1"),
+            new(19771, 19809, "4.0"),
+            new(19810, 19810, "4.05"),
+            new(19811, 19817, "4.0"),
+            new(19818, 19818, "4.05"),
+            new(19819, 19835, "4.0"),
+            new(19836, 19836, "4.05"),
+            new(19837, 19839, "4.0"),
+            new(19840, 19840, "4.05"),
+            new(19841, 19875, "4.0"),
+            new(19876, 19876, "4.05"),
+            new(19877, 19895, "4.0"),
+            new(19896, 19900, "4.05"),
+            new(19901, 19928, "4.0"),
+            new(19929, 19929, "4.05"),
+            new(19930, 19934, "4.0"),
+            new(19935, 19935, "4.05"),
+            new(19936, 19947, "4.0"),
+            new(19948, 19949, "4.05"),
+            new(19950, 19959, "4.0"),
+            new(19960, 19961, "4.05"),
+            new(19962, 19989, "4.0"),
+            new(19990, 19990, "4.05"),
+            new(19991, 19991, "4.0"),
+            new(19992, 19992, "4.05"),
+            new(19993, 19997, "4.0"),
+            new(19998, 19998, "4.05"),
+            new(19999, 20004, "4.0"),
+            new(20005, 20005, "4.05"),
+            new(20006, 20260, "4.0"),
+            new(20261, 20271, "4.05"),
+            new(20272, 20303, "4.0"),
+            new(20304, 20304, "4.05"),
+            new(20305, 20305, "4.15"),
+            new(20306, 20309, "4.0"),
+            new(20310, 20310, "4.1"),
+            new(20311, 20439, "4.0"),
+            new(20440, 20441, "4.1"),
+            new(20442, 20474, "4.0"),
+            new(20475, 20478, "4.05"),
+            new(20479, 20488, "4.2"),
+            new(20489, 20531, "4.0"),
+            new(20532, 20532, "4.05"),
+            new(20533, 20533, "4.0"),
+            new(20534, 20534, "4.05"),
+            new(20535, 20535, "4.2"),
+            new(20536, 20536, "4.0"),
+            new(20537, 20537, "4.05"),
+            new(20538, 20542, "4.0"),
+            new(20543, 20543, "4.01"),
+            new(20544, 20547, "4.0"),
+            new(20548, 20548, "4.05"),
+            new(20549, 20555, "4.0"),
+            new(20556, 20556, "4.05"),
+            new(20557, 20562, "4.0"),
+            new(20563, 20563, "4.2"),
+            new(20564, 20566, "4.05"),
+            new(20567, 20567, "4.2"),
+            new(20568, 20621, "4.0"),
+            new(20622, 20625, "4.05"),
+            new(20627, 20627, "4.0"),
+            new(20628, 20636, "4.05"),
+            new(20637, 20639, "4.0"),
+            new(20640, 20640, "4.3"),
+            new(20641, 20641, "4.2"),
+            new(20642, 20674, "4.0"),
+            new(20675, 20676, "4.01"),
+            new(20677, 20677, "4.0"),
+            new(20678, 20679, "4.15"),
+            new(20680, 20745, "4.1"),
+            new(20746, 20746, "4.2"),
+            new(20747, 20817, "4.1"),
+            new(20818, 20818, "4.11"),
+            new(20819, 20922, "4.1"),
+            new(20931, 20932, "4.55"),
+            new(20943, 20958, "4.1"),
+            new(20959, 20974, "4.11"),
+            new(20975, 21026, "4.1"),
+            new(21027, 21032, "4.15"),
+            new(21033, 21034, "4.1"),
+            new(21035, 21035, "4.25"),
+            new(21042, 21048, "4.1"),
+            new(21049, 21049, "4.2"),
+            new(21050, 21050, "4.1"),
+            new(21051, 21051, "4.15"),
+            new(21052, 21060, "4.1"),
+            new(21061, 21061, "4.5"),
+            new(21062, 21188, "4.1"),
+            new(21189, 21190, "4.2"),
+            new(21191, 21191, "4.25"),
+            new(21192, 21192, "4.15"),
+            new(21193, 21196, "4.1"),
+            new(21197, 21197, "4.11"),
+            new(21198, 21207, "4.1"),
+            new(21208, 21273, "4.2"),
+            new(21274, 21276, "4.1"),
+            new(21277, 21277, "4.15"),
+            new(21278, 21306, "4.1"),
+            new(21307, 21307, "4.15"),
+            new(21308, 21316, "4.4"),
+            new(21317, 21320, "4.1"),
+            new(21321, 21800, "4.2"),
+            new(21801, 21803, "4.25"),
+            new(21804, 21813, "4.2"),
+            new(21814, 21814, "4.45"),
+            new(21815, 21830, "4.2"),
+            new(21831, 21832, "4.25"),
+            new(21833, 21836, "4.2"),
+            new(21838, 21838, "4.3"),
+            new(21839, 21851, "4.2"),
+            new(21852, 21852, "4.25"),
+            new(21854, 21869, "4.2"),
+            new(21870, 21870, "4.25"),
+            new(21871, 21873, "4.2"),
+            new(21874, 21874, "4.25"),
+            new(21875, 21901, "4.2"),
+            new(21902, 21902, "4.3"),
+            new(21903, 21906, "4.2"),
+            new(21907, 21907, "4.25"),
+            new(21908, 21909, "4.2"),
+            new(21910, 21910, "4.4"),
+            new(21911, 21914, "4.2"),
+            new(21915, 21915, "4.3"),
+            new(21916, 21916, "4.2"),
+            new(21917, 21919, "4.25"),
+            new(21920, 21941, "4.2"),
+            new(21942, 22306, "4.25"),
+            new(22307, 22356, "4.2"),
+            new(22357, 22357, "7.2"),
+            new(22358, 22360, "4.25"),
+            new(22361, 22366, "4.2"),
+            new(22367, 22376, "4.3"),
+            new(22377, 22404, "4.2"),
+            new(22405, 22405, "4.5"),
+            new(22406, 22406, "5.1"),
+            new(22407, 22410, "4.5"),
+            new(22411, 22451, "4.2"),
+            new(22452, 22456, "4.25"),
+            new(22457, 22458, "4.45"),
+            new(22459, 22459, "4.2"),
+            new(22460, 22460, "4.3"),
+            new(22461, 22461, "4.25"),
+            new(22462, 22478, "4.2"),
+            new(22479, 22480, "4.25"),
+            new(22481, 22498, "4.2"),
+            new(22499, 22499, "4.25"),
+            new(22500, 22507, "4.2"),
+            new(22508, 22519, "4.25"),
+            new(22520, 22521, "4.3"),
+            new(22522, 22522, "4.25"),
+            new(22525, 22531, "4.3"),
+            new(22532, 22532, "4.35"),
+            new(22533, 22537, "4.3"),
+            new(22538, 22541, "4.35"),
+            new(22542, 22542, "4.36"),
+            new(22543, 22560, "4.3"),
+            new(22561, 22561, "4.36"),
+            new(22562, 22564, "4.3"),
+            new(22565, 22565, "4.31"),
+            new(22566, 22566, "4.35"),
+            new(22567, 22570, "4.3"),
+            new(22571, 22571, "4.36"),
+            new(22572, 22578, "4.3"),
+            new(22579, 22579, "4.35"),
+            new(22580, 22580, "4.3"),
+            new(22581, 22582, "4.35"),
+            new(22583, 22583, "4.36"),
+            new(22584, 22598, "4.3"),
+            new(22599, 22615, "4.36"),
+            new(22616, 22745, "4.3"),
+            new(22746, 22747, "4.5"),
+            new(22748, 22867, "4.3"),
+            new(22868, 22883, "4.31"),
+            new(22884, 22924, "4.3"),
+            new(22925, 22976, "4.36"),
+            new(22977, 22996, "4.35"),
+            new(22997, 23000, "4.36"),
+            new(23001, 23002, "4.3"),
+            new(23003, 23012, "4.4"),
+            new(23013, 23020, "4.3"),
+            new(23021, 23021, "4.4"),
+            new(23022, 23022, "4.3"),
+            new(23023, 23024, "4.35"),
+            new(23025, 23026, "4.3"),
+            new(23027, 23028, "4.36"),
+            new(23029, 23029, "4.35"),
+            new(23030, 23032, "4.3"),
+            new(23033, 23033, "4.35"),
+            new(23034, 23037, "4.3"),
+            new(23038, 23042, "4.4"),
+            new(23043, 23043, "4.3"),
+            new(23044, 23045, "4.35"),
+            new(23046, 23046, "4.36"),
+            new(23047, 23047, "4.3"),
+            new(23048, 23048, "4.35"),
+            new(23049, 23050, "4.36"),
+            new(23051, 23075, "4.3"),
+            new(23076, 23096, "4.4"),
+            new(23097, 23119, "4.3"),
+            new(23120, 23123, "4.31"),
+            new(23124, 23124, "4.3"),
+            new(23125, 23125, "6.3"),
+            new(23126, 23142, "4.36"),
+            new(23143, 23162, "4.3"),
+            new(23163, 23164, "4.35"),
+            new(23165, 23165, "4.3"),
+            new(23166, 23166, "4.35"),
+            new(23167, 23174, "4.3"),
+            new(23175, 23175, "4.31"),
+            new(23176, 23176, "4.3"),
+            new(23177, 23177, "4.35"),
+            new(23178, 23210, "4.3"),
+            new(23213, 23219, "4.36"),
+            new(23220, 23222, "4.3"),
+            new(23223, 23225, "4.35"),
+            new(23226, 23226, "4.3"),
+            new(23227, 23228, "4.35"),
+            new(23229, 23229, "4.36"),
+            new(23230, 23308, "4.3"),
+            new(23309, 23309, "4.36"),
+            new(23310, 23314, "4.5"),
+            new(23315, 23317, "4.3"),
+            new(23318, 23320, "4.35"),
+            new(23321, 23341, "4.3"),
+            new(23342, 23359, "4.36"),
+            new(23360, 23360, "4.3"),
+            new(23361, 23362, "4.4"),
+            new(23363, 23363, "4.5"),
+            new(23364, 23364, "4.3"),
+            new(23365, 23365, "4.35"),
+            new(23366, 23366, "4.36"),
+            new(23367, 23367, "4.3"),
+            new(23369, 23369, "4.35"),
+            new(23370, 23376, "4.3"),
+            new(23377, 23379, "4.36"),
+            new(23380, 23380, "4.3"),
+            new(23381, 23381, "4.35"),
+            new(23382, 23382, "4.3"),
+            new(23383, 23393, "4.36"),
+            new(23394, 23857, "4.4"),
+            new(23858, 23858, "4.45"),
+            new(23859, 23865, "4.4"),
+            new(23866, 23866, "5.1"),
+            new(23867, 23880, "4.4"),
+            new(23881, 23882, "4.45"),
+            new(23883, 23887, "4.4"),
+            new(23888, 23890, "4.45"),
+            new(23891, 23906, "4.4"),
+            new(23907, 23907, "4.45"),
+            new(23908, 23911, "4.4"),
+            new(23912, 23913, "4.45"),
+            new(23914, 23914, "4.4"),
+            new(23915, 23915, "4.45"),
+            new(23916, 23981, "4.4"),
+            new(23982, 23982, "5.0"),
+            new(23983, 23983, "4.5"),
+            new(23984, 23986, "4.4"),
+            new(23987, 23988, "4.5"),
+            new(23989, 23991, "4.4"),
+            new(23992, 23992, "5.0"),
+            new(23993, 23994, "4.4"),
+            new(23995, 23996, "4.5"),
+            new(23997, 23999, "4.4"),
+            new(24000, 24001, "4.45"),
+            new(24002, 24006, "4.4"),
+            new(24007, 24142, "4.45"),
+            new(24143, 24143, "4.4"),
+            new(24144, 24144, "4.45"),
+            new(24145, 24147, "4.4"),
+            new(24148, 24157, "5.0"),
+            new(24158, 24162, "4.4"),
+            new(24163, 24163, "4.45"),
+            new(24164, 24164, "4.56"),
+            new(24165, 24218, "4.4"),
+            new(24219, 24219, "4.45"),
+            new(24220, 24221, "4.5"),
+            new(24222, 24222, "4.4"),
+            new(24224, 24224, "4.45"),
+            new(24225, 24225, "6.0"),
+            new(24226, 24232, "4.4"),
+            new(24233, 24233, "4.45"),
+            new(24234, 24234, "4.4"),
+            new(24235, 24235, "5.2"),
+            new(24236, 24239, "5.1"),
+            new(24240, 24265, "4.4"),
+            new(24266, 24273, "5.05"),
+            new(24274, 24282, "4.4"),
+            new(24283, 24283, "4.45"),
+            new(24284, 24284, "4.4"),
+            new(24285, 24287, "4.45"),
+            new(24288, 24311, "4.4"),
+            new(24312, 24313, "4.45"),
+            new(24314, 24315, "4.5"),
+            new(24316, 24338, "4.4"),
+            new(24339, 24339, "4.45"),
+            new(24340, 24342, "4.4"),
+            new(24343, 24343, "4.45"),
+            new(24344, 24347, "4.5"),
+            new(24348, 24367, "5.05"),
+            new(24368, 24487, "4.5"),
+            new(24488, 24488, "4.55"),
+            new(24489, 24534, "4.5"),
+            new(24535, 24535, "4.55"),
+            new(24536, 24536, "4.5"),
+            new(24537, 24537, "4.56"),
+            new(24538, 24593, "4.5"),
+            new(24594, 24598, "4.56"),
+            new(24599, 24607, "4.5"),
+            new(24608, 24611, "4.56"),
+            new(24612, 24615, "4.5"),
+            new(24617, 24621, "4.56"),
+            new(24622, 24623, "4.5"),
+            new(24624, 24624, "4.56"),
+            new(24625, 24625, "4.5"),
+            new(24626, 24626, "4.55"),
+            new(24627, 24628, "4.5"),
+            new(24629, 24629, "5.0"),
+            new(24630, 24631, "4.55"),
+            new(24632, 24633, "5.0"),
+            new(24634, 24634, "4.5"),
+            new(24635, 24635, "4.55"),
+            new(24636, 24636, "4.5"),
+            new(24637, 24638, "4.56"),
+            new(24639, 24639, "4.5"),
+            new(24640, 24640, "4.55"),
+            new(24641, 24641, "4.56"),
+            new(24642, 24642, "4.5"),
+            new(24643, 24792, "4.55"),
+            new(24794, 24794, "4.56"),
+            new(24796, 24799, "4.5"),
+            new(24800, 24800, "4.56"),
+            new(24801, 24801, "4.5"),
+            new(24802, 24802, "4.56"),
+            new(24803, 24805, "4.5"),
+            new(24806, 24820, "4.55"),
+            new(24821, 24831, "4.5"),
+            new(24832, 24858, "4.55"),
+            new(24859, 24869, "4.5"),
+            new(24870, 24871, "4.55"),
+            new(24872, 24872, "4.5"),
+            new(24873, 24873, "4.55"),
+            new(24874, 24876, "4.5"),
+            new(24877, 24877, "4.56"),
+            new(24878, 24879, "4.5"),
+            new(24880, 24880, "4.56"),
+            new(24881, 24900, "4.5"),
+            new(24901, 24901, "4.56"),
+            new(24902, 24903, "4.5"),
+            new(24904, 24907, "4.55"),
+            new(24908, 24908, "4.5"),
+            new(24909, 24909, "4.56"),
+            new(24910, 24989, "4.5"),
+            new(24990, 24995, "4.56"),
+            new(24996, 24998, "4.55"),
+            new(24999, 25000, "4.5"),
+            new(25001, 25001, "4.55"),
+            new(25002, 25002, "4.5"),
+            new(25003, 25004, "5.2"),
+            new(25005, 25006, "4.5"),
+            new(25007, 25007, "4.56"),
+            new(25008, 25037, "4.5"),
+            new(25038, 25053, "5.4"),
+            new(25054, 25056, "4.5"),
+            new(25057, 25057, "5.0"),
+            new(25058, 25066, "4.5"),
+            new(25067, 25069, "4.55"),
+            new(25070, 25077, "4.5"),
+            new(25078, 25083, "4.56"),
+            new(25084, 25086, "4.5"),
+            new(25180, 25467, "5.0"),
+            new(25468, 25627, "5.05"),
+            new(25628, 26427, "5.0"),
+            new(26428, 26532, "5.05"),
+            new(26533, 26778, "5.0"),
+            new(26779, 26779, "5.05"),
+            new(26780, 26781, "5.0"),
+            new(26782, 26782, "5.05"),
+            new(26783, 26784, "5.0"),
+            new(26785, 26785, "5.05"),
+            new(26786, 26786, "5.2"),
+            new(26787, 26788, "5.0"),
+            new(26789, 26789, "5.05"),
+            new(26790, 26794, "5.0"),
+            new(26795, 26795, "5.01"),
+            new(26796, 26801, "5.0"),
+            new(26802, 26802, "5.05"),
+            new(26803, 26810, "5.0"),
+            new(26811, 26818, "5.05"),
+            new(26819, 26891, "5.0"),
+            new(26892, 26902, "5.05"),
+            new(26903, 26934, "5.0"),
+            new(26935, 27014, "5.05"),
+            new(27015, 27076, "5.01"),
+            new(27077, 27286, "5.0"),
+            new(27287, 27287, "5.05"),
+            new(27288, 27291, "5.0"),
+            new(27292, 27293, "5.05"),
+            new(27294, 27305, "5.0"),
+            new(27306, 27311, "5.05"),
+            new(27312, 27392, "5.0"),
+            new(27393, 27399, "5.01"),
+            new(27400, 27403, "5.05"),
+            new(27404, 27404, "5.01"),
+            new(27405, 27408, "5.05"),
+            new(27409, 27409, "5.01"),
+            new(27410, 27693, "5.0"),
+            new(27694, 27695, "5.05"),
+            new(27696, 27715, "5.0"),
+            new(27716, 27719, "5.05"),
+            new(27720, 27736, "5.0"),
+            new(27737, 27737, "5.05"),
+            new(27738, 27742, "5.0"),
+            new(27743, 27744, "5.05"),
+            new(27745, 27759, "5.0"),
+            new(27760, 27760, "5.05"),
+            new(27761, 27761, "5.0"),
+            new(27762, 27762, "5.05"),
+            new(27763, 27790, "5.0"),
+            new(27791, 27796, "5.05"),
+            new(27797, 27843, "5.0"),
+            new(27844, 27848, "5.05"),
+            new(27849, 27882, "5.0"),
+            new(27883, 27892, "5.05"),
+            new(27893, 27914, "5.0"),
+            new(27915, 27916, "5.01"),
+            new(27917, 27917, "5.0"),
+            new(27918, 27918, "5.05"),
+            new(27919, 27920, "4.56"),
+            new(27921, 27937, "5.0"),
+            new(27938, 27939, "5.05"),
+            new(27940, 27955, "5.0"),
+            new(27956, 27956, "5.05"),
+            new(27957, 27975, "5.0"),
+            new(27976, 27977, "5.05"),
+            new(27978, 27983, "5.0"),
+            new(27984, 27984, "5.05"),
+            new(27985, 27990, "5.0"),
+            new(27991, 27991, "5.05"),
+            new(27992, 27994, "5.0"),
+            new(27995, 27999, "5.05"),
+            new(28061, 28061, "5.01"),
+            new(28062, 28062, "5.0"),
+            new(28063, 28072, "5.1"),
+            new(28073, 28078, "5.2"),
+            new(28079, 28079, "5.18"),
+            new(28080, 28080, "5.2"),
+            new(28081, 28115, "5.1"),
+            new(28116, 28116, "5.15"),
+            new(28117, 28117, "5.1"),
+            new(28118, 28118, "5.18"),
+            new(28119, 28119, "5.2"),
+            new(28120, 28120, "5.15"),
+            new(28121, 28121, "5.1"),
+            new(28122, 28122, "5.2"),
+            new(28123, 28123, "5.1"),
+            new(28124, 28125, "5.21"),
+            new(28126, 28136, "5.1"),
+            new(28137, 28137, "5.2"),
+            new(28139, 28147, "5.1"),
+            new(28148, 28148, "5.15"),
+            new(28149, 28149, "5.1"),
+            new(28150, 28150, "5.15"),
+            new(28151, 28156, "5.1"),
+            new(28157, 28157, "5.4"),
+            new(28158, 28158, "5.1"),
+            new(28160, 28161, "5.15"),
+            new(28162, 28186, "5.1"),
+            new(28187, 28187, "5.2"),
+            new(28188, 28188, "5.3"),
+            new(28189, 28481, "5.1"),
+            new(28492, 28496, "5.15"),
+            new(28501, 28507, "5.1"),
+            new(28508, 28508, "5.2"),
+            new(28509, 28555, "5.1"),
+            new(28556, 28557, "5.4"),
+            new(28558, 28594, "5.1"),
+            new(28595, 28599, "5.2"),
+            new(28600, 28610, "5.4"),
+            new(28612, 28612, "5.1"),
+            new(28613, 28613, "5.15"),
+            new(28614, 28622, "5.1"),
+            new(28623, 28623, "5.15"),
+            new(28624, 28627, "5.1"),
+            new(28628, 28628, "5.21"),
+            new(28629, 28634, "5.1"),
+            new(28635, 28635, "5.15"),
+            new(28636, 28641, "5.1"),
+            new(28642, 28647, "5.15"),
+            new(28648, 28650, "5.1"),
+            new(28651, 28651, "5.4"),
+            new(28652, 28889, "5.1"),
+            new(28890, 28891, "5.15"),
+            new(28892, 28895, "5.1"),
+            new(28896, 28896, "5.5"),
+            new(28897, 28924, "5.1"),
+            new(28925, 28962, "5.2"),
+            new(28963, 28964, "5.21"),
+            new(28965, 28967, "5.2"),
+            new(28968, 28968, "5.25"),
+            new(28969, 28970, "5.2"),
+            new(28971, 28971, "5.21"),
+            new(28972, 28972, "5.2"),
+            new(28973, 28973, "5.25"),
+            new(28974, 28977, "5.2"),
+            new(28978, 28978, "5.25"),
+            new(28979, 28979, "5.21"),
+            new(28980, 28981, "5.2"),
+            new(28982, 28982, "5.25"),
+            new(28983, 28988, "5.2"),
+            new(28989, 28989, "5.21"),
+            new(28990, 28994, "5.2"),
+            new(28995, 28995, "5.21"),
+            new(28996, 29402, "5.2"),
+            new(29403, 29403, "5.21"),
+            new(29404, 29611, "5.2"),
+            new(29612, 29680, "5.25"),
+            new(29681, 29706, "5.2"),
+            new(29707, 29707, "5.21"),
+            new(29708, 29791, "5.2"),
+            new(29792, 29947, "5.21"),
+            new(29948, 29979, "5.2"),
+            new(29980, 29982, "5.15"),
+            new(29983, 29991, "5.2"),
+            new(29992, 29992, "5.21"),
+            new(29993, 29993, "5.25"),
+            new(29994, 30033, "5.21"),
+            new(30034, 30046, "5.2"),
+            new(30047, 30054, "5.21"),
+            new(30055, 30088, "5.2"),
+            new(30089, 30089, "5.21"),
+            new(30090, 30093, "5.2"),
+            new(30094, 30095, "5.21"),
+            new(30096, 30098, "5.2"),
+            new(30099, 30099, "5.4"),
+            new(30100, 30100, "5.21"),
+            new(30101, 30101, "5.2"),
+            new(30102, 30102, "5.35"),
+            new(30103, 30103, "5.2"),
+            new(30104, 30104, "5.21"),
+            new(30105, 30109, "5.2"),
+            new(30110, 30130, "5.21"),
+            new(30131, 30135, "5.2"),
+            new(30136, 30245, "5.25"),
+            new(30246, 30258, "5.2"),
+            new(30259, 30262, "5.21"),
+            new(30263, 30266, "5.2"),
+            new(30267, 30267, "5.21"),
+            new(30268, 30268, "5.2"),
+            new(30269, 30271, "5.21"),
+            new(30272, 30272, "5.2"),
+            new(30273, 30273, "5.25"),
+            new(30274, 30277, "5.2"),
+            new(30278, 30281, "5.21"),
+            new(30282, 30340, "5.35"),
+            new(30341, 30341, "5.3"),
+            new(30342, 30361, "5.35"),
+            new(30362, 30362, "5.3"),
+            new(30363, 30363, "5.35"),
+            new(30364, 30412, "5.3"),
+            new(30413, 30418, "5.31"),
+            new(30419, 30423, "5.35"),
+            new(30424, 30594, "5.3"),
+            new(30595, 30595, "5.5"),
+            new(30596, 30714, "5.3"),
+            new(30715, 30749, "5.35"),
+            new(30750, 30758, "5.3"),
+            new(30759, 30761, "5.41"),
+            new(30762, 30766, "5.31"),
+            new(30767, 30802, "5.35"),
+            new(30803, 30860, "5.3"),
+            new(30861, 30861, "5.35"),
+            new(30862, 30862, "5.31"),
+            new(30863, 30869, "5.3"),
+            new(30870, 30870, "5.35"),
+            new(30871, 30871, "5.31"),
+            new(30872, 30874, "5.3"),
+            new(30875, 30875, "5.31"),
+            new(30876, 30876, "5.35"),
+            new(30877, 30883, "5.3"),
+            new(30884, 30969, "5.35"),
+            new(30970, 31100, "5.3"),
+            new(31101, 31135, "5.35"),
+            new(31136, 31183, "5.3"),
+            new(31184, 31319, "5.31"),
+            new(31320, 31323, "5.3"),
+            new(31324, 31325, "5.31"),
+            new(31326, 31326, "5.35"),
+            new(31327, 31328, "5.31"),
+            new(31329, 31338, "5.3"),
+            new(31339, 31339, "5.41"),
+            new(31340, 31340, "5.3"),
+            new(31341, 31341, "5.31"),
+            new(31342, 31343, "5.3"),
+            new(31344, 31345, "5.35"),
+            new(31346, 31350, "5.3"),
+            new(31351, 31393, "5.35"),
+            new(31394, 31397, "5.3"),
+            new(31398, 31398, "5.4"),
+            new(31399, 31399, "5.5"),
+            new(31400, 31400, "5.3"),
+            new(31401, 31401, "5.31"),
+            new(31402, 31402, "5.35"),
+            new(31403, 31403, "5.41"),
+            new(31404, 31405, "5.3"),
+            new(31406, 31406, "5.31"),
+            new(31407, 31407, "5.35"),
+            new(31408, 31572, "5.3"),
+            new(31573, 31576, "5.35"),
+            new(31577, 31577, "5.3"),
+            new(31578, 31630, "5.31"),
+            new(31631, 31648, "5.35"),
+            new(31649, 31663, "5.3"),
+            new(31664, 31669, "5.35"),
+            new(31670, 31673, "5.3"),
+            new(31674, 31675, "5.31"),
+            new(31676, 31681, "5.3"),
+            new(31682, 31683, "5.4"),
+            new(31684, 31713, "5.3"),
+            new(31714, 31771, "5.41"),
+            new(31772, 31912, "5.4"),
+            new(31913, 32048, "5.41"),
+            new(32049, 32161, "5.4"),
+            new(32162, 32201, "5.41"),
+            new(32202, 32209, "5.4"),
+            new(32210, 32211, "5.41"),
+            new(32212, 32212, "5.4"),
+            new(32213, 32213, "5.41"),
+            new(32214, 32214, "5.4"),
+            new(32215, 32218, "5.41"),
+            new(32219, 32219, "5.4"),
+            new(32220, 32220, "5.5"),
+            new(32221, 32224, "5.4"),
+            new(32225, 32226, "5.41"),
+            new(32227, 32228, "5.4"),
+            new(32229, 32229, "5.41"),
+            new(32230, 32237, "5.4"),
+            new(32238, 32238, "6.0"),
+            new(32239, 32240, "5.41"),
+            new(32241, 32249, "5.4"),
+            new(32250, 32251, "5.41"),
+            new(32252, 32639, "5.4"),
+            new(32640, 32797, "5.41"),
+            new(32798, 32803, "5.4"),
+            new(32804, 32805, "6.0"),
+            new(32806, 32823, "5.4"),
+            new(32824, 32824, "5.41"),
+            new(32825, 32825, "5.4"),
+            new(32826, 32827, "5.41"),
+            new(32828, 32828, "5.55"),
+            new(32829, 32829, "5.41"),
+            new(32830, 32830, "5.4"),
+            new(32831, 32835, "5.41"),
+            new(32836, 32837, "5.4"),
+            new(32838, 32838, "5.5"),
+            new(32839, 32839, "5.4"),
+            new(32840, 32841, "5.41"),
+            new(32842, 32842, "6.0"),
+            new(32843, 32845, "5.4"),
+            new(32846, 32846, "5.41"),
+            new(32847, 32849, "5.4"),
+            new(32850, 32850, "5.5"),
+            new(32851, 32851, "6.0"),
+            new(32852, 32854, "5.5"),
+            new(32855, 32855, "5.41"),
+            new(32856, 32856, "5.4"),
+            new(32857, 32857, "5.41"),
+            new(32858, 32865, "5.4"),
+            new(32866, 32869, "5.41"),
+            new(32870, 32870, "6.0"),
+            new(32871, 32874, "5.41"),
+            new(32875, 32881, "5.4"),
+            new(32882, 32933, "5.41"),
+            new(32934, 32955, "5.4"),
+            new(32956, 32960, "5.41"),
+            new(32961, 33013, "5.4"),
+            new(33014, 33014, "5.41"),
+            new(33015, 33015, "5.4"),
+            new(33016, 33020, "5.41"),
+            new(33021, 33036, "5.4"),
+            new(33037, 33037, "5.41"),
+            new(33038, 33038, "5.4"),
+            new(33039, 33039, "5.41"),
+            new(33040, 33042, "5.4"),
+            new(33043, 33109, "5.41"),
+            new(33110, 33110, "5.4"),
+            new(33111, 33114, "5.41"),
+            new(33115, 33125, "5.4"),
+            new(33126, 33128, "5.41"),
+            new(33129, 33135, "5.4"),
+            new(33136, 33137, "5.41"),
+            new(33139, 33143, "5.4"),
+            new(33144, 33144, "5.41"),
+            new(33145, 33153, "5.4"),
+            new(33154, 33238, "5.5"),
+            new(33239, 33244, "5.55"),
+            new(33245, 33253, "5.5"),
+            new(33254, 33254, "5.55"),
+            new(33255, 33256, "5.5"),
+            new(33257, 33259, "5.55"),
+            new(33260, 33264, "5.5"),
+            new(33265, 33265, "5.55"),
+            new(33266, 33270, "5.5"),
+            new(33271, 33271, "5.55"),
+            new(33272, 33280, "5.5"),
+            new(33281, 33285, "5.55"),
+            new(33286, 33290, "5.5"),
+            new(33291, 33291, "5.55"),
+            new(33292, 33293, "5.5"),
+            new(33294, 33297, "5.55"),
+            new(33298, 33334, "5.5"),
+            new(33335, 33337, "5.55"),
+            new(33338, 33339, "5.5"),
+            new(33340, 33340, "5.55"),
+            new(33341, 33341, "5.5"),
+            new(33354, 33355, "6.0"),
+            new(33356, 33461, "5.5"),
+            new(33462, 33479, "5.55"),
+            new(33480, 33612, "5.5"),
+            new(33613, 33647, "5.55"),
+            new(33648, 33671, "5.5"),
+            new(33672, 33672, "5.55"),
+            new(33673, 33675, "5.5"),
+            new(33676, 33676, "5.55"),
+            new(33677, 33677, "5.5"),
+            new(33678, 33680, "6.2"),
+            new(33681, 33683, "6.4"),
+            new(33684, 33684, "5.55"),
+            new(33685, 33688, "5.5"),
+            new(33689, 33689, "5.55"),
+            new(33690, 33699, "5.5"),
+            new(33700, 33700, "5.55"),
+            new(33701, 33705, "5.5"),
+            new(33706, 33706, "5.55"),
+            new(33707, 33709, "5.5"),
+            new(33710, 33711, "5.55"),
+            new(33712, 33714, "5.5"),
+            new(33715, 33750, "5.55"),
+            new(33751, 33756, "5.5"),
+            new(33757, 33817, "5.55"),
+            new(33818, 33819, "5.5"),
+            new(33820, 33837, "5.55"),
+            new(33838, 33839, "5.5"),
+            new(33840, 33840, "5.55"),
+            new(33841, 33844, "5.5"),
+            new(33845, 33845, "5.55"),
+            new(33846, 33883, "5.5"),
+            new(33884, 33884, "5.55"),
+            new(33885, 33885, "5.5"),
+            new(33886, 33886, "5.55"),
+            new(33887, 33912, "5.5"),
+            new(33913, 35019, "6.0"),
+            new(35020, 35319, "6.05"),
+            new(35320, 35555, "6.0"),
+            new(35556, 35557, "6.05"),
+            new(35558, 35558, "6.0"),
+            new(35559, 35559, "6.05"),
+            new(35560, 35567, "6.0"),
+            new(35568, 35568, "6.05"),
+            new(35569, 35571, "6.0"),
+            new(35572, 35572, "6.05"),
+            new(35573, 35574, "6.0"),
+            new(35575, 35575, "6.05"),
+            new(35576, 35577, "6.0"),
+            new(35578, 35578, "6.05"),
+            new(35579, 35583, "6.0"),
+            new(35584, 35587, "6.05"),
+            new(35588, 35607, "6.0"),
+            new(35608, 35617, "6.1"),
+            new(35618, 35625, "6.05"),
+            new(35626, 35733, "6.0"),
+            new(35734, 35743, "6.05"),
+            new(35744, 35794, "6.0"),
+            new(35796, 35796, "6.05"),
+            new(35797, 35822, "6.0"),
+            new(35823, 35826, "6.05"),
+            new(35827, 35827, "6.0"),
+            new(35828, 35830, "6.05"),
+            new(35831, 35852, "6.0"),
+            new(35853, 35856, "6.28"),
+            new(35857, 35867, "6.0"),
+            new(35868, 35871, "6.05"),
+            new(35872, 36007, "6.0"),
+            new(36008, 36008, "6.05"),
+            new(36009, 36028, "6.0"),
+            new(36029, 36035, "6.05"),
+            new(36036, 36066, "6.0"),
+            new(36067, 36076, "6.05"),
+            new(36077, 36098, "6.0"),
+            new(36099, 36103, "6.05"),
+            new(36104, 36108, "6.0"),
+            new(36109, 36113, "6.05"),
+            new(36114, 36117, "6.0"),
+            new(36118, 36120, "6.1"),
+            new(36121, 36172, "6.0"),
+            new(36173, 36173, "6.05"),
+            new(36174, 36186, "6.0"),
+            new(36187, 36187, "6.05"),
+            new(36188, 36200, "6.0"),
+            new(36201, 36201, "6.05"),
+            new(36202, 36212, "6.0"),
+            new(36213, 36213, "6.05"),
+            new(36214, 36217, "6.0"),
+            new(36218, 36222, "6.05"),
+            new(36223, 36231, "6.0"),
+            new(36232, 36236, "6.05"),
+            new(36237, 36251, "6.0"),
+            new(36252, 36252, "6.05"),
+            new(36253, 36340, "6.0"),
+            new(36341, 36341, "6.05"),
+            new(36342, 36367, "6.0"),
+            new(36368, 36369, "6.05"),
+            new(36370, 36627, "6.0"),
+            new(36628, 36628, "6.05"),
+            new(36629, 36631, "6.0"),
+            new(36632, 36632, "6.2"),
+            new(36633, 36636, "6.0"),
+            new(36637, 36637, "6.05"),
+            new(36638, 36654, "6.0"),
+            new(36656, 36656, "6.1"),
+            new(36657, 36657, "6.15"),
+            new(36658, 36658, "6.1"),
+            new(36659, 36678, "6.15"),
+            new(36679, 36809, "6.1"),
+            new(36810, 36810, "6.11"),
+            new(36811, 36843, "6.1"),
+            new(36844, 36848, "6.15"),
+            new(36849, 36850, "6.1"),
+            new(36851, 36851, "6.15"),
+            new(36852, 36860, "6.1"),
+            new(36861, 36861, "6.4"),
+            new(36862, 36862, "6.2"),
+            new(36863, 36904, "6.1"),
+            new(36905, 36905, "6.2"),
+            new(36906, 36906, "6.1"),
+            new(36907, 36907, "6.15"),
+            new(36908, 36908, "6.55"),
+            new(36909, 36910, "6.1"),
+            new(36911, 36911, "6.35"),
+            new(36912, 36913, "6.1"),
+            new(36915, 36915, "6.2"),
+            new(36916, 36942, "6.1"),
+            new(36943, 36962, "6.11"),
+            new(36963, 37334, "6.1"),
+            new(37335, 37336, "6.15"),
+            new(37337, 37349, "6.1"),
+            new(37351, 37352, "6.15"),
+            new(37353, 37357, "6.1"),
+            new(37358, 37358, "6.15"),
+            new(37359, 37363, "6.1"),
+            new(37364, 37364, "6.15"),
+            new(37365, 37366, "6.1"),
+            new(37367, 37367, "6.15"),
+            new(37368, 37382, "6.1"),
+            new(37383, 37385, "6.15"),
+            new(37386, 37389, "6.1"),
+            new(37390, 37390, "6.28"),
+            new(37391, 37399, "6.1"),
+            new(37400, 37400, "6.15"),
+            new(37401, 37413, "6.1"),
+            new(37414, 37414, "6.15"),
+            new(37415, 37415, "6.5"),
+            new(37416, 37418, "6.1"),
+            new(37419, 37419, "6.15"),
+            new(37420, 37492, "6.1"),
+            new(37493, 37493, "6.15"),
+            new(37549, 37853, "6.2"),
+            new(37854, 37854, "6.25"),
+            new(37856, 38210, "6.2"),
+            new(38211, 38211, "6.3"),
+            new(38212, 38222, "6.2"),
+            new(38223, 38227, "6.25"),
+            new(38228, 38232, "6.2"),
+            new(38233, 38237, "6.3"),
+            new(38238, 38275, "6.2"),
+            new(38276, 38347, "6.25"),
+            new(38348, 38399, "6.2"),
+            new(38400, 38420, "6.25"),
+            new(38421, 38428, "6.2"),
+            new(38429, 38432, "6.25"),
+            new(38433, 38434, "6.2"),
+            new(38435, 38435, "6.25"),
+            new(38436, 38444, "6.2"),
+            new(38445, 38445, "6.25"),
+            new(38446, 38448, "6.2"),
+            new(38449, 38449, "6.5"),
+            new(38450, 38450, "6.2"),
+            new(38451, 38452, "6.25"),
+            new(38453, 38453, "6.3"),
+            new(38454, 38455, "6.2"),
+            new(38456, 38456, "6.25"),
+            new(38457, 38457, "6.2"),
+            new(38458, 38459, "6.3"),
+            new(38460, 38460, "6.2"),
+            new(38461, 38462, "6.25"),
+            new(38463, 38464, "6.2"),
+            new(38465, 38466, "6.25"),
+            new(38467, 38532, "6.2"),
+            new(38533, 38535, "6.25"),
+            new(38536, 38536, "6.2"),
+            new(38537, 38537, "6.25"),
+            new(38538, 38538, "6.2"),
+            new(38539, 38539, "6.25"),
+            new(38540, 38558, "6.2"),
+            new(38559, 38559, "6.25"),
+            new(38560, 38569, "6.2"),
+            new(38570, 38570, "6.25"),
+            new(38571, 38585, "6.2"),
+            new(38586, 38586, "6.25"),
+            new(38587, 38587, "6.2"),
+            new(38588, 38588, "6.25"),
+            new(38589, 38589, "6.2"),
+            new(38590, 38590, "6.5"),
+            new(38591, 38591, "6.2"),
+            new(38592, 38592, "6.25"),
+            new(38593, 38594, "6.2"),
+            new(38595, 38598, "6.25"),
+            new(38599, 38599, "6.2"),
+            new(38600, 38603, "6.25"),
+            new(38604, 38620, "6.2"),
+            new(38621, 38621, "6.25"),
+            new(38622, 38631, "6.2"),
+            new(38632, 38632, "6.25"),
+            new(38633, 38638, "6.2"),
+            new(38639, 38639, "6.25"),
+            new(38640, 38690, "6.2"),
+            new(38691, 38691, "6.25"),
+            new(38697, 38714, "6.2"),
+            new(38715, 38809, "6.35"),
+            new(38810, 38841, "6.3"),
+            new(38842, 38889, "6.35"),
+            new(38890, 38939, "6.3"),
+            new(38940, 38947, "6.35"),
+            new(38948, 38950, "6.3"),
+            new(38951, 38951, "6.31"),
+            new(38952, 38952, "6.35"),
+            new(38953, 39143, "6.3"),
+            new(39144, 39163, "6.35"),
+            new(39164, 39183, "6.31"),
+            new(39184, 39223, "6.35"),
+            new(39224, 39302, "6.3"),
+            new(39303, 39307, "6.4"),
+            new(39308, 39328, "6.3"),
+            new(39329, 39348, "6.35"),
+            new(39349, 39367, "6.3"),
+            new(39368, 39368, "6.35"),
+            new(39369, 39370, "6.3"),
+            new(39371, 39372, "6.35"),
+            new(39373, 39375, "6.3"),
+            new(39376, 39378, "6.35"),
+            new(39379, 39387, "6.3"),
+            new(39388, 39389, "6.35"),
+            new(39390, 39390, "6.3"),
+            new(39391, 39391, "6.35"),
+            new(39392, 39395, "6.3"),
+            new(39396, 39400, "6.35"),
+            new(39401, 39419, "6.3"),
+            new(39420, 39420, "6.35"),
+            new(39421, 39425, "6.3"),
+            new(39426, 39426, "6.35"),
+            new(39427, 39470, "6.3"),
+            new(39471, 39471, "6.35"),
+            new(39472, 39472, "6.3"),
+            new(39473, 39473, "6.35"),
+            new(39474, 39478, "6.3"),
+            new(39479, 39480, "6.35"),
+            new(39481, 39484, "6.3"),
+            new(39485, 39486, "6.35"),
+            new(39487, 39495, "6.3"),
+            new(39496, 39496, "6.4"),
+            new(39497, 39503, "6.3"),
+            new(39504, 39508, "6.35"),
+            new(39509, 39575, "6.3"),
+            new(39576, 39577, "6.35"),
+            new(39578, 39579, "6.3"),
+            new(39580, 39580, "6.35"),
+            new(39582, 39596, "6.3"),
+            new(39597, 39597, "6.35"),
+            new(39598, 39598, "6.3"),
+            new(39599, 39599, "6.35"),
+            new(39600, 39612, "6.3"),
+            new(39613, 39615, "6.35"),
+            new(39616, 39629, "6.3"),
+            new(39630, 40356, "6.4"),
+            new(40357, 40357, "6.5"),
+            new(40358, 40361, "6.4"),
+            new(40362, 40362, "7.05"),
+            new(40363, 40385, "6.4"),
+            new(40386, 40386, "6.48"),
+            new(40387, 40451, "6.4"),
+            new(40452, 40455, "7.1"),
+            new(40456, 40499, "6.4"),
+            new(40500, 40501, "6.48"),
+            new(40502, 40657, "6.4"),
+            new(40658, 40658, "6.5"),
+            new(40659, 40660, "6.4"),
+            new(40661, 40661, "6.5"),
+            new(40662, 40663, "6.4"),
+            new(40664, 40664, "6.48"),
+            new(40665, 40665, "6.4"),
+            new(40666, 40666, "7.15"),
+            new(40667, 40667, "6.5"),
+            new(40671, 40704, "6.4"),
+            new(40705, 40705, "6.48"),
+            new(40706, 40752, "6.4"),
+            new(40753, 40753, "6.5"),
+            new(40754, 40754, "6.4"),
+            new(40755, 40755, "6.48"),
+            new(40756, 40764, "6.4"),
+            new(40765, 40931, "6.5"),
+            new(40932, 41032, "6.55"),
+            new(41033, 41077, "6.5"),
+            new(41078, 41080, "6.51"),
+            new(41081, 41081, "6.58"),
+            new(41082, 41087, "6.5"),
+            new(41088, 41088, "6.55"),
+            new(41089, 41089, "6.5"),
+            new(41090, 41090, "7.0"),
+            new(41091, 41097, "6.5"),
+            new(41099, 41101, "7.05"),
+            new(41102, 41105, "6.5"),
+            new(41106, 41106, "6.55"),
+            new(41107, 41108, "6.5"),
+            new(41109, 41110, "7.0"),
+            new(41111, 41111, "6.5"),
+            new(41112, 41112, "7.05"),
+            new(41113, 41113, "6.5"),
+            new(41114, 41114, "6.55"),
+            new(41115, 41129, "7.0"),
+            new(41130, 41136, "6.5"),
+            new(41137, 41137, "7.05"),
+            new(41138, 41139, "6.5"),
+            new(41140, 41140, "7.05"),
+            new(41141, 41142, "6.5"),
+            new(41143, 41143, "7.0"),
+            new(41144, 41145, "6.55"),
+            new(41146, 41147, "7.0"),
+            new(41149, 41179, "6.5"),
+            new(41180, 41304, "6.51"),
+            new(41305, 41306, "6.55"),
+            new(41307, 41315, "6.5"),
+            new(41316, 41318, "7.0"),
+            new(41319, 41321, "7.1"),
+            new(41322, 41348, "6.5"),
+            new(41349, 41357, "7.0"),
+            new(41358, 41366, "7.1"),
+            new(41367, 41369, "6.5"),
+            new(41370, 41370, "6.55"),
+            new(41371, 41375, "6.5"),
+            new(41376, 41379, "6.51"),
+            new(41380, 41380, "6.5"),
+            new(41381, 41383, "6.51"),
+            new(41384, 41384, "6.55"),
+            new(41385, 41385, "6.51"),
+            new(41386, 41394, "6.5"),
+            new(41395, 41395, "6.55"),
+            new(41396, 41396, "6.5"),
+            new(41397, 41397, "6.58"),
+            new(41398, 41400, "7.0"),
+            new(41401, 41406, "6.5"),
+            new(41407, 41412, "6.55"),
+            new(41413, 41424, "6.5"),
+            new(41425, 41425, "6.55"),
+            new(41426, 41428, "6.5"),
+            new(41429, 41429, "6.55"),
+            new(41430, 41442, "6.51"),
+            new(41455, 41456, "7.0"),
+            new(41457, 41457, "6.55"),
+            new(41458, 41460, "6.5"),
+            new(41461, 41461, "7.1"),
+            new(41462, 41463, "6.51"),
+            new(41464, 41464, "7.05"),
+            new(41465, 41467, "6.51"),
+            new(41468, 41468, "6.5"),
+            new(41469, 41470, "6.55"),
+            new(41471, 41471, "6.51"),
+            new(41472, 41472, "7.15"),
+            new(41473, 41477, "6.5"),
+            new(41478, 41478, "6.58"),
+            new(41479, 41480, "6.51"),
+            new(41481, 41483, "6.5"),
+            new(41484, 41484, "6.58"),
+            new(41485, 41485, "7.0"),
+            new(41486, 41486, "6.51"),
+            new(41487, 41487, "6.58"),
+            new(41488, 41488, "7.0"),
+            new(41489, 41490, "6.5"),
+            new(41491, 41491, "6.51"),
+            new(41492, 41492, "7.0"),
+            new(41493, 41494, "6.5"),
+            new(41495, 41495, "6.51"),
+            new(41496, 41497, "6.5"),
+            new(41499, 41500, "6.51"),
+            new(41501, 41502, "6.5"),
+            new(41503, 41506, "6.55"),
+            new(41507, 41553, "6.5"),
+            new(41555, 41559, "6.58"),
+            new(41560, 41564, "6.51"),
+            new(41565, 41586, "6.5"),
+            new(41587, 41591, "6.51"),
+            new(41592, 41618, "6.5"),
+            new(41619, 41622, "6.58"),
+            new(41628, 41629, "6.51"),
+            new(41630, 41657, "6.5"),
+            new(41658, 41658, "6.55"),
+            new(41659, 41661, "6.5"),
+            new(41662, 41663, "6.51"),
+            new(41664, 41677, "6.5"),
+            new(41678, 41678, "7.0"),
+            new(41679, 41700, "6.51"),
+            new(41701, 41706, "6.58"),
+            new(41707, 41708, "6.51"),
+            new(41709, 41709, "6.5"),
+            new(41717, 41793, "7.0"),
+            new(41796, 41796, "6.51"),
+            new(41797, 41797, "6.58"),
+            new(41801, 41804, "7.0"),
+            new(41805, 41805, "7.05"),
+            new(41806, 41812, "7.0"),
+            new(41813, 41813, "7.1"),
+            new(41814, 41821, "7.0"),
+            new(41822, 41822, "7.05"),
+            new(41823, 41823, "7.0"),
+            new(41824, 41828, "7.05"),
+            new(41829, 42814, "7.0"),
+            new(42815, 42869, "7.01"),
+            new(42870, 43177, "7.05"),
+            new(43178, 43526, "7.0"),
+            new(43527, 43536, "7.05"),
+            new(43537, 43540, "7.0"),
+            new(43541, 43548, "7.01"),
+            new(43549, 43555, "7.05"),
+            new(43556, 43563, "7.0"),
+            new(43564, 43564, "7.1"),
+            new(43565, 43571, "7.0"),
+            new(43572, 43572, "7.05"),
+            new(43573, 43585, "7.0"),
+            new(43586, 43586, "7.01"),
+            new(43587, 43588, "7.0"),
+            new(43589, 43589, "7.1"),
+            new(43590, 43596, "7.0"),
+            new(43597, 43597, "7.05"),
+            new(43598, 43599, "7.0"),
+            new(43600, 43600, "7.05"),
+            new(43601, 43604, "7.0"),
+            new(43605, 43605, "7.3"),
+            new(43606, 43871, "7.0"),
+            new(43872, 43872, "7.01"),
+            new(43873, 43945, "7.0"),
+            new(43946, 43952, "7.05"),
+            new(43953, 44122, "7.0"),
+            new(44123, 44130, "7.05"),
+            new(44131, 44132, "7.0"),
+            new(44133, 44133, "7.05"),
+            new(44134, 44140, "7.0"),
+            new(44141, 44156, "7.05"),
+            new(44157, 44161, "7.0"),
+            new(44162, 44166, "7.05"),
+            new(44167, 44169, "7.0"),
+            new(44170, 44184, "7.05"),
+            new(44185, 44239, "7.0"),
+            new(44240, 44240, "7.05"),
+            new(44241, 44250, "7.0"),
+            new(44251, 44255, "7.05"),
+            new(44256, 44256, "7.0"),
+            new(44257, 44257, "7.05"),
+            new(44258, 44259, "7.0"),
+            new(44260, 44260, "7.2"),
+            new(44261, 44268, "7.0"),
+            new(44269, 44269, "7.05"),
+            new(44270, 44271, "7.0"),
+            new(44272, 44272, "7.4"),
+            new(44273, 44304, "7.0"),
+            new(44305, 44308, "7.01"),
+            new(44309, 44309, "7.05"),
+            new(44310, 44322, "7.0"),
+            new(44323, 44323, "7.05"),
+            new(44324, 44333, "7.0"),
+            new(44334, 44338, "7.15"),
+            new(44339, 44352, "7.1"),
+            new(44353, 44364, "7.2"),
+            new(44365, 44483, "7.1"),
+            new(44484, 44484, "7.4"),
+            new(44485, 44490, "7.1"),
+            new(44491, 44491, "7.2"),
+            new(44492, 44492, "7.15"),
+            new(44493, 44497, "7.1"),
+            new(44498, 44498, "7.2"),
+            new(44499, 44499, "7.1"),
+            new(44500, 44501, "7.15"),
+            new(44502, 44502, "7.1"),
+            new(44503, 44503, "7.2"),
+            new(44505, 44505, "7.21"),
+            new(44506, 44506, "7.1"),
+            new(44507, 44507, "7.15"),
+            new(44508, 44508, "7.1"),
+            new(44509, 44509, "7.21"),
+            new(44510, 44512, "7.1"),
+            new(44513, 44513, "7.4"),
+            new(44514, 44604, "7.1"),
+            new(44605, 44639, "7.15"),
+            new(44640, 44654, "7.1"),
+            new(44655, 44660, "7.15"),
+            new(44661, 44666, "7.1"),
+            new(44668, 44675, "7.2"),
+            new(44676, 44691, "7.1"),
+            new(44692, 44692, "7.4"),
+            new(44694, 44720, "7.1"),
+            new(44721, 44743, "7.11"),
+            new(44744, 44849, "7.1"),
+            new(44850, 44864, "7.15"),
+            new(44865, 44867, "7.1"),
+            new(44868, 44869, "7.15"),
+            new(44870, 44887, "7.1"),
+            new(44888, 44892, "7.15"),
+            new(44895, 44914, "7.1"),
+            new(44915, 44924, "7.15"),
+            new(44925, 44929, "7.1"),
+            new(44930, 44933, "7.15"),
+            new(44934, 45017, "7.1"),
+            new(45018, 45018, "7.16"),
+            new(45019, 45020, "7.11"),
+            new(45021, 45040, "7.1"),
+            new(45041, 45044, "7.25"),
+            new(45046, 45046, "7.21"),
+            new(45047, 45073, "7.1"),
+            new(45074, 45078, "7.15"),
+            new(45079, 45570, "7.1"),
+            new(45571, 45572, "7.2"),
+            new(45573, 45576, "7.1"),
+            new(45577, 45577, "7.11"),
+            new(45579, 45579, "7.1"),
+            new(45586, 45587, "7.21"),
+            new(45590, 45590, "7.1"),
+            new(45591, 45967, "7.21"),
+            new(45968, 46086, "7.2"),
+            new(46087, 46088, "7.3"),
+            new(46089, 46089, "7.4"),
+            new(46090, 46090, "7.3"),
+            new(46091, 46099, "7.4"),
+            new(46100, 46120, "7.3"),
+            new(46121, 46123, "7.4"),
+            new(46124, 46129, "7.35"),
+            new(46130, 46133, "7.3"),
+            new(46134, 46134, "7.35"),
+            new(46135, 46148, "7.3"),
+            new(46149, 46154, "7.35"),
+            new(46155, 46156, "7.31"),
+            new(46157, 46170, "7.35"),
+            new(46171, 46171, "7.3"),
+            new(46172, 46172, "7.35"),
+            new(46173, 46177, "7.31"),
+            new(46178, 46178, "7.35"),
+            new(46179, 46179, "7.3"),
+            new(46181, 46184, "7.21"),
+            new(46185, 46185, "7.3"),
+            new(46186, 46187, "7.35"),
+            new(46188, 46196, "7.3"),
+            new(46197, 46242, "7.35"),
+            new(46243, 46244, "7.3"),
+            new(46245, 46245, "7.35"),
+            new(46246, 46254, "7.3"),
+            new(46255, 46259, "7.35"),
+            new(46260, 46262, "7.3"),
+            new(46263, 46263, "7.35"),
+            new(46279, 46282, "7.21"),
+            new(46283, 46735, "7.2"),
+            new(46736, 46766, "7.3"),
+            new(46767, 46767, "7.35"),
+            new(46768, 46768, "7.31"),
+            new(46769, 46772, "7.35"),
+            new(46773, 46779, "7.3"),
+            new(46780, 46781, "7.35"),
+            new(46782, 46782, "7.31"),
+            new(46783, 46788, "7.35"),
+            new(46789, 46789, "7.3"),
+            new(46790, 46790, "7.35"),
+            new(46792, 46792, "7.3"),
+            new(46793, 46793, "7.35"),
+            new(46794, 46794, "7.3"),
+            new(46795, 46795, "7.31"),
+            new(46796, 46797, "7.3"),
+            new(46798, 46802, "7.35"),
+            new(46803, 46815, "7.3"),
+            new(46816, 46817, "7.31"),
+            new(46818, 46821, "7.35"),
+            new(46822, 46822, "7.3"),
+            new(46825, 46825, "7.31"),
+            new(46826, 46829, "7.3"),
+            new(46830, 46834, "7.35"),
+            new(46835, 46837, "7.3"),
+            new(46838, 46840, "7.31"),
+            new(46842, 46843, "7.3"),
+            new(46844, 46844, "7.35"),
+            new(46845, 46846, "7.3"),
+            new(46847, 46847, "7.35"),
+            new(46848, 46848, "7.3"),
+            new(46849, 46849, "7.21"),
+            new(46850, 46850, "7.31"),
+            new(46851, 46851, "7.21"),
+            new(46852, 46852, "7.31"),
+            new(46853, 46853, "7.21"),
+            new(46854, 46857, "7.31"),
+            new(46858, 46859, "7.21"),
+            new(46860, 46971, "7.3"),
+            new(46972, 46973, "7.21"),
+            new(46974, 46974, "7.3"),
+            new(46975, 46975, "7.21"),
+            new(46976, 46976, "7.3"),
+            new(46977, 46977, "7.21"),
+            new(46978, 46982, "7.3"),
+            new(46983, 46983, "7.21"),
+            new(46984, 47005, "7.3"),
+            new(47006, 47027, "7.31"),
+            new(47028, 47094, "7.35"),
+            new(47095, 47095, "7.31"),
+            new(47096, 47097, "7.21"),
+            new(47098, 47098, "7.35"),
+            new(47099, 47099, "7.21"),
+            new(47100, 47102, "7.35"),
+            new(47103, 47103, "7.21"),
+            new(47104, 47106, "7.35"),
+            new(47107, 47107, "7.21"),
+            new(47108, 47206, "7.3"),
+            new(47207, 47211, "7.35"),
+            new(47212, 47219, "7.3"),
+            new(47220, 47221, "7.21"),
+            new(47222, 47222, "7.3"),
+            new(47223, 47223, "7.21"),
+            new(47224, 47224, "7.3"),
+            new(47225, 47225, "7.21"),
+            new(47226, 47228, "7.3"),
+            new(47229, 47229, "7.21"),
+            new(47230, 47262, "7.3"),
+            new(47263, 47269, "7.4"),
+            new(47270, 47278, "7.3"),
+            new(47279, 47287, "7.31"),
+            new(47288, 47300, "7.35"),
+            new(47301, 47311, "7.3"),
+            new(47312, 47335, "7.35"),
+            new(47336, 47336, "7.31"),
+            new(47337, 47337, "7.35"),
+            new(47338, 47340, "7.3"),
+            new(47341, 47342, "7.35"),
+            new(47343, 47343, "7.31"),
+            new(47344, 47345, "7.21"),
+            new(47346, 47346, "7.3"),
+            new(47347, 47347, "7.21"),
+            new(47348, 47350, "7.4"),
+            new(47351, 47351, "7.21"),
+            new(47352, 47352, "7.4"),
+            new(47353, 47353, "7.21"),
+            new(47354, 47467, "7.31"),
+            new(47468, 47475, "7.21"),
+            new(47476, 47478, "7.35"),
+            new(47480, 47584, "7.31"),
+            new(47592, 47593, "7.21"),
+            new(47594, 47594, "7.31"),
+            new(47595, 47595, "7.21"),
+            new(47596, 47600, "7.31"),
+            new(47601, 47601, "7.21"),
+            new(47602, 47602, "7.31"),
+            new(47603, 47603, "7.21"),
+            new(47604, 47608, "7.3"),
+            new(47609, 47700, "7.31"),
+            new(47701, 47701, "7.3"),
+            new(47702, 47703, "7.31"),
+            new(47704, 47704, "7.3"),
+            new(47705, 47705, "7.35"),
+            new(47706, 47715, "7.3"),
+            new(47716, 47717, "7.21"),
+            new(47718, 47718, "7.31"),
+            new(47719, 47719, "7.21"),
+            new(47720, 47720, "7.31"),
+            new(47721, 47721, "7.21"),
+            new(47722, 47722, "7.35"),
+            new(47723, 47723, "7.21"),
+            new(47724, 47724, "7.35"),
+            new(47725, 47727, "7.3"),
+            new(47728, 47741, "7.25"),
+            new(47742, 47742, "7.35"),
+            new(47743, 47862, "7.25"),
+            new(47863, 47863, "7.4"),
+            new(47864, 47905, "7.25"),
+            new(47906, 47923, "7.2"),
+            new(47924, 47927, "7.25"),
+            new(47928, 47928, "7.2"),
+            new(47929, 47937, "7.21"),
+            new(47938, 47959, "7.2"),
+            new(47960, 47960, "7.3"),
+            new(47961, 47961, "7.2"),
+            new(47962, 47962, "7.25"),
+            new(47963, 47965, "7.3"),
+            new(47966, 47966, "7.21"),
+            new(47967, 47970, "7.25"),
+            new(47971, 47971, "7.2"),
+            new(47972, 47972, "7.25"),
+            new(47973, 47973, "7.31"),
+            new(47974, 47974, "7.2"),
+            new(47975, 47975, "7.25"),
+            new(47976, 47976, "7.2"),
+            new(47977, 47979, "7.25"),
+            new(47980, 47981, "7.2"),
+            new(47983, 47983, "7.25"),
+            new(47984, 47984, "7.2"),
+            new(47985, 47985, "7.21"),
+            new(47986, 47986, "7.2"),
+            new(47987, 47987, "7.25"),
+            new(47988, 47999, "7.2"),
+            new(48000, 48003, "7.25"),
+            new(48004, 48004, "7.2"),
+            new(48005, 48005, "7.3"),
+            new(48006, 48007, "7.2"),
+            new(48008, 48085, "7.25"),
+            new(48086, 48089, "7.2"),
+            new(48090, 48090, "7.25"),
+            new(48091, 48092, "7.21"),
+            new(48093, 48093, "7.31"),
+            new(48094, 48094, "7.41"),
+            new(48096, 48096, "7.25"),
+            new(48097, 48104, "7.2"),
+            new(48105, 48105, "7.25"),
+            new(48106, 48135, "7.2"),
+            new(48136, 48136, "7.21"),
+            new(48137, 48144, "7.25"),
+            new(48145, 48145, "7.2"),
+            new(48146, 48146, "7.31"),
+            new(48147, 48147, "7.41"),
+            new(48149, 48152, "7.2"),
+            new(48153, 48154, "7.21"),
+            new(48155, 48155, "7.2"),
+            new(48156, 48157, "7.25"),
+            new(48158, 48158, "7.21"),
+            new(48159, 48159, "7.2"),
+            new(48160, 48160, "7.21"),
+            new(48161, 48162, "7.25"),
+            new(48163, 48172, "7.21"),
+            new(48173, 48193, "7.2"),
+            new(48194, 48198, "7.3"),
+            new(48201, 48201, "7.2"),
+            new(48202, 48202, "7.25"),
+            new(48203, 48203, "7.2"),
+            new(48204, 48209, "7.25"),
+            new(48210, 48213, "7.21"),
+            new(48214, 48219, "7.2"),
+            new(48220, 48221, "7.21"),
+            new(48222, 48226, "7.2"),
+            new(48227, 48227, "7.21"),
+            new(48228, 48229, "7.2"),
+            new(48230, 48230, "7.25"),
+            new(48231, 48231, "7.2"),
+            new(48232, 48726, "7.21"),
+            new(48727, 48731, "7.2"),
+            new(48732, 48735, "7.21"),
+            new(48736, 48736, "7.25"),
+            new(48737, 48741, "7.2"),
+            new(48742, 48742, "7.25"),
+            new(48743, 48744, "7.21"),
+            new(48745, 48749, "7.25"),
+            new(48750, 48750, "7.21"),
+            new(48751, 48993, "7.31"),
+            new(48994, 49008, "7.3"),
+            new(49009, 49120, "7.31"),
+            new(49121, 49121, "7.3"),
+            new(49122, 49122, "7.4"),
+            new(49125, 49125, "7.45"),
+            new(49126, 49170, "7.41"),
+            new(49172, 49786, "7.4"),
+            new(49787, 49787, "7.41"),
+            new(49788, 49793, "7.45"),
+            new(49794, 49801, "7.4"),
+            new(49802, 49802, "7.41"),
+            new(49803, 49835, "7.4"),
+            new(49836, 49837, "7.41"),
+            new(49838, 49847, "7.4"),
+            new(49848, 49850, "7.41"),
+            new(49851, 49868, "7.4"),
+            new(49870, 50019, "7.41"),
+            new(50020, 50020, "7.45"),
+            new(50021, 50021, "7.4"),
+            new(50032, 50081, "7.41"),
+            new(50082, 50089, "7.4"),
+            new(50090, 50251, "7.41"),
+            new(50252, 50290, "7.4"),
+            new(50291, 50300, "7.45"),
+            new(50301, 50307, "7.41"),
+            new(50308, 50315, "7.4"),
+            new(50318, 50318, "7.45"),
+            new(50319, 50320, "7.4"),
+            new(50321, 50322, "7.45"),
+            new(50323, 50323, "7.41"),
+            new(50324, 50326, "7.4"),
+            new(50327, 50327, "7.45"),
+            new(50328, 50333, "7.4"),
+            new(50334, 50334, "7.41"),
+            new(50335, 50336, "7.4"),
+            new(50337, 50347, "7.45"),
+            new(50359, 50360, "7.4"),
+            new(50361, 50414, "7.41"),
+            new(50416, 50422, "7.45"),
+            new(50423, 50425, "7.4"),
+            new(50426, 50429, "7.41"),
+            new(50430, 50434, "7.45"),
+            new(50435, 50435, "7.41"),
+            new(50436, 50437, "7.4"),
+            new(50438, 50438, "7.45"),
+            new(50439, 50440, "7.4"),
+            new(50441, 50442, "7.41"),
+            new(50443, 50443, "7.45"),
+            new(50444, 50444, "7.4"),
+            new(50445, 50446, "7.41"),
+            new(50447, 50447, "7.45"),
+            new(50448, 50449, "7.4"),
+            new(50450, 50450, "7.41"),
+            new(50451, 50454, "7.45"),
+            new(50455, 50455, "7.41"),
+            new(50456, 50457, "7.4"),
+            new(50458, 50458, "7.41"),
+            new(50459, 50459, "7.45"),
+            new(50460, 50722, "7.4"),
+            new(50723, 50724, "7.45"),
+            new(50725, 50726, "7.41"),
+            new(50779, 50802, "7.4"),
+            new(50803, 50803, "7.41"),
+            new(50804, 50805, "7.45"),
+            new(50806, 50808, "7.41"),
+            new(50811, 50823, "7.4"),
+            new(50824, 50826, "7.45"),
+            new(50827, 50827, "7.4"),
+            new(50828, 50829, "7.41"),
+            new(50830, 50846, "7.4"),
+            new(50847, 50847, "7.45"),
+            new(50848, 50852, "7.4"),
+        };
+
 
 
     }
