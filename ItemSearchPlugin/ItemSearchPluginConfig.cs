@@ -245,7 +245,7 @@ namespace ItemSearchPlugin {
             }            
             
             bool captureUpDownKeys = CaptureUpDownKeys;
-            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCaptureUpDownKeys", "Capture up/down keys when browsing items"), ref captureUpDownKeys)) {
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCaptureUpDownKeys", "Capture up/down keys when Item Search window is open"), ref captureUpDownKeys)) {
                 CaptureUpDownKeys = captureUpDownKeys;
                 Save();
             }
