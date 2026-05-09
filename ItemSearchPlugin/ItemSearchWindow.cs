@@ -13,8 +13,10 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Game.ClientState.Keys;
 using ItemSearchPlugin.ActionButtons;
 using ItemSearchPlugin.Filters;
+using ItemSearchPlugin.Input;
 using Lumina.Excel.Sheets;
 
 namespace ItemSearchPlugin {
@@ -31,6 +33,7 @@ namespace ItemSearchPlugin {
         private readonly ItemSearchPluginConfig pluginConfig;
         public List<SearchFilter> SearchFilters;
         public List<IActionButton> ActionButtons;
+        private UpDownKeyBlocker upDownKeyBlocker;
 
         private bool autoTryOn;
         public bool autoPreviewHousing;
@@ -157,6 +160,8 @@ namespace ItemSearchPlugin {
                 new FfxivStoreActionButton(pluginConfig),
                 new CopyItemAsJson(plugin),
             };
+
+            upDownKeyBlocker = new UpDownKeyBlocker(pluginConfig, SigScanner, GameInteropProvider);
         }
 
         private SortType sortType;
@@ -903,8 +908,8 @@ namespace ItemSearchPlugin {
                     }
                 }
 
-                var keyStateDown = ImGui.GetIO().KeysDown[0x28] || KeyState[0x28];
-                var keyStateUp = ImGui.GetIO().KeysDown[0x26] || KeyState[0x26];
+                var keyStateDown = ImGui.GetIO().KeysDown[(int)VirtualKey.DOWN] || KeyState[VirtualKey.DOWN];
+                var keyStateUp = ImGui.GetIO().KeysDown[(int)VirtualKey.UP] || KeyState[VirtualKey.UP];
 
 #if DEBUG
                 // Random up/down if both are pressed
@@ -1002,6 +1007,7 @@ namespace ItemSearchPlugin {
                 b?.Dispose();
             }
 
+            upDownKeyBlocker.Dispose();
         }
     }
 }

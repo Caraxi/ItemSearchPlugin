@@ -37,6 +37,8 @@ namespace ItemSearchPlugin {
         public bool MarketBoardPluginIntegration { get; set; }
 
         public bool ShowLegacyItems { get; set; }
+        
+        public bool CaptureUpDownKeys { get; set; }
 
         public byte SelectedLanguage { get; set; }
 
@@ -103,6 +105,7 @@ namespace ItemSearchPlugin {
             ShowPreviewHousing = false;
             SuppressTryOnMessage = true;
             ShowLegacyItems = false;
+            CaptureUpDownKeys = true;
             DataSite = ItemSearchPlugin.DataSites.FirstOrDefault()?.Name;
             SelectedLanguage = 0;
             DisabledFilters = new List<string>();
@@ -238,6 +241,12 @@ namespace ItemSearchPlugin {
             bool showLegacyItems = ShowLegacyItems;
             if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigShowLegacyItems", "Show Legacy Items"), ref showLegacyItems)) {
                 ShowLegacyItems = showLegacyItems;
+                Save();
+            }            
+            
+            bool captureUpDownKeys = CaptureUpDownKeys;
+            if (ImGui.Checkbox(Loc.Localize("ItemSearchConfigCaptureUpDownKeys", "Capture up/down keys when browsing items"), ref captureUpDownKeys)) {
+                CaptureUpDownKeys = captureUpDownKeys;
                 Save();
             }
 
