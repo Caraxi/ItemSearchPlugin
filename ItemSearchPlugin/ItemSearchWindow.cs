@@ -876,8 +876,13 @@ namespace ItemSearchPlugin {
                                 }
 
                                 if (autoPreviewHousing && pluginConfig.ShowPreviewHousing && PlayerState.ContentId != 0) {
-                                    plugin.PreviewHousingItem(selectedItem);
-                                    plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
+                                    try {
+                                        plugin.PreviewHousingItem(selectedItem);
+                                        plugin.PreviewExteriorHousingItem(selectedItem, selectedStain?.RowId ?? 0);
+                                    } catch (Exception ex) {
+                                        PluginLog.Error(ex, "Error previewing housing item");
+                                    }
+                                    
                                 }
                             }
                             

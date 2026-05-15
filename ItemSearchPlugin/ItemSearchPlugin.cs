@@ -19,9 +19,11 @@ using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Dalamud.Bindings.ImGui;
+using FFXIVClientStructs.FFXIV.Client.LayoutEngine;
 using ItemSearchPlugin.DataSites;
 using Lumina.Excel.Sheets;
 using HousingUnitedExterior = Lumina.Excel.Sheets.HousingUnitedExterior;
+using SeStringBuilder = Lumina.Text.SeStringBuilder;
 
 namespace ItemSearchPlugin {
     public class ItemSearchPlugin : IDalamudPlugin {
@@ -247,15 +249,10 @@ namespace ItemSearchPlugin {
                 [FieldOffset(0x90)] public void* IndoorAreaData;
             }
         }
-
-        public unsafe LayoutWorld** LayoutWorldPtr;
-        public unsafe delegate void SetInteriorFixture(LayoutWorld.LayoutManagerStruct* layoutManager, int floor, int part, int fixture, byte unknown = 255);
+        
+        public unsafe delegate void* SetInteriorFixture(int floor, int part, ushort unknown1, int fixture, byte unknown2 = 255);
 
         private SetInteriorFixture setInteriorFixture;
-        public unsafe delegate void SetExteriorFixture(void* housingController, uint plot, int part, ushort fixture);
-        private SetExteriorFixture setExteriorFixture;
-        public unsafe delegate void StainExteriorFixture(void* housingController, uint plot, int part, byte stain);
-        private StainExteriorFixture stainExteriorFixture;
         
         [StructLayout(LayoutKind.Explicit)]
         private struct OutdoorTerritoryExtension {
@@ -267,22 +264,22 @@ namespace ItemSearchPlugin {
         internal unsafe void PreviewExteriorHousingItem(GenericItem gItem, uint stainId) {
             if (gItem.GenericItemType != GenericItem.ItemType.Item) return;
             var item = (Item)gItem;
-            var part = -1;
+            uint part;
             var fixtureId = item.AdditionalData.RowId;
             
             part = item.ItemUICategory.RowId switch {
-                65 => 0, // Roof
-                66 => 1, // Exterior Wall
-                67 => 2, // Window
-                68 => 3, // Door
-                69 => 4, // Roof Decoration
-                70 => 5, // Exterior Wall Decoration
-                71 => 6, // Placard
-                72 => 7, // Fence
-                _ => -1    
+                65 => 0U, // Roof
+                66 => 1U, // Exterior Wall
+                67 => 2U, // Window
+                68 => 3U, // Door
+                69 => 4U, // Roof Decoration
+                70 => 5U, // Exterior Wall Decoration
+                71 => 6U, // Placard
+                72 => 7U, // Fence
+                _ => uint.MaxValue    
             };
 
-            if (part == -1) return;
+            if (part == uint.MaxValue) return;
             
 #if DEBUG
             // Bypass HousingEditExterior requirement in debug.
@@ -292,16 +289,6 @@ namespace ItemSearchPlugin {
 #endif
             
             PluginLog.Debug($"Preview Housing Exterior: {item.Name.ToDalamudString().TextValue}");
-            
-            if (setExteriorFixture == null) {
-                setExteriorFixture = Marshal.GetDelegateForFunctionPointer<SetExteriorFixture>(SigScanner.ScanText("E8 ?? ?? ?? ?? 44 0F B6 0E 41 80 F9 FF"));
-                if (setExteriorFixture == null) return;
-            }
-            
-            if (stainExteriorFixture == null) {
-                stainExteriorFixture = Marshal.GetDelegateForFunctionPointer<StainExteriorFixture>(SigScanner.ScanText("40 55 48 83 EC 30 41 0F B6 E9"));
-                if (stainExteriorFixture == null) return;
-            }
 
             var layout = FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutWorld.Instance();
             if (layout == null) return;
@@ -311,31 +298,49 @@ namespace ItemSearchPlugin {
             if (outdoorAreaData == null) return;
             var manager = HousingManager.Instance();
             if (manager == null) return;
-            var territory = (OutdoorTerritoryExtension*) manager->OutdoorTerritory;
+            var territory = manager->OutdoorTerritory;
             if (territory == null) return;
             
-            var plotIndex = territory->EditingFixturesOfPlot >= 0 ? territory->EditingFixturesOfPlot : territory->StandingInPlot;
+            var plotIndex = territory->EditingFixturesOfPlot >= 0 ? territory->EditingFixturesOfPlot : (sbyte)territory->HouseUnit.PlotIndex;
             if (plotIndex is < 0 or >= 60) return;
+            
+            PluginLog.Debug($"Applying to Plot#{plotIndex}");
+            
 
             var plot = (uint)plotIndex + 1;
-            var plotSize = territory->Base.Plots[plotIndex].Size;
+            var plotSize = territory->Plots[plotIndex].Size;
             
-            var unitedExteriorMaybe = Data.GetExcelSheet<HousingUnitedExterior>()?.GetRow(fixtureId);
+            var unitedExteriorMaybe = Data.GetExcelSheet<HousingUnitedExterior>().GetRowOrDefault(fixtureId);
             if (unitedExteriorMaybe.HasValue) {
                 var unitedExterior = unitedExteriorMaybe.Value;
                 if ((PlotSize)unitedExterior.PlotSize != plotSize) {
                     PluginLog.Debug("Fail: Incorrect Plot Size");
+                    
+                    // new UIForegroundPayload((ushort) (0x223 + item.Rarity * 2)),
+                    // new UIGlowPayload((ushort) (0x224 + item.Rarity * 2)),
+                    
+                    var message = new SeStringBuilder()
+                        .PushColorType(0x223u + item.Rarity * 2u)
+                        .PushEdgeColorType(0x224u + item.Rarity * 2u)
+                        .PushLinkItem(gItem.RowId)
+                        .Append(gItem.Name)
+                        .PopLink()
+                        .PopEdgeColorType()
+                        .PopColorType()
+                        .Append(" does not fit on this plot size.");
+                    Chat.Print(message.ToReadOnlySeString().ToDalamudString(), Name);
                     return;
                 }
-                setExteriorFixture(outdoorAreaData, plot, 0, (ushort)unitedExterior.Roof.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 1, (ushort)unitedExterior.Walls.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 2, (ushort)unitedExterior.Windows.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 3, (ushort)unitedExterior.Door.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 4, (ushort)unitedExterior.OptionalRoof.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 5, (ushort)unitedExterior.OptionalWall.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 6, (ushort)unitedExterior.OptionalSignboard.RowId);
-                setExteriorFixture(outdoorAreaData, plot, 7, (ushort)unitedExterior.Fence.RowId);
-                for (var i = 0; i < 8; i++) stainExteriorFixture(outdoorAreaData, plot, i, (byte)stainId);
+
+                outdoorAreaData->SetFixture(plot, 0, unitedExterior.Roof.RowId);
+                outdoorAreaData->SetFixture(plot, 1, unitedExterior.Walls.RowId);
+                outdoorAreaData->SetFixture(plot, 2, unitedExterior.Windows.RowId);
+                outdoorAreaData->SetFixture(plot, 3, unitedExterior.Door.RowId);
+                outdoorAreaData->SetFixture(plot, 4, unitedExterior.OptionalRoof.RowId);
+                outdoorAreaData->SetFixture(plot, 5, unitedExterior.OptionalWall.RowId);
+                outdoorAreaData->SetFixture(plot, 6, unitedExterior.OptionalSignboard.RowId);
+                outdoorAreaData->SetFixture(plot, 7, unitedExterior.Fence.RowId);
+                for (var i = 0U; i < 8; i++) outdoorAreaData->SetFixtureStain(plot, i, (byte)stainId);
             } else {
                 if (fixtureId > ushort.MaxValue) return;
                 var fixtureMaybe = Data.GetExcelSheet<HousingExterior>()?.GetRow(fixtureId);
@@ -345,17 +350,15 @@ namespace ItemSearchPlugin {
                     PluginLog.Debug("Fail: Incorrect Plot Size");
                     return; // Invalid Size
                 }
-                setExteriorFixture(outdoorAreaData, plot, part, (ushort)fixtureId);
-                stainExteriorFixture(outdoorAreaData, plot, part, (byte)stainId);
+                outdoorAreaData->SetFixture(plot, part, fixtureId);
+                outdoorAreaData->SetFixtureStain(plot, part, (byte)stainId);
             }
         }
         
         internal unsafe void PreviewHousingItem(GenericItem gItem) {
             if (gItem.GenericItemType != GenericItem.ItemType.Item) return;
             var item = (Item)gItem;
-
-
-            var part = -1;
+            int part;
             var fixtureId = (int) item.AdditionalData.RowId;
 
             part = item.ItemUICategory.RowId switch {
@@ -373,28 +376,28 @@ namespace ItemSearchPlugin {
             #else
             if (GameGui.GetAddonByName("HousingEditInterior", 1) == IntPtr.Zero) return;
             #endif
-            
-            
-            if (LayoutWorldPtr == null) {
-                LayoutWorldPtr = (LayoutWorld**) SigScanner.GetStaticAddressFromSig("48 89 05 ?? ?? ?? ?? 48 8B 00");
-                if (LayoutWorldPtr == null) return;
-            }
 
-            if (setInteriorFixture == null) {
-                setInteriorFixture = Marshal.GetDelegateForFunctionPointer<SetInteriorFixture>(SigScanner.ScanText("E8 ?? ?? ?? ?? 33 C0 48 83 C4 38 C3 33 C0"));
-                if (setInteriorFixture == null) return;
+            // TODO: Switch to ClientStructs when available
+            /*
+            LayoutWorld.SetInteriorFixture(0, part, 0, fixtureId);
+            LayoutWorld.SetInteriorFixture(1, part, 0, fixtureId);
+            LayoutWorld.SetInteriorFixture(2, part, 0, fixtureId);
+            */
+            
+            try {
+                if (setInteriorFixture == null) {
+                    setInteriorFixture = Marshal.GetDelegateForFunctionPointer<SetInteriorFixture>(SigScanner.ScanText("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 05 ?? ?? ?? ?? 41 8B F1"));
+                    if (setInteriorFixture == null) return;
+                }
+            } catch (Exception e) {
+                PluginLog.Error(e, "Error getting setInteriorFixture address.");
+                return;
             }
             
-            var lWorld = LayoutWorldPtr[0];
-            if (lWorld == null) return;
-            var lManager = lWorld->LayoutManager;
-            if (lManager == null) return;
-            if (lManager->IndoorAreaData == null) return;
-
             PluginLog.Debug($"Preview Housing Fixture: {item.Name}");
-            setInteriorFixture(lManager, 0, part, fixtureId);
-            setInteriorFixture(lManager, 1, part, fixtureId);
-            setInteriorFixture(lManager, 2, part, fixtureId);
+            setInteriorFixture(0, part, 0, fixtureId);
+            setInteriorFixture( 1, part, 0, fixtureId);
+            setInteriorFixture( 2, part, 0, fixtureId);
         }
     }
 }
