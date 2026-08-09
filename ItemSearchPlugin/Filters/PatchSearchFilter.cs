@@ -84,7 +84,13 @@ namespace ItemSearchPlugin.Filters
             new Patch { Id = 39, Index = 72, Name = "Crossroads", ShortName = "7.1" },
             new Patch { Id = 40, Index = 73, Name = "Seekers of Eternity", ShortName = "7.2" },
             new Patch { Id = 41, Index = 74, Name = "Promises of Tomorrow", ShortName = "7.3" },
-            new Patch { Id = 42, Index = 75, Name = "Into the Mist", ShortName = "7.4" }
+            new Patch { Id = 42, Index = 75, Name = "Into the Mist", ShortName = "7.4" },
+            new Patch { Id = 43, Index = 76, Name = "Trail to the Heavens", ShortName = "7.5" },
+            
+            // Evercold (EC)
+            new Patch { Id = 44, Index = 80, Name = "Evercold", ShortName = "EC", Expansion = true},
+            new Patch { Id = 45, Index = 81, Name = "Evercold", ShortName = "8.0" }
+            
         };
 
 
@@ -118,14 +124,15 @@ namespace ItemSearchPlugin.Filters
             {
                 foreach (Patch selectedPatch in selectedPatches)
                 {
-                    string stringTruePatch = ClassExtensions.GetPatch(item.RowId);
+                    string? stringTruePatch = ClassExtensions.GetPatch(item.RowId);
+                    if (string.IsNullOrEmpty(stringTruePatch)) continue;
                     string stringPatch = stringTruePatch.Length > 3 ? stringTruePatch.Substring(0, 3) : stringTruePatch;
 #if DEBUG
                     //Patch patch = ExpansionsPatches.FirstOrDefault(p => p.ShortName == stringPatch);
                     //if (patch.Expansion) selectedPatch.ShortName.Substring(0, 1);
                     //PluginLog.Debug($"{ClassExtensions.GetPatch(item.RowId)} - {stringTruePatch} -> {selectedPatch.ShortName} = {patch.ShortName}");
 #endif
-                    if (stringPatch == selectedPatch.ShortName && selectedPatches.Contains(selectedPatch)) return true;
+                    if (stringPatch == selectedPatch.ShortName) return true;
                 }
             }
             return false;

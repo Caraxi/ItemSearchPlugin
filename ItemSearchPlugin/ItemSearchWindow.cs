@@ -766,6 +766,9 @@ namespace ItemSearchPlugin {
             var stylesPushed = 0;
             var colorsPushed = 0;
             try {
+                if (itemList.Count == 0) {
+                    return;
+                }
 
                 if (itemList.Count != lastItemCount) {
                     lastItemCount = itemList.Count;
@@ -787,6 +790,7 @@ namespace ItemSearchPlugin {
                         if (!doSearchScroll) {
                             var sizePerItem = itemSize.Y + style.ItemSpacing.Y;
                             var skipItems = (int)Math.Floor(scrollY / sizePerItem);
+                            skipItems = Math.Clamp(skipItems, 0, itemList.Count - 1);
                             cursorPosY = skipItems * sizePerItem;
                             ImGui.SetCursorPosY(5 + cursorPosY + style.ItemSpacing.X);
                             i = skipItems;
@@ -987,7 +991,7 @@ namespace ItemSearchPlugin {
 
             if (fontPushed) ImGui.PopFont();
             if (colorsPushed > 0) ImGui.PopStyleColor(colorsPushed);
-            if (stylesPushed > 0) ImGui.PopStyleColor(stylesPushed);
+            if (stylesPushed > 0) ImGui.PopStyleVar(stylesPushed);
         }
 
 
